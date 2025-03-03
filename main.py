@@ -25,7 +25,7 @@ app = FastAPI(title="Full Stack FastAPI App")
 
 # Mount static files (CSS, JS, images, etc.)
 app.mount("/static", StaticFiles(directory="static"), name="static")
-app.mount("/assets", StaticFiles(directory="assets"), name="assets")
+# app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 
 # Configure Jinja2 templates
 templates = Jinja2Templates(directory="templates")
@@ -40,7 +40,7 @@ app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(users.router, prefix="/users", tags=["Users"])
 
 # Create database tables on startup (use migrations in production)
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
