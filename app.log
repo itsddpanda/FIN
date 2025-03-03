@@ -1,0 +1,65 @@
+2025-03-04 01:24:29,588 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-03-04 01:27:15,298 - fastapi - INFO - User: Anonymous | Request: GET http://127.0.0.1:8000/
+2025-03-04 01:27:15,300 - fastapi - INFO - Response: 200 | Time taken: 0.0025 sec
+2025-03-04 01:32:06,204 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:32:06,217 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-03-04 01:32:06,394 - fastapi - INFO - Response: 200 | Time taken: 0.1901 sec
+2025-03-04 01:32:34,986 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/
+2025-03-04 01:32:34,987 - fastapi - INFO - Response: 200 | Time taken: 0.0006 sec
+2025-03-04 01:32:53,085 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:32:53,250 - fastapi - INFO - Response: 200 | Time taken: 0.1652 sec
+2025-03-04 01:34:58,269 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/auth/login
+2025-03-04 01:34:58,270 - fastapi - INFO - Response: 405 | Time taken: 0.0005 sec
+2025-03-04 01:44:33,559 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:44:33,724 - fastapi - INFO - Response: 200 | Time taken: 0.1652 sec
+2025-03-04 01:44:34,169 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:44:34,334 - fastapi - INFO - Response: 200 | Time taken: 0.1651 sec
+2025-03-04 01:44:34,779 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:44:34,943 - fastapi - INFO - Response: 200 | Time taken: 0.1644 sec
+2025-03-04 01:44:35,371 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:44:35,536 - fastapi - INFO - Response: 200 | Time taken: 0.1650 sec
+2025-03-04 01:44:35,951 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:44:36,115 - fastapi - INFO - Response: 200 | Time taken: 0.1644 sec
+2025-03-04 01:44:36,513 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
+2025-03-04 01:44:38,066 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
+2025-03-04 01:44:38,874 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
+2025-03-04 01:44:39,804 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
+2025-03-04 01:52:08,630 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:52:08,795 - fastapi - INFO - Response: 200 | Time taken: 0.1649 sec
+2025-03-04 01:52:09,612 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:52:09,777 - fastapi - INFO - Response: 200 | Time taken: 0.1648 sec
+2025-03-04 01:52:10,353 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:52:10,518 - fastapi - INFO - Response: 200 | Time taken: 0.1645 sec
+2025-03-04 01:52:10,974 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:52:11,138 - fastapi - INFO - Response: 200 | Time taken: 0.1646 sec
+2025-03-04 01:52:11,526 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:52:11,691 - fastapi - INFO - Response: 200 | Time taken: 0.1651 sec
+2025-03-04 01:52:12,126 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
+2025-03-04 01:52:12,919 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
+2025-03-04 01:52:13,546 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
+2025-03-04 01:53:47,697 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/
+2025-03-04 01:53:47,699 - fastapi - INFO - Response: 200 | Time taken: 0.0026 sec
+2025-03-04 01:53:55,366 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:53:55,381 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-03-04 01:53:55,558 - fastapi - INFO - Response: 200 | Time taken: 0.1924 sec
+2025-03-04 01:53:57,039 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:53:57,203 - fastapi - INFO - Response: 200 | Time taken: 0.1647 sec
+2025-03-04 01:53:57,786 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:53:57,952 - fastapi - INFO - Response: 200 | Time taken: 0.1662 sec
+2025-03-04 01:53:58,503 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 01:53:58,668 - fastapi - INFO - Response: 200 | Time taken: 0.1652 sec
+2025-03-04 01:53:59,137 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
+2025-03-04 01:53:59,809 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
+2025-03-04 01:54:00,353 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
