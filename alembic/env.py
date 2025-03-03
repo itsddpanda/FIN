@@ -1,30 +1,41 @@
 #File: alembic/env.py
 import os
 from logging.config import fileConfig
-
-from sqlalchemy import engine_from_config, create_engine
-from sqlalchemy import pool
-
+from sqlalchemy import create_engine
+import logging
 from alembic import context
-from models import User
+from models import User, StatementPeriod, Folio, Scheme, Valuation, Transaction
 from db import Base  # Import your Base from db.py
 from dotenv import load_dotenv
+import sys
 load_dotenv()
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
+
+# Get Log level for .env
+log_level = os.getenv("LOG_LEVEL", "INFO").upper()
+# Configure logging
+logging.basicConfig(
+    level=getattr(logging, log_level, logging.INFO),  
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout),  
+        logging.FileHandler("app.log")  
+    ]
+)
+logger = logging.getLogger("fastapi")
+logger.setLevel(getattr(logging, log_level, logging.INFO))
 
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata  # Corrected to point to Base.metadata
-print(f"from ENV.PY target metadata {target_metadata}, Base: {Base}")
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
@@ -44,7 +55,7 @@ def run_migrations_offline() -> None:
 
     """
     url = os.getenv("DATABASE_URL")  # Get DATABASE_URL from environment
-    print(f"From ENV.PY Offline Migration: {url}")
+    logger.debug(f"From ENV.PY Offline Migration: {url}")
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -63,7 +74,7 @@ def run_migrations_online() -> None:
 
     """
     connectable = create_engine(os.getenv("DATABASE_URL"))  # Create engine directly
-    print(f"From env.py Connectable : {connectable}")
+    logger.debug(f"From env.py online migration Connectable : {connectable}")
     with connectable.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata

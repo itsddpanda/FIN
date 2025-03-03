@@ -12,6 +12,9 @@ from jose import JWTError, jwt
 from auth import SECRET_KEY, ALGORITHM  
 import uvicorn
 import sys
+import importlib
+import pkgutil
+from routes import __name__ as routes_pkg_name
 
 # Load environment variables from .env file
 load_dotenv()
@@ -44,8 +47,13 @@ templates = Jinja2Templates(directory="templates")
 def read_index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-app.include_router(users.router, prefix="/users", tags=["Users"])
+for _, module_name, _ in pkgutil.iter_modules(['routes']):
+    module = importlib.import_module(f"routes.{module_name}")
+    if hasattr(module, "router"):  # Only add modules that define 'router'
+        app.include_router(module.router)
+
+# app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+# app.include_router(users.router, prefix="/users", tags=["Users"])
 
 class AuthLoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -107,4 +115,4 @@ app.add_middleware(AuthLoggingMiddleware)
 app.add_middleware(RateLimitMiddleware)  
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) #true for dev env

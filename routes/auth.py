@@ -8,7 +8,7 @@ from models import User
 from schemas import Token, UserOut, UserCreate
 from auth import verify_password, get_password_hash, create_access_token, generate_userid
 
-router = APIRouter()
+router = APIRouter(prefix="/auth", tags=["Authentication"]) 
 
 @router.post("/register", response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):

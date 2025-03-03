@@ -63,3 +63,33 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-03-04 01:53:59,137 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
 2025-03-04 01:53:59,809 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
 2025-03-04 01:54:00,353 - fastapi - WARNING - Rate limit exceeded for IP: 127.0.0.1
+2025-03-04 02:33:59,195 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/
+2025-03-04 02:33:59,198 - fastapi - INFO - Response: 200 | Time taken: 0.0026 sec
+2025-03-04 02:34:12,470 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 02:34:12,470 - fastapi - INFO - Response: 404 | Time taken: 0.0005 sec
+2025-03-04 02:34:18,247 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 02:34:18,247 - fastapi - INFO - Response: 404 | Time taken: 0.0004 sec
+2025-03-04 02:36:16,159 - fastapi - INFO - User: Anonymous | Request: GET http://127.0.0.1:8000/
+2025-03-04 02:36:16,160 - fastapi - INFO - Response: 200 | Time taken: 0.0008 sec
+2025-03-04 02:38:24,079 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 02:38:24,079 - fastapi - INFO - Response: 404 | Time taken: 0.0005 sec
+2025-03-04 02:38:36,076 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 02:38:36,090 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-03-04 02:38:36,269 - fastapi - INFO - Response: 200 | Time taken: 0.1930 sec
+2025-03-04 02:41:39,803 - fastapi - INFO - User: test@ting.com | Request: GET http://localhost:8000/users/me
+2025-03-04 02:41:39,820 - fastapi - INFO - Response: 200 | Time taken: 0.0164 sec
+2025-03-04 02:45:07,100 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/me
+2025-03-04 02:45:07,100 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/me
+2025-03-04 02:54:51,936 - fastapi - INFO - DB URL fetched from .env file
+2025-03-04 02:55:05,255 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/
+2025-03-04 02:55:05,257 - fastapi - INFO - Response: 200 | Time taken: 0.0026 sec
+2025-03-04 03:39:25,503 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/
+2025-03-04 03:39:25,524 - fastapi - INFO - Response: 200 | Time taken: 0.0207 sec
+2025-03-04 03:39:26,112 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/
+2025-03-04 03:39:26,113 - fastapi - INFO - Response: 200 | Time taken: 0.0006 sec
+2025-03-04 03:40:52,010 - fastapi - INFO - DB URL fetched from .env file
+2025-03-04 03:40:59,412 - fastapi - INFO - DB URL fetched from .env file
