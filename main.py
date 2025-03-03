@@ -25,6 +25,7 @@ app = FastAPI(title="Full Stack FastAPI App")
 
 # Mount static files (CSS, JS, images, etc.)
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/assets", StaticFiles(directory="assets"), name="assets")
 
 # Configure Jinja2 templates
 templates = Jinja2Templates(directory="templates")

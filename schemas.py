@@ -8,8 +8,8 @@ class UserCreate(UserBase):
     password: str
 
 class UserOut(UserBase):
-    id: int
     is_active: bool
+    user_id: str
 
     class Config:
         orm_mode = True

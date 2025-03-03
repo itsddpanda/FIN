@@ -3,10 +3,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
-
+from dotenv import load_dotenv
+load_dotenv()
 # Use environment variables to configure your database URL securely
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
-
+DATABASE_URL = os.getenv("DATABASE_URL")
+print(f"from DB.PY Database : {DATABASE_URL}")
 # For SQLite, include connect_args; otherwise, remove or adjust accordingly
 engine = create_engine(
     DATABASE_URL,
