@@ -70,7 +70,7 @@ class AuthLoggingMiddleware(BaseHTTPMiddleware):
                 logger.warning(f"Invalid token detected for request: {request.url}")
 
         # Redirect unauthenticated users (API gets JSON, frontend gets redirect)
-        if user_email == "Anonymous" and request.url.path.startswith("/users/me"):
+        if user_email == "Anonymous" and request.url.path.startswith("/users"):
             logger.info(f"Unauthenticated access attempt to {request.url}")
             
             if "text/html" in request.headers.get("accept", ""):  
@@ -82,7 +82,7 @@ class AuthLoggingMiddleware(BaseHTTPMiddleware):
             )
 
         logger.info(f"User: {user_email} | Request: {request.method} {request.url}")
-
+        request.state.user_email = user_email
         response = await call_next(request)
         process_time = time.time() - start_time
         logger.info(f"Response: {response.status_code} | Time taken: {process_time:.4f} sec")
@@ -115,4 +115,4 @@ app.add_middleware(AuthLoggingMiddleware)
 app.add_middleware(RateLimitMiddleware)  
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) #true for dev env
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False) #true for dev env

@@ -5,7 +5,6 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 import os
 import uuid
-import jsonify
 
 # Securely load your secret key and other settings from environment variables
 SECRET_KEY = os.getenv("SECRET_KEY", "your-very-secure-secret-key")
