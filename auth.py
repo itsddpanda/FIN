@@ -35,7 +35,7 @@ def decode_token(token: str) -> Optional[dict]:
     
 def generate_userid():
     """
-    Endpoint to generate a unique User ID (UUID).
+    Function to generate a unique User ID (UUID).
     """
     user_id = str(uuid.uuid4())  # Generate UUID version 4 and convert to string
     return user_id

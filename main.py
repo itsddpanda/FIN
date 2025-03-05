@@ -1,10 +1,11 @@
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, UploadFile, File, Form
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from dotenv import load_dotenv
 import time
 import os
+import jsonify
 import logging
 from collections import defaultdict
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -15,6 +16,8 @@ import sys
 import importlib
 import pkgutil
 from routes import __name__ as routes_pkg_name
+from routes.pdf_converter import convertpdf
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -47,6 +50,32 @@ templates = Jinja2Templates(directory="templates")
 def read_index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+@app.get("/upload", response_class=HTMLResponse)
+def read_index(request: Request):
+    return templates.TemplateResponse("upload.html", {"request": request})
+
+#in prod the uploading function needs to move to /users and need to add user checks as per users path rule
+@app.post("/uploading", response_class=HTMLResponse)
+async def upload_file(
+    file: UploadFile = File(...),
+    password: str = Form(...)
+):
+    # Define the upload folder and ensure it exists.
+    pwd = os.getcwd()
+    UPLOAD_FOLDER = os.path.join(pwd, "upload")
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    
+    file_location = os.path.join(UPLOAD_FOLDER, file.filename)
+    with open(file_location, "wb") as f:
+        content = await file.read()
+        f.write(content)
+    # (Optionally) Process the 'password' for file encryption or validation.
+    logging.info(f"Received file '{file.filename}' with provided password.")
+    response = convertpdf(file_location,password,1)
+    html_content = f"<html><body><h1>{response}</h1></body></html>"
+    # return html_content
+    
+
 for _, module_name, _ in pkgutil.iter_modules(['routes']):
     module = importlib.import_module(f"routes.{module_name}")
     if hasattr(module, "router"):  # Only add modules that define 'router'
@@ -77,7 +106,7 @@ class AuthLoggingMiddleware(BaseHTTPMiddleware):
                 return RedirectResponse(url="/auth/login")  
             
             return JSONResponse(
-                content={"detail": "Unauthorized. Please log in."},
+                content={"detail": "Unauthorized. Please log in", "status" : "Error"},
                 status_code=401
             )
 
@@ -104,7 +133,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         if len(request_counts[client_ip]) >= RATE_LIMIT:
             logger.warning(f"Rate limit exceeded for IP: {client_ip}")
             return JSONResponse(
-                content={"detail": "Too many requests. Try again later."},
+                content={"detail": "Too many requests. Try again later.", "status":"Error"},
                 status_code=429
             )
 

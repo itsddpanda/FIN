@@ -320,3 +320,169 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-03-04 14:30:27,247 - fastapi - INFO - Response: 200 | Time taken: 0.0027 sec
 2025-03-04 14:31:02,308 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/me
 2025-03-04 14:31:02,308 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/me
+2025-03-04 15:47:42,201 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/
+2025-03-04 15:47:42,203 - fastapi - INFO - Response: 200 | Time taken: 0.0024 sec
+2025-03-04 15:47:47,711 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 15:47:47,731 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/passlib/handlers/bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2025-03-04 15:47:47,910 - fastapi - INFO - Response: 200 | Time taken: 0.1984 sec
+2025-03-04 15:48:33,896 - fastapi - INFO - User: test@ting.com | Request: GET http://localhost:8000/users/me
+2025-03-04 15:48:33,897 - routes.users - INFO - User validated via /me endpoint.
+2025-03-04 15:48:33,901 - fastapi - INFO - Response: 200 | Time taken: 0.0051 sec
+2025-03-04 15:49:06,640 - fastapi - INFO - User: test@ting.com | Request: GET http://localhost:8000/users/dashboard
+2025-03-04 15:49:06,641 - fastapi - INFO - Response: 200 | Time taken: 0.0021 sec
+2025-03-04 15:50:21,544 - fastapi - INFO - User: test@ting.com | Request: GET http://localhost:8000/users/dashboard
+2025-03-04 15:50:21,546 - fastapi - INFO - Response: 200 | Time taken: 0.0021 sec
+2025-03-04 15:50:26,356 - fastapi - INFO - User: test@ting.com | Request: GET http://localhost:8000/users/dashboard
+2025-03-04 15:50:26,358 - fastapi - INFO - Response: 200 | Time taken: 0.0021 sec
+2025-03-04 15:54:01,265 - fastapi - INFO - User: test@ting.com | Request: GET http://localhost:8000/users/dashboard
+2025-03-04 15:54:01,267 - fastapi - INFO - Response: 200 | Time taken: 0.0020 sec
+2025-03-04 15:54:06,522 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/me
+2025-03-04 15:54:06,522 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/me
+2025-03-04 15:56:48,223 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/me
+2025-03-04 15:56:48,223 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/me
+2025-03-04 15:57:00,641 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/me
+2025-03-04 15:57:00,641 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/me
+2025-03-04 15:57:21,886 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/me
+2025-03-04 15:57:21,886 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/me
+2025-03-04 15:57:38,999 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/me
+2025-03-04 15:57:38,999 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/me
+2025-03-04 15:58:08,070 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/me
+2025-03-04 15:58:08,070 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/me
+2025-03-04 15:58:08,070 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/auth/login
+2025-03-04 15:58:08,070 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/auth/login
+2025-03-04 15:58:08,071 - fastapi - INFO - Response: 405 | Time taken: 0.0005 sec
+2025-03-04 15:59:04,172 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/me
+2025-03-04 15:59:04,172 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/me
+2025-03-04 16:06:29,421 - fastapi - INFO - User: test@ting.com | Request: GET http://localhost:8000/users/dashboard
+2025-03-04 16:06:29,421 - routes.users - INFO - Got email from request
+2025-03-04 16:06:29,440 - fastapi - INFO - Response: 200 | Time taken: 0.0211 sec
+2025-03-04 16:07:56,829 - fastapi - INFO - User: test@ting.com | Request: GET http://localhost:8000/users/dashboard
+2025-03-04 16:07:56,830 - routes.users - INFO - Got email from request
+2025-03-04 16:07:56,831 - fastapi - INFO - Response: 200 | Time taken: 0.0021 sec
+2025-03-04 16:10:58,225 - fastapi - INFO - User: test@ting.com | Request: GET http://localhost:8000/users/dashboard
+2025-03-04 16:10:58,226 - routes.users - INFO - Got email from request
+2025-03-04 16:10:58,350 - routes.users - INFO - TEST: Folios is []
+2025-03-04 16:10:58,351 - fastapi - INFO - Response: 200 | Time taken: 0.1265 sec
+2025-03-04 16:13:56,324 - fastapi - INFO - User: test@ting.com | Request: GET http://localhost:8000/users/dashboard
+2025-03-04 16:13:56,325 - routes.users - INFO - Got email from request
+2025-03-04 16:13:56,344 - routes.users - INFO - User folio record not found; redirecting to /users/getstarted
+2025-03-04 16:13:56,345 - fastapi - INFO - Response: 307 | Time taken: 0.0218 sec
+2025-03-04 16:13:56,346 - fastapi - INFO - User: test@ting.com | Request: GET http://localhost:8000/users/getstarted
+2025-03-04 16:13:56,347 - fastapi - INFO - Response: 200 | Time taken: 0.0005 sec
+2025-03-04 16:23:40,377 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/dashboard
+2025-03-04 16:23:40,398 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/auth/login
+2025-03-04 16:23:40,398 - fastapi - INFO - Response: 405 | Time taken: 0.0003 sec
+2025-03-04 16:26:36,060 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/upload
+2025-03-04 16:26:36,060 - fastapi - INFO - Response: 404 | Time taken: 0.0005 sec
+2025-03-04 16:27:16,573 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/
+2025-03-04 16:27:16,576 - fastapi - INFO - Response: 200 | Time taken: 0.0028 sec
+2025-03-04 16:27:18,868 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/
+2025-03-04 16:27:18,868 - fastapi - INFO - Response: 200 | Time taken: 0.0006 sec
+2025-03-04 16:27:54,163 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/upload
+2025-03-04 16:27:54,165 - fastapi - INFO - Response: 200 | Time taken: 0.0021 sec
+2025-03-04 16:36:32,566 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/dashboard
+2025-03-04 16:36:32,566 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/dashboard
+2025-03-04 16:37:51,319 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/dashboard
+2025-03-04 16:37:51,319 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/dashboard
+2025-03-04 16:46:28,966 - fastapi - WARNING - Invalid token detected for request: http://localhost:8000/users/dashboard
+2025-03-04 16:46:28,966 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/dashboard
+2025-03-04 16:50:20,440 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/upload
+2025-03-04 16:50:20,442 - fastapi - INFO - Response: 200 | Time taken: 0.0020 sec
+2025-03-04 16:50:33,369 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/upload.py
+2025-03-04 16:50:33,369 - fastapi - INFO - Response: 404 | Time taken: 0.0006 sec
+2025-03-04 16:52:21,208 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/upload.py
+2025-03-04 16:52:21,208 - fastapi - INFO - Response: 404 | Time taken: 0.0004 sec
+2025-03-04 17:01:14,795 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/upload
+2025-03-04 17:01:14,797 - fastapi - INFO - Response: 200 | Time taken: 0.0021 sec
+2025-03-04 17:01:24,750 - fastapi - INFO - Unauthenticated access attempt to http://localhost:8000/users/getstarted
+2025-03-04 17:01:24,836 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/auth/login
+2025-03-04 17:01:24,857 - fastapi - INFO - Response: 422 | Time taken: 0.0209 sec
+2025-03-04 21:17:07,046 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/
+2025-03-04 21:17:07,048 - fastapi - INFO - Response: 200 | Time taken: 0.0021 sec
+2025-03-04 21:17:07,171 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/favicon.ico
+2025-03-04 21:17:07,171 - fastapi - INFO - Response: 404 | Time taken: 0.0003 sec
+2025-03-04 21:17:12,142 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/upload
+2025-03-04 21:17:12,143 - fastapi - INFO - Response: 200 | Time taken: 0.0010 sec
+2025-03-04 21:17:28,312 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-04 21:17:28,372 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-04 21:26:41,642 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-04 21:26:41,677 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-04 21:26:56,605 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-04 21:26:56,655 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-04 21:26:56,655 - fastapi - INFO - Response: 200 | Time taken: 0.0501 sec
+2025-03-04 21:34:25,766 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-04 21:34:25,824 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-04 21:34:46,279 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-04 21:34:46,339 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-04 21:34:51,409 - fastapi - INFO - Response: 200 | Time taken: 5.1298 sec
+2025-03-04 21:36:42,730 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-04 21:36:42,758 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-04 21:37:26,046 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-04 21:37:26,116 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-04 21:38:30,662 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-04 21:38:30,730 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-04 21:38:35,098 - fastapi - INFO - Response: 200 | Time taken: 4.4357 sec
+2025-03-04 21:38:49,036 - fastapi - INFO - User: Anonymous | Request: GET http://172.16.16.40:8000/dashboard
+2025-03-04 21:38:49,036 - fastapi - INFO - Response: 404 | Time taken: 0.0004 sec
+2025-03-04 21:38:49,130 - fastapi - INFO - User: Anonymous | Request: GET http://172.16.16.40:8000/favicon.ico
+2025-03-04 21:38:49,130 - fastapi - INFO - Response: 404 | Time taken: 0.0003 sec
+2025-03-04 21:38:51,936 - fastapi - INFO - User: Anonymous | Request: GET http://172.16.16.40:8000/
+2025-03-04 21:38:51,938 - fastapi - INFO - Response: 200 | Time taken: 0.0022 sec
+2025-03-04 21:38:55,428 - fastapi - INFO - User: Anonymous | Request: GET http://172.16.16.40:8000/upload
+2025-03-04 21:38:55,429 - fastapi - INFO - Response: 200 | Time taken: 0.0011 sec
+2025-03-04 21:45:55,523 - fastapi - INFO - User: Anonymous | Request: GET http://localhost:8000/upload
+2025-03-04 21:45:55,523 - fastapi - INFO - Response: 200 | Time taken: 0.0005 sec
+2025-03-04 21:46:08,842 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-04 21:46:08,901 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-04 21:46:13,227 - fastapi - INFO - Response: 200 | Time taken: 4.3850 sec
+2025-03-04 21:47:44,941 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-04 21:47:44,996 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-04 21:47:47,225 - fastapi - INFO - Response: 200 | Time taken: 2.2845 sec
+2025-03-04 21:50:06,394 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-04 21:50:06,439 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-04 21:50:08,671 - fastapi - INFO - Response: 200 | Time taken: 2.2769 sec
+2025-03-05 11:43:17,277 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-05 11:43:17,302 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-05 11:43:17,302 - routes.pdf_converter - INFO - Converting /home/panda/mfa/financial-decision/upload/13.pdf to json
+2025-03-05 11:43:19,562 - routes.pdf_converter - INFO - File Converted
+2025-03-05 11:43:19,562 - fastapi - INFO - Response: 200 | Time taken: 2.2847 sec
+2025-03-05 11:45:14,178 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-05 11:45:14,201 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-05 11:45:14,201 - fastapi - INFO - Response: 200 | Time taken: 0.0236 sec
+2025-03-05 11:48:37,283 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-05 11:48:37,347 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-05 11:48:37,364 - routes.pdf_converter - ERROR - Conversion PARSER Module FAILED. Is password Correct? Incorrect PDF password!
+Traceback (most recent call last):
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/casparser/parsers/pdfminer.py", line 133, in cas_pdf_to_text
+    document = PDFDocument(pdf_parser, password=password)
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/pdfminer/pdfdocument.py", line 744, in __init__
+    self._initialize_password(password)
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/pdfminer/pdfdocument.py", line 771, in _initialize_password
+    handler = factory(docid, param, password)
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/pdfminer/pdfdocument.py", line 358, in __init__
+    self.init()
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/pdfminer/pdfdocument.py", line 366, in init
+    self.init_key()
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/pdfminer/pdfdocument.py", line 381, in init_key
+    raise PDFPasswordIncorrect
+pdfminer.pdfdocument.PDFPasswordIncorrect
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/panda/mfa/financial-decision/routes/pdf_converter.py", line 37, in convertpdf
+    csv_str = casparser.read_cas_pdf(pdf_file_path, password, output="json")
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/casparser/parsers/__init__.py", line 34, in read_cas_pdf
+    partial_cas_data = cas_pdf_to_text(filename, password)
+  File "/home/panda/mfa/financial-decision/venv/lib/python3.10/site-packages/casparser/parsers/pdfminer.py", line 135, in cas_pdf_to_text
+    raise IncorrectPasswordError("Incorrect PDF password!")
+casparser.exceptions.IncorrectPasswordError: Incorrect PDF password!
+2025-03-05 11:48:37,364 - fastapi - INFO - Response: 200 | Time taken: 0.0816 sec
+2025-03-05 11:53:57,330 - fastapi - INFO - User: Anonymous | Request: POST http://localhost:8000/uploading
+2025-03-05 11:53:57,380 - root - INFO - Received file '13.pdf' with provided password.
+2025-03-05 11:53:57,396 - routes.pdf_converter - ERROR - Conversion PARSER Module FAILED. Incorrect PDF password!
+2025-03-05 11:53:57,396 - fastapi - INFO - Response: 200 | Time taken: 0.0661 sec
