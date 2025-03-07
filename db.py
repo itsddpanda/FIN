@@ -5,7 +5,8 @@ from sqlalchemy.orm import sessionmaker, relationship
 import os
 import sys
 import logging
-
+from dotenv import load_dotenv
+load_dotenv()
 
 logger_module = logging.getLogger(__name__)
 

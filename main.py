@@ -23,8 +23,7 @@ from logging_config import logger  # Import the configured logger
 
 app = FastAPI(title="Full Stack FastAPI App")
 logger.info("Application started")
-print(f"Log level set to: {logging.getLevelName(logger.level)}")
-print(f"Log level from dotenv {os.getenv('LOG_LEVEL')}")
+
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -57,7 +56,8 @@ async def upload_file(
     # (Optionally) Process the 'password' for file encryption or validation.
     try:
         logger.info(f"Received file '{file.filename}' with provided password.")
-        response = process_log_messages(convertpdf(file_location,password,'1'))
+        temp = convertpdf(file_location,password,'1')
+        response = process_log_messages (temp)
         html_content = f"<html><body><h1>{response}</h1></body></html>"
         return html_content
     except Exception as e:

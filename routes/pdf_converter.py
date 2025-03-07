@@ -453,7 +453,7 @@ def convertpdf(pdf_file_path: str, password: str, userid: str):
     if not publish_json_to_db(data):
         logger.error("Failed to push data to DB.")
         logger.removeHandler(progress_handler)
-        return None
+        return progress_report
     logger.removeHandler(progress_handler)
     return progress_report
 

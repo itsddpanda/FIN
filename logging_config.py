@@ -6,9 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 
-# Configure logging
+# Configure root logger
 logging.basicConfig(
-    level=getattr(logging, log_level, logging.INFO),
+    level=getattr(logging, log_level, logging.INFO),  # Set root logger level
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
         logging.StreamHandler(),
@@ -16,8 +16,8 @@ logging.basicConfig(
     ]
 )
 
-logger = logging.getLogger("fastapi")
-logger.setLevel(getattr(logging, log_level, logging.INFO))
+# Ensure the root logger respects the log level
+logger = logging.getLogger()  # Get the root logger
+logger.setLevel(getattr(logging, log_level, logging.INFO))  # Explicitly set level
 
-# Print log level (for debugging)
 print(f"Logging initialized. Log level set to: {logging.getLevelName(logger.level)}")
