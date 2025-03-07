@@ -24,7 +24,7 @@ from logging_config import logger  # Import the configured logger
 app = FastAPI(title="Full Stack FastAPI App")
 logger.info("Application started")
 print(f"Log level set to: {logging.getLevelName(logger.level)}")
-
+print(f"Log level from dotenv {os.getenv('LOG_LEVEL')}")
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 

@@ -1372,3 +1372,12 @@ DETAIL:  Key (folio_number)=(1038436370 / 0) already exists.
 2025-03-07 13:37:29,179 - fastapi - INFO - PDF Converter initialized with custom progress handler
 2025-03-07 13:37:29,187 - fastapi - INFO - Application started
 2025-03-07 13:37:29,205 - fastapi - INFO - Application started
+2025-03-07 13:41:24,099 - fastapi - INFO - PDF Converter initialized with custom progress handler
+2025-03-07 13:41:24,108 - fastapi - INFO - Application started
+2025-03-07 13:41:24,126 - fastapi - INFO - Application started
+2025-03-07 13:43:14,578 - fastapi - INFO - PDF Converter initialized with custom progress handler
+2025-03-07 13:43:14,587 - fastapi - INFO - Application started
+2025-03-07 13:43:14,607 - fastapi - INFO - Application started
+2025-03-07 13:43:44,949 - fastapi - INFO - PDF Converter initialized with custom progress handler
+2025-03-07 13:43:44,957 - fastapi - INFO - Application started
+2025-03-07 13:43:44,976 - fastapi - INFO - Application started
