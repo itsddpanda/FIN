@@ -21,7 +21,8 @@ from db import engine, Base
 from routes import auth, users
 from logging_config import logger  # Import the configured logger
 
-app = FastAPI(title="Full Stack FastAPI App")
+app = FastAPI(title="Full Stack FastAPI App") # for dev
+#app = FastAPI(docs_url=None, redoc_url=None)  # Disable docs in production
 logger.info("Application started")
 
 # Mount static files

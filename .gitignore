@@ -4,3 +4,4 @@ __py*
 _*
 .env
 *.log
+.dockerignore
