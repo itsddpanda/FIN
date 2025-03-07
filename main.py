@@ -16,29 +16,14 @@ import sys
 import importlib
 import pkgutil
 from routes import __name__ as routes_pkg_name
-from routes.pdf_converter import convertpdf
-
-
-# Load environment variables from .env file
-load_dotenv()
-log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-
+from routes.pdf_converter import convertpdf, process_log_messages
 from db import engine, Base
 from routes import auth, users
+from logging_config import logger  # Import the configured logger
 
 app = FastAPI(title="Full Stack FastAPI App")
-
-# Configure logging
-logging.basicConfig(
-    level=getattr(logging, log_level, logging.INFO),  
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout),  
-        logging.FileHandler("app.log")  
-    ]
-)
-logger = logging.getLogger("fastapi")
-logger.setLevel(getattr(logging, log_level, logging.INFO))
+logger.info("Application started")
+print(f"Log level set to: {logging.getLevelName(logger.level)}")
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -70,10 +55,16 @@ async def upload_file(
         content = await file.read()
         f.write(content)
     # (Optionally) Process the 'password' for file encryption or validation.
-    logging.info(f"Received file '{file.filename}' with provided password.")
-    response = convertpdf(file_location,password,1)
-    html_content = f"<html><body><h1>{response}</h1></body></html>"
-    # return html_content
+    try:
+        logger.info(f"Received file '{file.filename}' with provided password.")
+        response = process_log_messages(convertpdf(file_location,password,'1'))
+        html_content = f"<html><body><h1>{response}</h1></body></html>"
+        return html_content
+    except Exception as e:
+        logger.info(f"Error in execution {e}")
+        response = e
+        html_content = f"<html><body><h1>{response}</h1></body></html>"
+        return html_content
     
 
 for _, module_name, _ in pkgutil.iter_modules(['routes']):

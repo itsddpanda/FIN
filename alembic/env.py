@@ -18,18 +18,10 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # Get Log level for .env
+load_dotenv()
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-# Configure logging
-logging.basicConfig(
-    level=getattr(logging, log_level, logging.INFO),  
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout),  
-        logging.FileHandler("app.log")  
-    ]
-)
-logger = logging.getLogger("fastapi")
-logger.setLevel(getattr(logging, log_level, logging.INFO))
+logger_module = logging.getLogger("Converter")
+logger_module.setLevel(getattr(logging, log_level, logging.INFO))
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -55,7 +47,7 @@ def run_migrations_offline() -> None:
 
     """
     url = os.getenv("DATABASE_URL")  # Get DATABASE_URL from environment
-    logger.debug(f"From ENV.PY Offline Migration: {url}")
+    logger_module.debug(f"From ENV.PY Offline Migration: {url}")
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -74,7 +66,7 @@ def run_migrations_online() -> None:
 
     """
     connectable = create_engine(os.getenv("DATABASE_URL"))  # Create engine directly
-    logger.debug(f"From env.py online migration Connectable : {connectable}")
+    logger_module.debug(f"From env.py online migration Connectable : {connectable}")
     with connectable.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata

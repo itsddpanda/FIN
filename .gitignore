@@ -1,5 +1,4 @@
 venv
-.env
 __py*
 *.pyc
 _*

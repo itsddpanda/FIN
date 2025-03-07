@@ -17,7 +17,10 @@ class StatementPeriod(Base):
     id = Column(Integer, primary_key=True)
     from_date = Column(Date, nullable=False)
     to_date = Column(Date, nullable=False)
+    user_id = Column(String, ForeignKey('users.user_id')) # Add user_id ForeignKey
+    user = relationship("User")
     folios = relationship("Folio", backref="statement_period", cascade="all, delete-orphan")
+    __table_args__ = (UniqueConstraint('user_id', 'from_date', 'to_date', name='uq_statement_period_user'),)
 
 class Folio(Base):
     __tablename__ = 'folio'
