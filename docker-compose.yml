@@ -10,12 +10,30 @@ services:
       - "5432:5432" # Map host port 5432 to container port 5432
     volumes:
       - postgres_data:/var/lib/postgresql/data/ # Persist data across restarts
+    networks:
+      - financial-decision_default
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
-
+  app:
+    build: .
+    container_name: finapp
+    ports:
+      - "8000:8000"
+    networks:
+      - financial-decision_default
+    environment:
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB} # Dynamic DATABASE_URL using .env vars, fixed db_name
+      SECRET_KEY: ${SECRET_KEY} # Use variable from .env (or system env)
+      ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES} # Use variable from .env (or system env)
+      LOG_LEVEL: ${LOG_LEVEL} # Use variable from .env (or system env)
+    depends_on:
+      - db
 volumes:
   postgres_data:
+    external: true
+networks:
+  financial-decision_default:
     external: true
