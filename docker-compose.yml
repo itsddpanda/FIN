@@ -25,7 +25,7 @@ services:
     networks:
       - financial-decision_default
     environment:
-      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB} # Dynamic DATABASE_URL using .env vars, fixed db_name
+      DATABASE_URL: ${DATABASE_URL} # Dynamic DATABASE_URL using .env vars, fixed db_name
       SECRET_KEY: ${SECRET_KEY} # Use variable from .env (or system env)
       ACCESS_TOKEN_EXPIRE_MINUTES: ${ACCESS_TOKEN_EXPIRE_MINUTES} # Use variable from .env (or system env)
       LOG_LEVEL: ${LOG_LEVEL} # Use variable from .env (or system env)
