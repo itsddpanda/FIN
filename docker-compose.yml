@@ -23,7 +23,7 @@ services:
     ports:
       - "8000:8000"
     networks:
-      - financial-decision_default
+      - MFA
     environment:
       DATABASE_URL: ${DATABASE_URL} # Dynamic DATABASE_URL using .env vars, fixed db_name
       SECRET_KEY: ${SECRET_KEY} # Use variable from .env (or system env)
