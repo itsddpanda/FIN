@@ -4,6 +4,7 @@ from typing import Optional
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 import os
+import uuid
 
 # Securely load your secret key and other settings from environment variables
 SECRET_KEY = os.getenv("SECRET_KEY", "your-very-secure-secret-key")
@@ -31,3 +32,10 @@ def decode_token(token: str) -> Optional[dict]:
         return payload
     except JWTError:
         return None
+    
+def generate_userid():
+    """
+    Function to generate a unique User ID (UUID).
+    """
+    user_id = str(uuid.uuid4())  # Generate UUID version 4 and convert to string
+    return user_id

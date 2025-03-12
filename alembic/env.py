@@ -1,17 +1,15 @@
+#File: alembic/env.py
 import os
 from logging.config import fileConfig
-
-from sqlalchemy import engine_from_config, create_engine
-from sqlalchemy import pool
-
+from sqlalchemy import create_engine
+import logging
 from alembic import context
-
+from models import User, StatementPeriod, Folio, Scheme, Valuation, Transaction
 from db import Base  # Import your Base from db.py
-
+from logging_config import logger, DBURL
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
@@ -22,7 +20,6 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata  # Corrected to point to Base.metadata
-
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
@@ -41,7 +38,8 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = os.getenv("DATABASE_URL")  # Get DATABASE_URL from environment
+    url = DBURL  # Get DATABASE_URL from environment
+    logger.info(f"From ENV.PY Offline Migration: {url}")
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -52,7 +50,6 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
-
 def run_migrations_online() -> None:
     """Run migrations in 'online' mode.
 
@@ -60,8 +57,8 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = create_engine(os.getenv("DATABASE_URL"))  # Create engine directly
-
+    connectable = create_engine(DBURL)  # Create engine directly
+    logger.info(f"From env.py online migration Connectable : {connectable}")
     with connectable.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata

@@ -1,5 +1,8 @@
 venv
-.env
 __py*
 *.pyc
-_*
+.env
+*.log
+.dockerignore
+*.sql*
+versions/*
