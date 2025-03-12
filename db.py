@@ -16,7 +16,7 @@ if not DBURL:
     raise ValueError("DATABASE_URL environment variable is not set.")
 
 logger.info(f"DB URL fetched from .env file")
-logger.debug(f"from DB.PY Database : {DATABASE_URL}")
+logger.info(f"from DB.PY Database : {DATABASE_URL}")
 
 # For SQLite, include connect_args; otherwise, remove or adjust accordingly
 engine = create_engine(

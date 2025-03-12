@@ -2,7 +2,6 @@
 import json
 import logging
 from datetime import datetime
-from turtle import shearfactor
 from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form
 from fastapi.responses import RedirectResponse, JSONResponse
 from sqlalchemy.orm import Session

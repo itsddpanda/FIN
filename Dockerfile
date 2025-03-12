@@ -4,12 +4,15 @@ FROM python:3.9-slim-buster
 WORKDIR /app
 
 # Copy application files
-COPY . /app
+COPY . /app/
+COPY .env /app/.env
 
 # Install dependencies
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
-RUN apt-get update && apt-get install -y netcat-traditional
+RUN apt-get update && apt-get install netcat-traditional -y 
+# && apt-get install tk8.6-dev -y
+RUN rm -rf /var/lib/apt/lists/*
 # Copy entrypoint script and give execution permissions
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh

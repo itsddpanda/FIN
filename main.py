@@ -17,10 +17,10 @@ from db import init_db
 from routes import auth, users
 from logging_config import logger  # Import the configured logger
 
-app = FastAPI(title="Full Stack FastAPI App") # for dev
-init_db()
-# app = FastAPI(docs_url=None, redoc_url=None)  # Disable docs in production
+# app = FastAPI(title="Full Stack FastAPI App") # for dev
+app = FastAPI(docs_url=None, redoc_url=None)  # Disable docs in production
 
+init_db()
 logger.info("Application started")
 
 # Mount static files
