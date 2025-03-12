@@ -20,8 +20,8 @@ from logging_config import logger  # Import the configured logger
 
 init_db()
 
-# app = FastAPI(title="Full Stack FastAPI App") # for dev
-app = FastAPI(docs_url=None, redoc_url=None)  # Disable docs in production
+app = FastAPI(title="Full Stack FastAPI App") # for dev
+# app = FastAPI(docs_url=None, redoc_url=None)  # Disable docs in production
 logger.info("Application started")
 
 # Mount static files

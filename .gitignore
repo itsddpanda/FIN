@@ -4,4 +4,4 @@ __py*
 *.log
 .dockerignore
 *.sql*
-versions/*
+alembic/*
