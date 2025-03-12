@@ -18,8 +18,8 @@ from db import engine, Base
 from routes import auth, users
 from logging_config import logger  # Import the configured logger
 
-app = FastAPI(title="Full Stack FastAPI App") # for dev
-#app = FastAPI(docs_url=None, redoc_url=None)  # Disable docs in production
+# app = FastAPI(title="Full Stack FastAPI App") # for dev
+app = FastAPI(docs_url=None, redoc_url=None)  # Disable docs in production
 logger.info("Application started")
 
 # Mount static files
@@ -129,4 +129,4 @@ app.add_middleware(AuthLoggingMiddleware)
 app.add_middleware(RateLimitMiddleware)  
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8100, reload=False, server_header=False) #true for dev env
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False, server_header=False) #true for dev env
