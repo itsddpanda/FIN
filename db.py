@@ -2,7 +2,12 @@
 from sqlalchemy import create_engine, exc
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.exc import OperationalError
+from alembic import command
+from alembic.config import Config
+from alembic.util import CommandError
 from logging_config import logger, DBURL
+import psycopg2
 import time
 
 # Use environment variables to configure your database URL securely
@@ -32,17 +37,50 @@ def get_db():
     finally:
         db.close()
 
-def create_tables(max_retries=5, retry_delay=5):
-    retries = 0
-    while retries < max_retries:
+def check_and_create_db():
+    if DBURL.startswith("postgresql"):
         try:
-            logger.info("Attempting to create tables...")
-            Base.metadata.create_all(bind=engine)
-            logger.info("Tables created successfully.")
-            return  # Success, exit the function
-        except exc.OperationalError as e:
-            logger.error(f"Database error during table creation: {e}. Retry {retries + 1}/{max_retries}")
-            retries += 1
-            time.sleep(retry_delay)
-    logger.error("Failed to create tables after multiple retries.")
-    raise RuntimeError("Failed to create tables.")
+            url_parts = DBURL.split("//")[1].split("@")[0].split(":")
+            user = url_parts[0]
+            password = url_parts[1]
+            host_port = DBURL.split("@")[1].split("/")[0].split(":")
+            host = host_port[0]
+            port = host_port[1] if len(host_port) > 1 else "5432"
+            db_name = DBURL.split("/")[-1]
+
+            conn = psycopg2.connect(user=user, password=password, host=host, port=port, database="postgres")
+            conn.autocommit = True
+            cur = conn.cursor()
+            cur.execute(f"SELECT 1 FROM pg_database WHERE datname='{db_name}'")
+            exists = cur.fetchone()
+            if not exists:
+                cur.execute(f"CREATE DATABASE {db_name}")
+                logger.info(f"Database '{db_name}' created.")
+            cur.close()
+            conn.close()
+        except psycopg2.OperationalError as e:
+            logger.error(f"Error checking/creating database: {e}")
+            raise
+
+def run_migrations():
+    try:
+        logger.info("Running Alembic migrations...")
+        alembic_cfg = Config("alembic.ini")
+        command.upgrade(alembic_cfg, "head")
+        logger.info("Alembic migrations completed successfully.")
+    except CommandError as alembic_err:
+        logger.error(f"Alembic migration command error: {alembic_err}")
+        # Consider implementing rollback or manual intervention here
+        raise
+    except OperationalError as db_err:
+        logger.error(f"Database error during migrations: {db_err}")
+        # Consider implementing retry logic or database connection checks here
+        raise
+    except Exception as e:
+        logger.exception(f"Unexpected error during migrations: {e}")
+        # Consider implementing rollback or manual intervention here
+        raise
+
+def init_db():
+    check_and_create_db()
+    run_migrations()

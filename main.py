@@ -14,9 +14,11 @@ import pkgutil
 from routes import __name__ as routes_pkg_name
 from routes.pdf_converter import convertpdf, process_log_messages
 # from routes.dash import get_user_dashboard
-from db import engine, Base
+from db import init_db
 from routes import auth, users
 from logging_config import logger  # Import the configured logger
+
+init_db()
 
 # app = FastAPI(title="Full Stack FastAPI App") # for dev
 app = FastAPI(docs_url=None, redoc_url=None)  # Disable docs in production
@@ -31,7 +33,6 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/", response_class=HTMLResponse)
 def read_index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-
 
 #in prod the uploading function needs to move to /users and need to add user checks as per users path rule
 @app.post("/uploading", response_class=HTMLResponse)
@@ -129,4 +130,4 @@ app.add_middleware(AuthLoggingMiddleware)
 app.add_middleware(RateLimitMiddleware)  
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False, server_header=False) #true for dev env
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, server_header=False) #true for dev env
