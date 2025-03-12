@@ -1,7 +1,6 @@
 venv
 __py*
 *.pyc
-.env
 *.log
 .dockerignore
 *.sql*
