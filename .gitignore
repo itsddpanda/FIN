@@ -5,3 +5,5 @@ __py*
 .dockerignore
 *.sql*
 alembic/*
+alembic/versions/*
+alembic/versions/README

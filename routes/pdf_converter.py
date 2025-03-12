@@ -6,7 +6,7 @@ from turtle import shearfactor
 from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form
 from fastapi.responses import RedirectResponse, JSONResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import delete
+from sqlalchemy import delete, update
 import casparser
 import os
 from models import User, Folio, StatementPeriod, Scheme, Valuation, Transaction, AMC
@@ -49,8 +49,9 @@ def clear_database_for_identifier(db: Session, identifier: str, identifier_type:
         identifier: The user_id or email address.
         identifier_type: Specifies whether the identifier is "user_id" or "email". Defaults to "user_id".
     """
+    user_id = None
+    user = ""
     try:
-        user_id = None
         logger.info("Starting to clean database.")
         if identifier_type == "user_id":
             user_id = identifier
@@ -75,7 +76,7 @@ def clear_database_for_identifier(db: Session, identifier: str, identifier_type:
         user_folios = db.query(Folio).filter(Folio.user_id == user_id).all()
         folio_numbers = [folio.folio_number for folio in user_folios]
         statement_period_ids = [folio.statement_period_id for folio in user_folios]
-
+        logger.info("Folios Deleted.")
         # 2. Delete Transactions for schemes associated with these folios.
         scheme_ids = [
             scheme.id for scheme in db.query(Scheme).filter(Scheme.folio_id.in_(folio_numbers)).all()
@@ -113,11 +114,16 @@ def clear_database_for_identifier(db: Session, identifier: str, identifier_type:
         logger.info(f"StatementPeriods cleanup completed for user {user_id}")
 
         # 7. Finally, delete the user record.
-        db.execute(delete(User).where(User.user_id == user_id))
-        logger.info(f"User {user_id} deleted")
+        db.execute(
+            update(User)
+            .where(User.user_id == user_id)
+            .values(is_active=False)
+        )
+        logger.info(f"User {user_id} Deactivated")
 
         db.commit()
-        logger.info(f"Database cleared for {identifier_type}: {identifier}")
+        logger.info(f"Database cleared for {identifier_type}: {identifier}, user: {user}")
+        return True
 
     except Exception as e:
         db.rollback()

@@ -86,3 +86,7 @@ class DashboardOut(BaseModel):
     total_investment: float = Field(..., description="Total investment cost")
     total_gain_loss: float = Field(..., description="Total gain or loss")
     total_gain_loss_percent: float = Field(..., description="Total gain or loss percent")
+
+class AMCWithSchemesOut(BaseModel):
+    amc: AMCOut
+    schemes: List[SchemeOut]

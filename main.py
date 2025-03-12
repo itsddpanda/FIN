@@ -12,16 +12,15 @@ import uvicorn
 import importlib
 import pkgutil
 from routes import __name__ as routes_pkg_name
-from routes.pdf_converter import convertpdf, process_log_messages
 # from routes.dash import get_user_dashboard
 from db import init_db
 from routes import auth, users
 from logging_config import logger  # Import the configured logger
 
-init_db()
-
 app = FastAPI(title="Full Stack FastAPI App") # for dev
+init_db()
 # app = FastAPI(docs_url=None, redoc_url=None)  # Disable docs in production
+
 logger.info("Application started")
 
 # Mount static files
@@ -32,37 +31,9 @@ templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 def read_index(request: Request):
+    logger.info("Rending index")
     return templates.TemplateResponse("index.html", {"request": request})
 
-#in prod the uploading function needs to move to /users and need to add user checks as per users path rule
-@app.post("/uploading", response_class=HTMLResponse)
-async def upload_file(
-    file: UploadFile = File(...),
-    password: str = Form(...),
-    email: str = Form(...)
-):
-    # Define the upload folder and ensure it exists.
-    pwd = os.getcwd()
-    UPLOAD_FOLDER = os.path.join(pwd, "upload")
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    
-    file_location = os.path.join(UPLOAD_FOLDER, file.filename)
-    with open(file_location, "wb") as f:
-        content = await file.read()
-        f.write(content)
-    # (Optionally) Process the 'password' for file encryption or validation.
-    try:
-        logger.info(f"Received file '{file.filename}' with provided password.")
-        temp = convertpdf(file_location,password,email)
-        response = process_log_messages (temp)
-        html_content = f"<html><body><h1>{response}</h1></body></html>"
-        return html_content
-    except Exception as e:
-        logger.info(f"Error in execution {e}")
-        response = e
-        html_content = f"<html><body><h1>{response}</h1></body></html>"
-        return html_content
-    
 
 for _, module_name, _ in pkgutil.iter_modules(['routes']):
     module = importlib.import_module(f"routes.{module_name}")
@@ -80,6 +51,7 @@ class AuthLoggingMiddleware(BaseHTTPMiddleware):
             token = token.split(" ")[1]
             try:
                 payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+                # logger.info(f"Token payload: {payload}")
                 user_email = payload.get("sub", "Unknown User")
             except JWTError:
                 logger.warning(f"Invalid token detected for request: {request.url}")
@@ -88,9 +60,10 @@ class AuthLoggingMiddleware(BaseHTTPMiddleware):
         if user_email == "Anonymous" and request.url.path.startswith("/users"):
             logger.info(f"Unauthenticated access attempt to {request.url}")
             
-            if "text/html" in request.headers.get("accept", ""):  
-                return RedirectResponse(url="/auth/login")  
-            
+            # if "text/html" in request.headers.get("accept", ""):    
+                # return RedirectResponse(url="/auth/login")
+            process_time = time.time() - start_time
+            logger.info(f"Response: ERROR | Time taken: {process_time:.4f} sec")
             return JSONResponse(
                 content={"detail": "Unauthorized. Please log in", "status" : "Error"},
                 status_code=401
@@ -130,4 +103,4 @@ app.add_middleware(AuthLoggingMiddleware)
 app.add_middleware(RateLimitMiddleware)  
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True, server_header=False) #true for dev env
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=False, server_header=False) #true for dev env

@@ -10,7 +10,7 @@ DBURL = os.getenv("DATABASE_URL")
 # Configure root logger
 logging.basicConfig(
     level=getattr(logging, log_level, logging.INFO),  # Set root logger level
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s (Line: %(lineno)d)",
     handlers=[
         logging.StreamHandler(),
         logging.FileHandler("app.log")

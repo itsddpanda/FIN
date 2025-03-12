@@ -1,14 +1,13 @@
 # File: db.py
-from sqlalchemy import create_engine, exc
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm import sessionmaker
 from alembic import command
 from alembic.config import Config
-from alembic.util import CommandError
+from alembic.script import ScriptDirectory
+from alembic.runtime.environment import MigrationContext
 from logging_config import logger, DBURL
 import psycopg2
-import time
 
 # Use environment variables to configure your database URL securely
 DATABASE_URL = DBURL
@@ -62,24 +61,36 @@ def check_and_create_db():
             logger.error(f"Error checking/creating database: {e}")
             raise
 
+def get_current_revision():
+    with engine.connect() as connection:
+        context = MigrationContext.configure(connection)
+        return context.get_current_revision()
+    
 def run_migrations():
     try:
-        logger.info("Running Alembic migrations...")
+        logger.info("Initializing Alembic configuration...")
         alembic_cfg = Config("alembic.ini")
+        script = ScriptDirectory.from_config(alembic_cfg)
+        
+        # Check if there are any migration scripts at all.
+        if not list(script.walk_revisions()):
+            logger.info("No migration scripts found. Skipping migrations.")
+            return
+        
+        # Get the current database revision using MigrationContext
+        current_rev = get_current_revision()
+        heads = script.get_heads()
+        if current_rev in heads:
+            logger.info("Database is already up-to-date. No migrations to run.")
+            return
+
+        logger.info("Starting upgrade to head...")
         command.upgrade(alembic_cfg, "head")
         logger.info("Alembic migrations completed successfully.")
-    except CommandError as alembic_err:
-        logger.error(f"Alembic migration command error: {alembic_err}")
-        # Consider implementing rollback or manual intervention here
-        raise
-    except OperationalError as db_err:
-        logger.error(f"Database error during migrations: {db_err}")
-        # Consider implementing retry logic or database connection checks here
-        raise
     except Exception as e:
         logger.exception(f"Unexpected error during migrations: {e}")
-        # Consider implementing rollback or manual intervention here
         raise
+
 
 def init_db():
     check_and_create_db()
