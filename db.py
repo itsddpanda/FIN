@@ -2,18 +2,14 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
-import os
-import sys
-import logging
-from dotenv import load_dotenv
-load_dotenv()
+from logging_config import logger, DBURL
 
-logger_module = logging.getLogger(__name__)
+
 
 # Use environment variables to configure your database URL securely
-DATABASE_URL = os.getenv("DATABASE_URL")
-logger_module.info(f"DB URL fetched from .env file")
-logger_module.debug(f"from DB.PY Database : {DATABASE_URL}")
+DATABASE_URL = DBURL
+logger.info(f"DB URL fetched from .env file")
+logger.debug(f"from DB.PY Database : {DATABASE_URL}")
 
 # For SQLite, include connect_args; otherwise, remove or adjust accordingly
 engine = create_engine(

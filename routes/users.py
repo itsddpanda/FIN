@@ -10,7 +10,6 @@ from db import get_db
 from models import User, Folio
 from schemas import UserOut
 from auth import SECRET_KEY, ALGORITHM
-from routes.dash import get_user_dashboard
 
 router = APIRouter(prefix="/users", tags=["Users"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")

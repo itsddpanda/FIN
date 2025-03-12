@@ -1,98 +1,86 @@
-from sqlalchemy.orm import joinedload
-from sqlalchemy.exc import SQLAlchemyError
-from fastapi import HTTPException
 import logging
+from pytest import Session
+from sqlalchemy.orm import joinedload, subqueryload
+from sqlalchemy.exc import SQLAlchemyError
+from fastapi import HTTPException, Depends, APIRouter
 from models import User, Folio, Scheme, Transaction, Valuation
 from db import SessionLocal
+from routes.pdf_converter import clear_database_for_identifier
 import os
-from logging_config import logger
 from dotenv import load_dotenv
+from db import get_db
+from schemas import UserOut, SchemeOut, PortfolioOut, FolioOut, AMCOut, SchemeDetailsOut, TransactionOut
+import pandas as pd
+
 load_dotenv()
 
+router = APIRouter(prefix="/test", tags=["Test"])
 DATABASE_URL = os.getenv("DATABASE_URL")
-def get_user_dashboard(email: str):
-    """
-    Fetches user dashboard data based on email.
+logger = logging.getLogger("DASH")
 
-    :param email: User's email address.
-    :return: JSON containing user details, folios, schemes, transactions, and valuations.
-    """
-    session = SessionLocal()
-    
-    try:
-        # Fetch the user with related folios, schemes, transactions, and valuations
-        user = (
-            session.query(User)
-            .options(
-                joinedload(User.folios)
-                .joinedload(Folio.schemes)
-                .joinedload(Scheme.transactions)
-            )
-            .options(
-                joinedload(User.folios)
-                .joinedload(Folio.schemes)
-                .joinedload(Scheme.valuation)
-            )
-            .filter(User.email == email)
-            .first()
-        )
 
-        if not user:
-            logger.warning(f"User not found: {email}")
-            raise HTTPException(status_code=404, detail="User not found")
+# API Endpoints
+@router.get("/users/{user_id}/portfolio", response_model=PortfolioOut)
+def get_portfolio(user_id: str, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.user_id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
 
-        # Construct response
-        response = {
-            "user_id": user.user_id,
-            "email": user.email,
-            "full_name": user.full_name,
-            "folios": [
-                {
-                    "folio_number": folio.folio_number,
-                    "amc": folio.amc,
-                    "pan": folio.pan,
-                    "schemes": [
-                        {
-                            "scheme_name": scheme.scheme_name,
-                            "advisor": scheme.advisor,
-                            "transactions": [
-                                {
-                                    "date": txn.transaction_date.isoformat() if txn.transaction_date else None,
-                                    "description": txn.description,
-                                    "amount": txn.amount,
-                                    "units": txn.units,
-                                    "nav": txn.nav,
-                                    "balance": txn.balance,
-                                    "type": txn.transaction_type,
-                                    "dividend_rate": txn.dividend_rate,
-                                }
-                                for txn in scheme.transactions
-                            ],
-                            "valuation": {
-                                "date": scheme.valuation.valuation_date.isoformat() if scheme.valuation and scheme.valuation.valuation_date else None,
-                                "nav": scheme.valuation.valuation_nav if scheme.valuation else None,
-                                "cost": scheme.valuation.valuation_cost if scheme.valuation else None,
-                                "value": scheme.valuation.valuation_value if scheme.valuation else None,
-                            } if scheme.valuation else None,
-                        }
-                        for scheme in folio.schemes
-                    ],
-                }
-                for folio in user.folios
-            ],
-        }
+    portfolio_value = 0.0
+    total_investment = 0.0
+    folios_out = []
 
-        logger.info(f"User dashboard retrieved for {email}")
-        return response
+    amc_valuations = {} # store amc data, to only do loop once.
 
-    except SQLAlchemyError as e:
-        session.rollback()
-        logger.error(f"Database error while fetching dashboard for {email}: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+    for folio in user.folios:
+        amc = folio.amc
+        amc_id = amc.id
+        if amc_id not in amc_valuations:
+            amc_valuations[amc_id] = {"valuation_value": 0.0, "valuation_cost": 0.0}
 
-    except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
-        raise HTTPException(status_code=500, detail="An unexpected error occurred")
+        for scheme in folio.schemes:
+            if scheme.valuation:
+                portfolio_value += scheme.valuation.valuation_value or 0.0
+                total_investment += scheme.valuation.valuation_cost or 0.0
+                amc_valuations[amc_id]["valuation_value"] += scheme.valuation.valuation_value or 0.0
+                amc_valuations[amc_id]["valuation_cost"] += scheme.valuation.valuation_cost or 0.0
 
-    finally:
-        session.close()
+    for folio in user.folios:
+        amc_id = folio.amc.id
+        amc_data = amc_valuations[amc_id]
+        gain_loss = amc_data["valuation_value"] - amc_data["valuation_cost"]
+        gain_loss_percent = (gain_loss / amc_data["valuation_cost"]) * 100 if amc_data["valuation_cost"] else 0.0
+        amc_out = AMCOut.model_validate(folio.amc)
+        amc_out.valuation_value = amc_data["valuation_value"]
+        amc_out.valuation_cost = amc_data["valuation_cost"]
+        amc_out.gain_loss = gain_loss
+        amc_out.gain_loss_percent = gain_loss_percent
+        folios_out.append(FolioOut(folio_number=folio.folio_number, amc=amc_out))
+
+    total_gain_loss = portfolio_value - total_investment
+    total_gain_loss_percent = (total_gain_loss / total_investment) * 100 if total_investment else 0.0
+
+    return PortfolioOut(
+        folios=folios_out,
+        portfolio_value=portfolio_value,
+        total_investment=total_investment,
+        total_gain_loss=total_gain_loss,
+        total_gain_loss_percent=total_gain_loss_percent,
+    )
+
+@router.get("/schemes/{scheme_id}", response_model=SchemeDetailsOut)
+def get_scheme_details(scheme_id: int, db: Session = Depends(get_db)):
+    scheme = db.query(Scheme).filter(Scheme.id == scheme_id).first()
+    if not scheme:
+        raise HTTPException(status_code=404, detail="Scheme not found")
+
+    return SchemeDetailsOut(
+        scheme=SchemeOut.model_validate(scheme),
+        transactions=[TransactionOut.model_validate(transaction) for transaction in scheme.transactions],
+    )
+
+
+@router.post("/3")
+def deldata(email:str):
+    Session = SessionLocal()
+    clear_database_for_identifier(Session, email, "email" )

@@ -6,9 +6,7 @@ import logging
 from alembic import context
 from models import User, StatementPeriod, Folio, Scheme, Valuation, Transaction
 from db import Base  # Import your Base from db.py
-from dotenv import load_dotenv
-import sys
-load_dotenv()
+from logging_config import logger, DBURL
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -16,12 +14,6 @@ config = context.config
 # This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
-
-# Get Log level for .env
-load_dotenv()
-log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-logger_module = logging.getLogger("Converter")
-logger_module.setLevel(getattr(logging, log_level, logging.INFO))
 
 # add your model's MetaData object here
 # for 'autogenerate' support
@@ -46,8 +38,8 @@ def run_migrations_offline() -> None:
     script output.
 
     """
-    url = os.getenv("DATABASE_URL")  # Get DATABASE_URL from environment
-    logger_module.info(f"From ENV.PY Offline Migration: {url}")
+    url = DBURL  # Get DATABASE_URL from environment
+    logger.info(f"From ENV.PY Offline Migration: {url}")
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -65,8 +57,8 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    connectable = create_engine(os.getenv("DATABASE_URL"))  # Create engine directly
-    logger_module.info(f"From env.py online migration Connectable : {connectable}")
+    connectable = create_engine(DBURL)  # Create engine directly
+    logger.info(f"From env.py online migration Connectable : {connectable}")
     with connectable.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata

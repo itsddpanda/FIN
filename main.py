@@ -2,22 +2,18 @@ from fastapi import FastAPI, Request, HTTPException, UploadFile, File, Form
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from dotenv import load_dotenv
 import time
 import os
-import jsonify
-import logging
 from collections import defaultdict
 from starlette.middleware.base import BaseHTTPMiddleware
 from jose import JWTError, jwt
 from auth import SECRET_KEY, ALGORITHM  
 import uvicorn
-import sys
 import importlib
 import pkgutil
 from routes import __name__ as routes_pkg_name
 from routes.pdf_converter import convertpdf, process_log_messages
-from routes.dash import get_user_dashboard
+# from routes.dash import get_user_dashboard
 from db import engine, Base
 from routes import auth, users
 from logging_config import logger  # Import the configured logger
@@ -36,16 +32,13 @@ templates = Jinja2Templates(directory="templates")
 def read_index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@app.get("/upload", response_class=HTMLResponse)
-def read_index(request: Request):
-    return get_user_dashboard("ankit.rana@gmail.com")
-    # return templates.TemplateResponse("upload.html", {"request": request})
 
 #in prod the uploading function needs to move to /users and need to add user checks as per users path rule
 @app.post("/uploading", response_class=HTMLResponse)
 async def upload_file(
     file: UploadFile = File(...),
-    password: str = Form(...)
+    password: str = Form(...),
+    email: str = Form(...)
 ):
     # Define the upload folder and ensure it exists.
     pwd = os.getcwd()
@@ -59,7 +52,7 @@ async def upload_file(
     # (Optionally) Process the 'password' for file encryption or validation.
     try:
         logger.info(f"Received file '{file.filename}' with provided password.")
-        temp = convertpdf(file_location,password,'1')
+        temp = convertpdf(file_location,password,email)
         response = process_log_messages (temp)
         html_content = f"<html><body><h1>{response}</h1></body></html>"
         return html_content
@@ -75,8 +68,6 @@ for _, module_name, _ in pkgutil.iter_modules(['routes']):
     if hasattr(module, "router"):  # Only add modules that define 'router'
         app.include_router(module.router)
 
-# app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-# app.include_router(users.router, prefix="/users", tags=["Users"])
 
 class AuthLoggingMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
@@ -138,4 +129,4 @@ app.add_middleware(AuthLoggingMiddleware)
 app.add_middleware(RateLimitMiddleware)  
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8100, reload=False) #true for dev env
+    uvicorn.run("main:app", host="0.0.0.0", port=8100, reload=False, server_header=False) #true for dev env

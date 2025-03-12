@@ -1,0 +1,3798 @@
+{
+    "statement_period": {
+        "from": "01-Jan-1985",
+        "to": "15-Feb-2025"
+    },
+    "folios": [
+        {
+            "folio": "1038436370 / 0",
+            "amc": "Aditya Birla Sun Life Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "ABSL Bal Bhavishya Yojna Direct Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "B41Y",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF209KB1E84",
+                    "amfi": "146407",
+                    "nominees": [],
+                    "open": "0.000",
+                    "close": "3000.000",
+                    "close_calculated": "3000.000",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "19.41",
+                        "cost": "30000.00",
+                        "value": "58230.00"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2019-02-11",
+                            "description": "NFO Purchase - via Internet",
+                            "amount": "30000.00",
+                            "units": "3000.000",
+                            "nav": "10.00",
+                            "balance": "3000.000",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "ABSL Bal Bhavishya Yojna Savings Plan Direct IDCW# (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "B42X",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF209KB1F75",
+                    "amfi": null,
+                    "nominees": [],
+                    "open": "0.000",
+                    "close": "0.000",
+                    "close_calculated": "0.000",
+                    "valuation": {
+                        "date": "2019-01-22",
+                        "nav": "10.00",
+                        "cost": "0.00",
+                        "value": "0.00"
+                    },
+                    "transactions": []
+                }
+            ]
+        },
+        {
+            "folio": "91057795155 / 0",
+            "amc": "AXIS Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "Axis Small Cap Fund Direct Growth",
+                    "advisor": null,
+                    "rta_code": "128SCDGG",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF846K01K35",
+                    "amfi": "125354",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "0.000",
+                    "close_calculated": "0.000",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "106.44",
+                        "cost": "0.00",
+                        "value": "0.00"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2019-08-02",
+                            "description": "Systematic Investment (1/6)",
+                            "amount": "5000.00",
+                            "units": "171.939",
+                            "nav": "29.08",
+                            "balance": "171.939",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-09-03",
+                            "description": "Systematic Investment (2/6)",
+                            "amount": "5000.00",
+                            "units": "163.881",
+                            "nav": "30.51",
+                            "balance": "335.820",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-10-03",
+                            "description": "Systematic Investment (3/6)",
+                            "amount": "5000.00",
+                            "units": "156.055",
+                            "nav": "32.04",
+                            "balance": "491.875",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-11-04",
+                            "description": "Systematic Investment (4/6)",
+                            "amount": "5000.00",
+                            "units": "147.145",
+                            "nav": "33.98",
+                            "balance": "639.020",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-12-02",
+                            "description": "Systematic Investment (5/6)",
+                            "amount": "5000.00",
+                            "units": "149.254",
+                            "nav": "33.50",
+                            "balance": "788.274",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-01-02",
+                            "description": "Systematic Investment (6/6)",
+                            "amount": "5000.00",
+                            "units": "145.180",
+                            "nav": "34.44",
+                            "balance": "933.454",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-03-20",
+                            "description": "Purchase",
+                            "amount": "10000.00",
+                            "units": "353.607",
+                            "nav": "28.28",
+                            "balance": "1287.061",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-09-25",
+                            "description": "Redemption less TDS, STT",
+                            "amount": "-45030.19",
+                            "units": "-1287.061",
+                            "nav": "34.99",
+                            "balance": "0.000",
+                            "type": "REDEMPTION",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-09-25",
+                            "description": "*** STT Paid ***",
+                            "amount": "0.45",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STT_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "1579147971 / 0",
+            "amc": "Canara Robeco Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "Canara Robeco Emerging Equities - Regular Growth",
+                    "advisor": "ARN-9760",
+                    "rta_code": "101EQGPG",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF760K01167",
+                    "amfi": "102920",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "0.000",
+                    "close_calculated": "0.000",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "225.72",
+                        "cost": "0.00",
+                        "value": "0.00"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2015-11-16",
+                            "description": "Systematic Investment (1/32)",
+                            "amount": "962.50",
+                            "units": "16.026",
+                            "nav": "60.06",
+                            "balance": "16.026",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2015-11-16",
+                            "description": "*** Transaction charges ***",
+                            "amount": "37.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2015-12-15",
+                            "description": "Systematic Investment (2/32)",
+                            "amount": "962.50",
+                            "units": "15.799",
+                            "nav": "60.92",
+                            "balance": "31.825",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2015-12-15",
+                            "description": "*** Transaction charges ***",
+                            "amount": "37.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-01-15",
+                            "description": "Systematic Investment (3/32)",
+                            "amount": "962.50",
+                            "units": "16.795",
+                            "nav": "57.31",
+                            "balance": "48.620",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-01-15",
+                            "description": "*** Transaction charges ***",
+                            "amount": "37.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-02-15",
+                            "description": "Systematic Investment (4/32)",
+                            "amount": "962.50",
+                            "units": "17.974",
+                            "nav": "53.55",
+                            "balance": "66.594",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-02-15",
+                            "description": "*** Transaction charges ***",
+                            "amount": "37.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-03-15",
+                            "description": "Systematic Investment (5/32)",
+                            "amount": "1000.00",
+                            "units": "18.484",
+                            "nav": "54.10",
+                            "balance": "85.078",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-04-18",
+                            "description": "Systematic Investment (6/32)",
+                            "amount": "1000.00",
+                            "units": "16.900",
+                            "nav": "59.17",
+                            "balance": "101.978",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-05-16",
+                            "description": "Systematic Investment (7/32)",
+                            "amount": "1000.00",
+                            "units": "16.606",
+                            "nav": "60.22",
+                            "balance": "118.584",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-06-15",
+                            "description": "Systematic Investment (8/32)",
+                            "amount": "1000.00",
+                            "units": "16.166",
+                            "nav": "61.86",
+                            "balance": "134.750",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-07-15",
+                            "description": "Systematic Investment (9/32)",
+                            "amount": "1000.00",
+                            "units": "15.523",
+                            "nav": "64.42",
+                            "balance": "150.273",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-08-16",
+                            "description": "Systematic Investment (10/32)",
+                            "amount": "1000.00",
+                            "units": "14.954",
+                            "nav": "66.87",
+                            "balance": "165.227",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-09-15",
+                            "description": "Systematic Investment (11/32)",
+                            "amount": "1000.00",
+                            "units": "14.374",
+                            "nav": "69.57",
+                            "balance": "179.601",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-10-17",
+                            "description": "Systematic Investment (12/32)",
+                            "amount": "1000.00",
+                            "units": "13.988",
+                            "nav": "71.49",
+                            "balance": "193.589",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-11-15",
+                            "description": "Systematic Investment (13/32)",
+                            "amount": "1000.00",
+                            "units": "15.533",
+                            "nav": "64.38",
+                            "balance": "209.122",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2016-12-15",
+                            "description": "Systematic Investment (14/32)",
+                            "amount": "1000.00",
+                            "units": "15.335",
+                            "nav": "65.21",
+                            "balance": "224.457",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-01-16",
+                            "description": "Systematic Investment (15/32)",
+                            "amount": "1000.00",
+                            "units": "14.669",
+                            "nav": "68.17",
+                            "balance": "239.126",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-02-15",
+                            "description": "Systematic Investment (16/32)",
+                            "amount": "1000.00",
+                            "units": "13.986",
+                            "nav": "71.50",
+                            "balance": "253.112",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-03-15",
+                            "description": "Systematic Investment (17/32)",
+                            "amount": "1000.00",
+                            "units": "13.277",
+                            "nav": "75.32",
+                            "balance": "266.389",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-04-17",
+                            "description": "Systematic Investment (18/32)",
+                            "amount": "1000.00",
+                            "units": "12.284",
+                            "nav": "81.41",
+                            "balance": "278.673",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-05-15",
+                            "description": "Systematic Investment (19/32)",
+                            "amount": "1000.00",
+                            "units": "11.681",
+                            "nav": "85.61",
+                            "balance": "290.354",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-06-15",
+                            "description": "Systematic Investment (20/32)",
+                            "amount": "1000.00",
+                            "units": "11.772",
+                            "nav": "84.95",
+                            "balance": "302.126",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-07-17",
+                            "description": "Systematic Investment (21/32)",
+                            "amount": "1000.00",
+                            "units": "11.570",
+                            "nav": "86.43",
+                            "balance": "313.696",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-08-16",
+                            "description": "Systematic Investment (22/32)",
+                            "amount": "1000.00",
+                            "units": "11.582",
+                            "nav": "86.34",
+                            "balance": "325.278",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-09-15",
+                            "description": "Systematic Investment (23/32)",
+                            "amount": "1000.00",
+                            "units": "11.036",
+                            "nav": "90.61",
+                            "balance": "336.314",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-10-16",
+                            "description": "Systematic Investment (24/32)",
+                            "amount": "1000.00",
+                            "units": "11.083",
+                            "nav": "90.23",
+                            "balance": "347.397",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-10-16",
+                            "description": "Systematic Investment (1/28)",
+                            "amount": "2000.00",
+                            "units": "22.166",
+                            "nav": "90.23",
+                            "balance": "369.563",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-10-16",
+                            "description": "Systematic Investment (1/28)",
+                            "amount": "2000.00",
+                            "units": "22.166",
+                            "nav": "90.23",
+                            "balance": "391.729",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-11-15",
+                            "description": "Systematic Investment (25/32)",
+                            "amount": "1000.00",
+                            "units": "11.046",
+                            "nav": "90.53",
+                            "balance": "402.775",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-11-15",
+                            "description": "Systematic Investment (2/28)",
+                            "amount": "2000.00",
+                            "units": "22.092",
+                            "nav": "90.53",
+                            "balance": "424.867",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-11-15",
+                            "description": "Systematic Investment (2/28)",
+                            "amount": "2000.00",
+                            "units": "22.092",
+                            "nav": "90.53",
+                            "balance": "446.959",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-12-15",
+                            "description": "Systematic Investment (26/32)",
+                            "amount": "1000.00",
+                            "units": "10.646",
+                            "nav": "93.93",
+                            "balance": "457.605",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-12-15",
+                            "description": "Systematic Investment (3/28)",
+                            "amount": "2000.00",
+                            "units": "21.292",
+                            "nav": "93.93",
+                            "balance": "478.897",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2017-12-15",
+                            "description": "Systematic Investment (3/28)",
+                            "amount": "2000.00",
+                            "units": "21.292",
+                            "nav": "93.93",
+                            "balance": "500.189",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-01-15",
+                            "description": "Systematic Investment (27/32)",
+                            "amount": "1000.00",
+                            "units": "10.080",
+                            "nav": "99.21",
+                            "balance": "510.269",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-01-15",
+                            "description": "Systematic Investment (4/28)",
+                            "amount": "2000.00",
+                            "units": "20.159",
+                            "nav": "99.21",
+                            "balance": "530.428",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-01-15",
+                            "description": "Systematic Investment (4/28)",
+                            "amount": "2000.00",
+                            "units": "20.159",
+                            "nav": "99.21",
+                            "balance": "550.587",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-02-15",
+                            "description": "Systematic Investment (28/32)",
+                            "amount": "1000.00",
+                            "units": "10.580",
+                            "nav": "94.52",
+                            "balance": "561.167",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-02-15",
+                            "description": "Systematic Investment (5/28)",
+                            "amount": "2000.00",
+                            "units": "21.160",
+                            "nav": "94.52",
+                            "balance": "582.327",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-02-15",
+                            "description": "Systematic Investment (5/28)",
+                            "amount": "2000.00",
+                            "units": "21.160",
+                            "nav": "94.52",
+                            "balance": "603.487",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-03-15",
+                            "description": "Systematic Investment (29/32)",
+                            "amount": "1000.00",
+                            "units": "10.840",
+                            "nav": "92.25",
+                            "balance": "614.327",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-03-15",
+                            "description": "Systematic Investment (6/28)",
+                            "amount": "2000.00",
+                            "units": "21.680",
+                            "nav": "92.25",
+                            "balance": "636.007",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-03-15",
+                            "description": "Systematic Investment (6/28)",
+                            "amount": "2000.00",
+                            "units": "21.680",
+                            "nav": "92.25",
+                            "balance": "657.687",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-04-16",
+                            "description": "Systematic Investment (30/32)",
+                            "amount": "1000.00",
+                            "units": "10.583",
+                            "nav": "94.49",
+                            "balance": "668.270",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-04-16",
+                            "description": "Systematic Investment (7/28)",
+                            "amount": "2000.00",
+                            "units": "21.166",
+                            "nav": "94.49",
+                            "balance": "689.436",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-04-16",
+                            "description": "Systematic Investment (7/28)",
+                            "amount": "2000.00",
+                            "units": "21.166",
+                            "nav": "94.49",
+                            "balance": "710.602",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-05-15",
+                            "description": "Systematic Investment (31/32)",
+                            "amount": "1000.00",
+                            "units": "10.635",
+                            "nav": "94.03",
+                            "balance": "721.237",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-05-15",
+                            "description": "Systematic Investment (8/28)",
+                            "amount": "2000.00",
+                            "units": "21.270",
+                            "nav": "94.03",
+                            "balance": "742.507",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-05-15",
+                            "description": "Systematic Investment (8/28)",
+                            "amount": "2000.00",
+                            "units": "21.270",
+                            "nav": "94.03",
+                            "balance": "763.777",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-06-15",
+                            "description": "Systematic Investment (32/32)",
+                            "amount": "1000.00",
+                            "units": "10.696",
+                            "nav": "93.49",
+                            "balance": "774.473",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-06-15",
+                            "description": "Systematic Investment (9/28)",
+                            "amount": "2000.00",
+                            "units": "21.393",
+                            "nav": "93.49",
+                            "balance": "795.866",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-06-15",
+                            "description": "Systematic Investment (9/28)",
+                            "amount": "2000.00",
+                            "units": "21.393",
+                            "nav": "93.49",
+                            "balance": "817.259",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-07-16",
+                            "description": "Systematic Investment (10/28)",
+                            "amount": "2000.00",
+                            "units": "21.951",
+                            "nav": "91.11",
+                            "balance": "839.210",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-07-16",
+                            "description": "Systematic Investment (10/28)",
+                            "amount": "2000.00",
+                            "units": "21.951",
+                            "nav": "91.11",
+                            "balance": "861.161",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-08-03",
+                            "description": "Redemption less TDS, STT",
+                            "amount": "-9708.90",
+                            "units": "-100.000",
+                            "nav": "97.09",
+                            "balance": "761.161",
+                            "type": "REDEMPTION",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-08-03",
+                            "description": "*** STT Paid ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STT_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-08-16",
+                            "description": "Systematic Investment (11/28)",
+                            "amount": "2000.00",
+                            "units": "20.708",
+                            "nav": "96.58",
+                            "balance": "781.869",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-08-16",
+                            "description": "Systematic Investment (11/28)",
+                            "amount": "2000.00",
+                            "units": "20.708",
+                            "nav": "96.58",
+                            "balance": "802.577",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-09-17",
+                            "description": "Systematic Investment (12/28)",
+                            "amount": "2000.00",
+                            "units": "20.964",
+                            "nav": "95.40",
+                            "balance": "823.541",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-09-17",
+                            "description": "Systematic Investment (12/28)",
+                            "amount": "2000.00",
+                            "units": "20.964",
+                            "nav": "95.40",
+                            "balance": "844.505",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-10-15",
+                            "description": "Systematic Investment (13/28)",
+                            "amount": "2000.00",
+                            "units": "23.488",
+                            "nav": "85.15",
+                            "balance": "867.993",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-10-15",
+                            "description": "Systematic Investment (13/28)",
+                            "amount": "2000.00",
+                            "units": "23.488",
+                            "nav": "85.15",
+                            "balance": "891.481",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-11-15",
+                            "description": "Systematic Investment (14/28)",
+                            "amount": "1975.00",
+                            "units": "22.701",
+                            "nav": "87.00",
+                            "balance": "914.182",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-11-15",
+                            "description": "*** Transaction charges ***",
+                            "amount": "25.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-11-15",
+                            "description": "Systematic Investment (14/28)",
+                            "amount": "1975.00",
+                            "units": "22.701",
+                            "nav": "87.00",
+                            "balance": "936.883",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-11-15",
+                            "description": "*** Transaction charges ***",
+                            "amount": "25.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-12-17",
+                            "description": "Systematic Investment (15/28)",
+                            "amount": "1975.00",
+                            "units": "22.238",
+                            "nav": "88.81",
+                            "balance": "959.121",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-12-17",
+                            "description": "*** Transaction charges ***",
+                            "amount": "25.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-12-17",
+                            "description": "Systematic Investment (15/28)",
+                            "amount": "1975.00",
+                            "units": "22.238",
+                            "nav": "88.81",
+                            "balance": "981.359",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-12-17",
+                            "description": "*** Transaction charges ***",
+                            "amount": "25.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-01-15",
+                            "description": "Systematic Investment (16/28)",
+                            "amount": "1975.00",
+                            "units": "22.189",
+                            "nav": "89.01",
+                            "balance": "1003.548",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-01-15",
+                            "description": "*** Transaction charges ***",
+                            "amount": "25.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-01-15",
+                            "description": "Systematic Investment (16/28)",
+                            "amount": "1975.00",
+                            "units": "22.189",
+                            "nav": "89.01",
+                            "balance": "1025.737",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-01-15",
+                            "description": "*** Transaction charges ***",
+                            "amount": "25.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-02-15",
+                            "description": "Systematic Investment (17/28)",
+                            "amount": "1975.00",
+                            "units": "22.941",
+                            "nav": "86.09",
+                            "balance": "1048.678",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-02-15",
+                            "description": "*** Transaction charges ***",
+                            "amount": "25.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-02-15",
+                            "description": "Systematic Investment (17/28)",
+                            "amount": "1975.00",
+                            "units": "22.941",
+                            "nav": "86.09",
+                            "balance": "1071.619",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-02-15",
+                            "description": "*** Transaction charges ***",
+                            "amount": "25.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "MISC",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-03-15",
+                            "description": "Systematic Investment (18/28)",
+                            "amount": "2000.00",
+                            "units": "21.517",
+                            "nav": "92.95",
+                            "balance": "1093.136",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-03-15",
+                            "description": "Systematic Investment (18/28)",
+                            "amount": "2000.00",
+                            "units": "21.517",
+                            "nav": "92.95",
+                            "balance": "1114.653",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-04-15",
+                            "description": "Systematic Investment (19/28)",
+                            "amount": "2000.00",
+                            "units": "21.234",
+                            "nav": "94.19",
+                            "balance": "1135.887",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-04-15",
+                            "description": "Systematic Investment (19/28)",
+                            "amount": "2000.00",
+                            "units": "21.234",
+                            "nav": "94.19",
+                            "balance": "1157.121",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-05-15",
+                            "description": "Systematic Investment (20/28)",
+                            "amount": "2000.00",
+                            "units": "22.279",
+                            "nav": "89.77",
+                            "balance": "1179.400",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-05-15",
+                            "description": "Systematic Investment (20/28)",
+                            "amount": "2000.00",
+                            "units": "22.279",
+                            "nav": "89.77",
+                            "balance": "1201.679",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-06-17",
+                            "description": "Systematic Investment (21/28)",
+                            "amount": "2000.00",
+                            "units": "21.489",
+                            "nav": "93.07",
+                            "balance": "1223.168",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-06-17",
+                            "description": "Systematic Investment (21/28)",
+                            "amount": "2000.00",
+                            "units": "21.489",
+                            "nav": "93.07",
+                            "balance": "1244.657",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-07-15",
+                            "description": "Systematic Investment (22/28)",
+                            "amount": "2000.00",
+                            "units": "21.763",
+                            "nav": "91.90",
+                            "balance": "1266.420",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-07-15",
+                            "description": "Systematic Investment (22/28)",
+                            "amount": "2000.00",
+                            "units": "21.763",
+                            "nav": "91.90",
+                            "balance": "1288.183",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-08-16",
+                            "description": "Systematic Investment (23/28)",
+                            "amount": "2000.00",
+                            "units": "23.226",
+                            "nav": "86.11",
+                            "balance": "1311.409",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-08-16",
+                            "description": "Systematic Investment (23/28)",
+                            "amount": "2000.00",
+                            "units": "23.226",
+                            "nav": "86.11",
+                            "balance": "1334.635",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-09-16",
+                            "description": "Systematic Investment (24/28)",
+                            "amount": "2000.00",
+                            "units": "22.894",
+                            "nav": "87.36",
+                            "balance": "1357.529",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-09-16",
+                            "description": "Systematic Investment (24/28)",
+                            "amount": "2000.00",
+                            "units": "22.894",
+                            "nav": "87.36",
+                            "balance": "1380.423",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-10-15",
+                            "description": "Systematic Investment (25/28)",
+                            "amount": "2000.00",
+                            "units": "22.124",
+                            "nav": "90.40",
+                            "balance": "1402.547",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-10-15",
+                            "description": "Systematic Investment (25/28)",
+                            "amount": "2000.00",
+                            "units": "22.124",
+                            "nav": "90.40",
+                            "balance": "1424.671",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-11-15",
+                            "description": "Systematic Investment (26/28)",
+                            "amount": "2000.00",
+                            "units": "21.075",
+                            "nav": "94.90",
+                            "balance": "1445.746",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-11-15",
+                            "description": "Systematic Investment (26/28)",
+                            "amount": "2000.00",
+                            "units": "21.075",
+                            "nav": "94.90",
+                            "balance": "1466.821",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-12-16",
+                            "description": "Systematic Investment (27/28)",
+                            "amount": "2000.00",
+                            "units": "20.892",
+                            "nav": "95.73",
+                            "balance": "1487.713",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-12-16",
+                            "description": "Systematic Investment (27/28)",
+                            "amount": "2000.00",
+                            "units": "20.892",
+                            "nav": "95.73",
+                            "balance": "1508.605",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-01-15",
+                            "description": "Systematic Investment (28/28)",
+                            "amount": "2000.00",
+                            "units": "20.070",
+                            "nav": "99.65",
+                            "balance": "1528.675",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-01-15",
+                            "description": "Systematic Investment (28/28)",
+                            "amount": "2000.00",
+                            "units": "20.070",
+                            "nav": "99.65",
+                            "balance": "1548.745",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-02-06",
+                            "description": "Redemption less TDS, STT",
+                            "amount": "-82567.17",
+                            "units": "-800.000",
+                            "nav": "103.21",
+                            "balance": "748.745",
+                            "type": "REDEMPTION",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-02-06",
+                            "description": "*** STT Paid ***",
+                            "amount": "0.83",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STT_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-09-20",
+                            "description": "Redemption less TDS, STT",
+                            "amount": "-120636.58",
+                            "units": "-748.745",
+                            "nav": "161.12",
+                            "balance": "0.000",
+                            "type": "REDEMPTION",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-09-20",
+                            "description": "*** STT Paid ***",
+                            "amount": "1.21",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STT_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "8087557 / 36",
+            "amc": "DSP Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "DSP Healthcare Fund - Dir - Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "D860",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF740KA1LG1",
+                    "amfi": "145454",
+                    "nominees": [
+                        "Purnima Singh"
+                    ],
+                    "open": "0.000",
+                    "close": "418.512",
+                    "close_calculated": "418.512",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "41.016",
+                        "cost": "10000.00",
+                        "value": "17165.69"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2022-11-02",
+                            "description": "Purchase - via Online - DIRECT",
+                            "amount": "9999.50",
+                            "units": "418.512",
+                            "nav": "23.893",
+                            "balance": "418.512",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-11-02",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "20444730 / 74",
+            "amc": "HDFC Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "HDFC Defence Fund Direct Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "HHDDGR",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF179KC1GI5",
+                    "amfi": "151750",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "3999.800",
+                    "close_calculated": "3999.800",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "17.479",
+                        "cost": "40000.00",
+                        "value": "69912.50"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2023-06-02",
+                            "description": "NFO Purchase - via HDFCMFOnline",
+                            "amount": "39998.00",
+                            "units": "3999.800",
+                            "nav": "10.000",
+                            "balance": "3999.800",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-06-02",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "2.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "HDFC Focused 30 Fund - Direct Plan - Growth Option (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "HCORGT",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF179K01VK7",
+                    "amfi": "118950",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "68.706",
+                    "close_calculated": "68.706",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "232.998",
+                        "cost": "10000.00",
+                        "value": "16008.36"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2022-11-03",
+                            "description": "Purchase - via MFUTILITY",
+                            "amount": "9999.50",
+                            "units": "68.706",
+                            "nav": "145.541",
+                            "balance": "68.706",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-11-03",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "HDFC Small Cap Fund - Direct Growth Plan (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "HACG1G",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF179KA1RW5",
+                    "amfi": "130503",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "99.089",
+                    "close_calculated": "99.089",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "135.163",
+                        "cost": "10000.00",
+                        "value": "13393.17"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2023-06-06",
+                            "description": "Purchase- via MFCentral",
+                            "amount": "9999.50",
+                            "units": "99.089",
+                            "nav": "100.914",
+                            "balance": "99.089",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-06-06",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "20857769 / 35",
+            "amc": "HSBC Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "HSBC Equity Savings Fund - Direct Growth (Non-Demat",
+                    "advisor": "CAT-1",
+                    "rta_code": "O243D",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF917K01GE4",
+                    "amfi": "151060",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "412.923",
+                    "close_calculated": "412.923",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "34.0152",
+                        "cost": "15000.00",
+                        "value": "14045.66"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2024-11-26",
+                            "description": "Purchase- via MFCentral",
+                            "amount": "14999.25",
+                            "units": "412.923",
+                            "nav": "36.3246",
+                            "balance": "412.923",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-11-26",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.75",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "17950652 / 19",
+            "amc": "ICICI Prudential Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "ICICI Prudential Commodities Fund Direct Plan Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "P9600",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF109KC1F91",
+                    "amfi": "147662",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "0.000",
+                    "close_calculated": "0.000",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "38.84",
+                        "cost": "0.00",
+                        "value": "0.00"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2021-06-30",
+                            "description": "Purchase - via Internet - DIRECT",
+                            "amount": "19999.00",
+                            "units": "866.508",
+                            "nav": "23.08",
+                            "balance": "866.508",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-06-30",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "1.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-10-25",
+                            "description": "Redemption - ELECTRONIC PAYMENT - via Internet - N301211689276834 , less STT",
+                            "amount": "-21957.09",
+                            "units": "-866.508",
+                            "nav": "25.34",
+                            "balance": "0.000",
+                            "type": "REDEMPTION",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-10-25",
+                            "description": "*** STT Paid ***",
+                            "amount": "0.22",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STT_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "ICICI Prudential Infrastructure Fund - Direct Plan - Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "P8184",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF109K018M4",
+                    "amfi": "120621",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "195.693",
+                    "close_calculated": "195.693",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "180.95",
+                        "cost": "25000.00",
+                        "value": "35410.65"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2022-10-31",
+                            "description": "Purchase Appln : CAMSWEB - DIRECT",
+                            "amount": "9999.50",
+                            "units": "97.300",
+                            "nav": "102.77",
+                            "balance": "97.300",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-10-31",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-03-23",
+                            "description": "Purchase Appln : MFC- via MFCentral - DIRECT",
+                            "amount": "4999.75",
+                            "units": "46.350",
+                            "nav": "107.87",
+                            "balance": "143.650",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-03-23",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.25",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-06-06",
+                            "description": "Purchase Appln : MFC- via MFCentral - DIRECT",
+                            "amount": "9999.50",
+                            "units": "52.043",
+                            "nav": "192.14",
+                            "balance": "195.693",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-06-06",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "ICICI Prudential MNC Fund Direct Plan Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "P9594",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF109KC1D93",
+                    "amfi": "147346",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "0.000",
+                    "close_calculated": "0.000",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "28.09",
+                        "cost": "0.00",
+                        "value": "0.00"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2021-06-29",
+                            "description": "Purchase - via Internet - DIRECT",
+                            "amount": "9999.50",
+                            "units": "582.043",
+                            "nav": "17.18",
+                            "balance": "582.043",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-06-29",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-02-22",
+                            "description": "Redemption - ELECTRONIC PAYMENT- via MFCentral - N057242900431991 , less STT",
+                            "amount": "-15354.14",
+                            "units": "-582.043",
+                            "nav": "26.38",
+                            "balance": "0.000",
+                            "type": "REDEMPTION",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-02-22",
+                            "description": "*** STT Paid ***",
+                            "amount": "0.15",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STT_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "ICICI Prudential Smallcap Fund - Direct Plan - Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "P8034",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF109K015M0",
+                    "amfi": "120591",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "167.300",
+                    "close_calculated": "167.300",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "84.84",
+                        "cost": "10000.00",
+                        "value": "14193.73"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2022-10-31",
+                            "description": "Purchase Appln : CAMSWEB - DIRECT",
+                            "amount": "9999.50",
+                            "units": "167.300",
+                            "nav": "59.77",
+                            "balance": "167.300",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-10-31",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "ICICI Prudential Technology Fund - Direct Plan - Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "P8019",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF109K01Z48",
+                    "amfi": "120594",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "0.000",
+                    "close_calculated": "0.000",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "226.89",
+                        "cost": "0.00",
+                        "value": "0.00"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2021-06-29",
+                            "description": "Purchase - via Internet - DIRECT",
+                            "amount": "9999.50",
+                            "units": "72.740",
+                            "nav": "137.47",
+                            "balance": "72.740",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-06-29",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-03-24",
+                            "description": "Purchase Appln : MFC- via MFCentral - DIRECT",
+                            "amount": "4999.75",
+                            "units": "35.414",
+                            "nav": "141.18",
+                            "balance": "108.154",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-03-24",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.25",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-02-22",
+                            "description": "Redemption - ELECTRONIC PAYMENT- via MFCentral - N057242900431990 , less STT",
+                            "amount": "-21561.37",
+                            "units": "-108.154",
+                            "nav": "199.36",
+                            "balance": "0.000",
+                            "type": "REDEMPTION",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-02-22",
+                            "description": "*** STT Paid ***",
+                            "amount": "0.22",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STT_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "3106188532 / 0",
+            "amc": "Invesco Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "Invesco India Contra Fund - Direct Plan Growth",
+                    "advisor": null,
+                    "rta_code": "120CFD1G",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF205K01LE4",
+                    "amfi": "120348",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "0.000",
+                    "close_calculated": "0.000",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "140.41",
+                        "cost": "0.00",
+                        "value": "0.00"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2020-11-02",
+                            "description": "Systematic Investment (1/6)",
+                            "amount": "1999.90",
+                            "units": "36.106",
+                            "nav": "55.39",
+                            "balance": "36.106",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-11-02",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-12-01",
+                            "description": "Systematic Investment (2/6)",
+                            "amount": "1999.90",
+                            "units": "31.998",
+                            "nav": "62.50",
+                            "balance": "68.104",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-12-01",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-01-01",
+                            "description": "Systematic Investment (3/6)",
+                            "amount": "1999.90",
+                            "units": "30.155",
+                            "nav": "66.32",
+                            "balance": "98.259",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-01-01",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-02-03",
+                            "description": "Systematic Investment (4/6)",
+                            "amount": "1999.90",
+                            "units": "28.014",
+                            "nav": "71.39",
+                            "balance": "126.273",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-02-03",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-03-01",
+                            "description": "Systematic Investment (5/6)",
+                            "amount": "1999.90",
+                            "units": "27.340",
+                            "nav": "73.15",
+                            "balance": "153.613",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-03-01",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-04-01",
+                            "description": "Systematic Investment (6/6)",
+                            "amount": "1999.90",
+                            "units": "28.489",
+                            "nav": "70.20",
+                            "balance": "182.102",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-04-01",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-03-23",
+                            "description": "Additional Purchase",
+                            "amount": "4999.75",
+                            "units": "58.293",
+                            "nav": "85.77",
+                            "balance": "240.395",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-03-23",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.25",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-04-12",
+                            "description": "Redemption less TDS, STT",
+                            "amount": "-31291.91",
+                            "units": "-240.395",
+                            "nav": "130.17",
+                            "balance": "0.000",
+                            "type": "REDEMPTION",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-04-12",
+                            "description": "*** STT Paid ***",
+                            "amount": "0.31",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STT_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "Invesco India Focused Fund - Direct Plan Growth",
+                    "advisor": null,
+                    "rta_code": "120IFD1G",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF205KA1213",
+                    "amfi": "148481",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "764.546",
+                    "close_calculated": "764.546",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "26.77",
+                        "cost": "20000.00",
+                        "value": "20466.90"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2024-05-09",
+                            "description": "New Purchase",
+                            "amount": "14999.25",
+                            "units": "598.772",
+                            "nav": "25.05",
+                            "balance": "598.772",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-05-09",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.75",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-11-25",
+                            "description": "Additional Purchase",
+                            "amount": "4999.75",
+                            "units": "165.774",
+                            "nav": "30.16",
+                            "balance": "764.546",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-11-25",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.25",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "Invesco India Infrastructure Fund - Direct Plan Growth",
+                    "advisor": null,
+                    "rta_code": "120ISD1G",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF205K01MD4",
+                    "amfi": "120405",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "203.905",
+                    "close_calculated": "203.905",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "64.33",
+                        "cost": "15000.00",
+                        "value": "13117.21"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2024-06-06",
+                            "description": "New Purchase",
+                            "amount": "14999.25",
+                            "units": "203.905",
+                            "nav": "73.56",
+                            "balance": "203.905",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-06-06",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.75",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "12044129 / 16",
+            "amc": "Kotak Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "Kotak Bluechip Fund - Direct Plan - Growth (Erstwhile Kotak 50 Scheme) (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "K13D",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF174K01KW6",
+                    "amfi": "120152",
+                    "nominees": [
+                        "Purnima Singh"
+                    ],
+                    "open": "0.000",
+                    "close": "0.000",
+                    "close_calculated": "0.000",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "589.758",
+                        "cost": "0.00",
+                        "value": "0.00"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2021-06-25",
+                            "description": "Purchase (Continuous Offer) - via Internet",
+                            "amount": "9999.50",
+                            "units": "26.702",
+                            "nav": "374.479",
+                            "balance": "26.702",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-06-25",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-11-09",
+                            "description": "Switch-Out - To Kotak Infra & Eco Fund Dir Growth , less STT",
+                            "amount": "-11448.77",
+                            "units": "-26.702",
+                            "nav": "428.765",
+                            "balance": "0.000",
+                            "type": "SWITCH_OUT",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-11-09",
+                            "description": "*** STT Paid ***",
+                            "amount": "0.11",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STT_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "Kotak Emerging Equity Fund- Direct Plan - Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "K123D",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF174K01LT0",
+                    "amfi": "119775",
+                    "nominees": [
+                        "Purnima Singh"
+                    ],
+                    "open": "0.000",
+                    "close": "121.586",
+                    "close_calculated": "121.586",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "131.254",
+                        "cost": "10000.00",
+                        "value": "15958.65"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2023-03-27",
+                            "description": "Purchase (Continuous Offer)- via MFCentral",
+                            "amount": "9999.50",
+                            "units": "121.586",
+                            "nav": "82.242",
+                            "balance": "121.586",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-03-27",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "Kotak Infrastructure and Economic Reform Fund Direct Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "K53G",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF178L01AL9",
+                    "amfi": "133801",
+                    "nominees": [
+                        "Purnima Singh"
+                    ],
+                    "open": "0.000",
+                    "close": "271.072",
+                    "close_calculated": "271.072",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "65.988",
+                        "cost": "11448.77",
+                        "value": "17887.50"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2022-11-14",
+                            "description": "Switch-In - From Kotak Bluechip - Direct- Gr",
+                            "amount": "11448.20",
+                            "units": "271.072",
+                            "nav": "42.233",
+                            "balance": "271.072",
+                            "type": "SWITCH_IN",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-11-14",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.57",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "Kotak Small Cap Fund - Direct Plan - Growth (Erstwhile Kotak Mid-Cap) (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "K104D",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF174K01KT2",
+                    "amfi": "120164",
+                    "nominees": [
+                        "Purnima Singh"
+                    ],
+                    "open": "0.000",
+                    "close": "0.000",
+                    "close_calculated": "0.000",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "268.151",
+                        "cost": "0.00",
+                        "value": "0.00"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2021-06-25",
+                            "description": "Purchase (Continuous Offer) - via Internet",
+                            "amount": "9999.50",
+                            "units": "64.424",
+                            "nav": "155.213",
+                            "balance": "64.424",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-06-25",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-04-03",
+                            "description": "Redemption - via Internet - N09624297084674 , less STT",
+                            "amount": "-16735.96",
+                            "units": "-64.424",
+                            "nav": "259.781",
+                            "balance": "0.000",
+                            "type": "REDEMPTION",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-04-03",
+                            "description": "*** STT Paid ***",
+                            "amount": "0.17",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STT_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "91070834823 / 0",
+            "amc": "MOTILAL OSWAL MUTUAL FUND",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "Motilal Oswal Large and Midcap Fund - Direct Plan Growth",
+                    "advisor": null,
+                    "rta_code": "127LMGDG",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF247L01999",
+                    "amfi": "147704",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "840.221",
+                    "close_calculated": "840.221",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "30.2717",
+                        "cost": "30000.00",
+                        "value": "25434.92"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2024-11-25",
+                            "description": "Purchase",
+                            "amount": "29998.50",
+                            "units": "840.221",
+                            "nav": "35.7031",
+                            "balance": "840.221",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-11-25",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "1.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "Motilal Oswal Midcap Fund - Direct Plan Growth",
+                    "advisor": null,
+                    "rta_code": "127FMGDG",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF247L01445",
+                    "amfi": "127042",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "507.823",
+                    "close_calculated": "507.823",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "104.6052",
+                        "cost": "60000.00",
+                        "value": "53120.93"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2024-09-16",
+                            "description": "Systematic Investment (1/12)",
+                            "amount": "9999.50",
+                            "units": "82.929",
+                            "nav": "120.5796",
+                            "balance": "82.929",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-09-16",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-10-14",
+                            "description": "Systematic Investment (2/12)",
+                            "amount": "9999.50",
+                            "units": "80.456",
+                            "nav": "124.2855",
+                            "balance": "163.385",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-10-14",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-11-14",
+                            "description": "Systematic Investment (3/12)",
+                            "amount": "9999.50",
+                            "units": "85.889",
+                            "nav": "116.4242",
+                            "balance": "249.274",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-11-14",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-12-16",
+                            "description": "Systematic Investment (4/12)",
+                            "amount": "9999.50",
+                            "units": "76.529",
+                            "nav": "130.6636",
+                            "balance": "325.803",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-12-16",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-01-14",
+                            "description": "Systematic Investment (5/12)",
+                            "amount": "9999.50",
+                            "units": "86.427",
+                            "nav": "115.6985",
+                            "balance": "412.230",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-01-14",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-02-14",
+                            "description": "Systematic Investment (6/12)",
+                            "amount": "9999.50",
+                            "units": "95.593",
+                            "nav": "104.6052",
+                            "balance": "507.823",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-02-14",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "499280328614 / 0",
+            "amc": "Nippon India Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "NIPPON INDIA TAIWAN EQUITY FUND - DIRECT GROWTH PLAN",
+                    "advisor": null,
+                    "rta_code": "RMFETAGG",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF204KC1303",
+                    "amfi": "149329",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "1230.057",
+                    "close_calculated": "1230.057",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "12.2435",
+                        "cost": "10000.00",
+                        "value": "15060.20"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2023-03-24",
+                            "description": "Purchase",
+                            "amount": "9999.50",
+                            "units": "1230.057",
+                            "nav": "8.1293",
+                            "balance": "1230.057",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-03-24",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "14879696",
+            "amc": "PPFAS Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "Parag Parikh Flexi Cap Fund - Direct Plan (Non-Demat",
+                    "advisor": "CAT-1",
+                    "rta_code": "PP001ZG",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF879O01027",
+                    "amfi": "122639",
+                    "nominees": [
+                        "Purnima Singh"
+                    ],
+                    "open": "0.000",
+                    "close": "842.551",
+                    "close_calculated": "842.551",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "85.8110",
+                        "cost": "70000.00",
+                        "value": "72300.14"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2024-04-12",
+                            "description": "Purchase- via MFCentral",
+                            "amount": "19999.00",
+                            "units": "260.720",
+                            "nav": "76.7069",
+                            "balance": "260.720",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-04-12",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "1.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-02-11",
+                            "description": "Purchase- via MFCentral",
+                            "amount": "49997.50",
+                            "units": "581.831",
+                            "nav": "85.9313",
+                            "balance": "842.551",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-02-11",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "2.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "51018328915 / 0",
+            "amc": "Quant MF",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "quant Commodities Fund - Direct Plan",
+                    "advisor": null,
+                    "rta_code": "166CODGG",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF966L01DF3",
+                    "amfi": "152255",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "3230.816",
+                    "close_calculated": "3230.816",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "11.8820",
+                        "cost": "40000.00",
+                        "value": "38388.56"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2024-04-24",
+                            "description": "New Purchase",
+                            "amount": "19999.00",
+                            "units": "1591.099",
+                            "nav": "12.5693",
+                            "balance": "1591.099",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-04-24",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "1.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-05-08",
+                            "description": "Additional Purchase",
+                            "amount": "9999.50",
+                            "units": "843.363",
+                            "nav": "11.8567",
+                            "balance": "2434.462",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-05-08",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-05-31",
+                            "description": "Additional Purchase",
+                            "amount": "9999.50",
+                            "units": "796.354",
+                            "nav": "12.5566",
+                            "balance": "3230.816",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-05-31",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "quant ELSS Tax Saver Fund - Direct Plan",
+                    "advisor": null,
+                    "rta_code": "166TPDGG",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF966L01986",
+                    "amfi": "120847",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "64.629",
+                    "close_calculated": "64.629",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "353.9716",
+                        "cost": "25000.00",
+                        "value": "22876.83"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2024-03-21",
+                            "description": "New Purchase",
+                            "amount": "14999.25",
+                            "units": "39.621",
+                            "nav": "378.5664",
+                            "balance": "39.621",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-03-21",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.75",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-05-08",
+                            "description": "Additional Purchase",
+                            "amount": "9999.50",
+                            "units": "25.008",
+                            "nav": "399.8567",
+                            "balance": "64.629",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-05-08",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "quant Flexi Cap Fund - Direct Plan Growth",
+                    "advisor": null,
+                    "rta_code": "166PEDGG",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF966L01911",
+                    "amfi": "120843",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "146.980",
+                    "close_calculated": "146.980",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "96.0944",
+                        "cost": "10000.00",
+                        "value": "14123.95"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2022-11-02",
+                            "description": "New Purchase",
+                            "amount": "9999.50",
+                            "units": "146.980",
+                            "nav": "68.0332",
+                            "balance": "146.980",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-11-02",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "quant Focused Fund - Direct Plan",
+                    "advisor": null,
+                    "rta_code": "166LSDGG",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF966L01853",
+                    "amfi": "120834",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "418.758",
+                    "close_calculated": "418.758",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "85.5333",
+                        "cost": "40000.00",
+                        "value": "35817.75"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2024-06-06",
+                            "description": "New Purchase",
+                            "amount": "14999.25",
+                            "units": "155.174",
+                            "nav": "96.6608",
+                            "balance": "155.174",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-06-06",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.75",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-11-25",
+                            "description": "Additional Purchase",
+                            "amount": "24998.75",
+                            "units": "263.584",
+                            "nav": "94.8417",
+                            "balance": "418.758",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-11-25",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "1.25",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "quant Large and Mid Cap Fund - Direct Plan",
+                    "advisor": null,
+                    "rta_code": "166HYDGG",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF966L01648",
+                    "amfi": "120826",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "328.024",
+                    "close_calculated": "328.024",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "114.6744",
+                        "cost": "40000.00",
+                        "value": "37615.96"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2024-02-22",
+                            "description": "New Purchase",
+                            "amount": "9999.50",
+                            "units": "84.361",
+                            "nav": "118.5329",
+                            "balance": "84.361",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-02-22",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-02-26",
+                            "description": "Additional Purchase",
+                            "amount": "19999.00",
+                            "units": "168.130",
+                            "nav": "118.9494",
+                            "balance": "252.491",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-02-26",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "1.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-06-06",
+                            "description": "Additional Purchase",
+                            "amount": "9999.50",
+                            "units": "75.533",
+                            "nav": "132.3859",
+                            "balance": "328.024",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-06-06",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "quant Multi Asset Fund - Direct Plan",
+                    "advisor": null,
+                    "rta_code": "166GLDGG",
+                    "rta": "KFINTECH",
+                    "type": "DEBT",
+                    "isin": "INF966L01580",
+                    "amfi": "120821",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "143.109",
+                    "close_calculated": "143.109",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "135.5350",
+                        "cost": "20000.00",
+                        "value": "19396.28"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2025-01-01",
+                            "description": "Systematic Investment (1/15)",
+                            "amount": "4999.75",
+                            "units": "34.469",
+                            "nav": "145.0505",
+                            "balance": "34.469",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-01-01",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.25",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-01-15",
+                            "description": "Systematic Investment (2/15)",
+                            "amount": "4999.75",
+                            "units": "35.396",
+                            "nav": "141.2534",
+                            "balance": "69.865",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-01-15",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.25",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-01-29",
+                            "description": "Systematic Investment (3/15)",
+                            "amount": "4999.75",
+                            "units": "36.485",
+                            "nav": "137.0354",
+                            "balance": "106.350",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-01-29",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.25",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-02-12",
+                            "description": "Systematic Investment (4/15)",
+                            "amount": "4999.75",
+                            "units": "36.759",
+                            "nav": "136.0160",
+                            "balance": "143.109",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-02-12",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.25",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                },
+                {
+                    "scheme": "quant Quantamental Fund - Direct Plan",
+                    "advisor": null,
+                    "rta_code": "166QMDGG",
+                    "rta": "KFINTECH",
+                    "type": "EQUITY",
+                    "isin": "INF966L01AK9",
+                    "amfi": "148925",
+                    "nominees": [
+                        "PURNIMA SINGH"
+                    ],
+                    "open": "0.000",
+                    "close": "1692.750",
+                    "close_calculated": "1692.750",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "21.5544",
+                        "cost": "30000.00",
+                        "value": "36486.21"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2022-11-09",
+                            "description": "New Purchase",
+                            "amount": "14999.25",
+                            "units": "1084.952",
+                            "nav": "13.8248",
+                            "balance": "1084.952",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-11-09",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.75",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-05-03",
+                            "description": "Additional Purchase",
+                            "amount": "14999.25",
+                            "units": "607.798",
+                            "nav": "24.6780",
+                            "balance": "1692.750",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-05-03",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.75",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "21211247 / 0",
+            "amc": "SBI Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "SBI Contra Fund - Direct Plan - Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "LD036G",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF200K01RA0",
+                    "amfi": "119835",
+                    "nominees": [
+                        "Purnima Singh"
+                    ],
+                    "open": "0.000",
+                    "close": "90.757",
+                    "close_calculated": "90.757",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "383.4223",
+                        "cost": "22000.00",
+                        "value": "34798.26"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2022-10-28",
+                            "description": "Purchase",
+                            "amount": "9999.50",
+                            "units": "41.841",
+                            "nav": "238.9876",
+                            "balance": "41.841",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-10-28",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-11-17",
+                            "description": "Purchase - Systematic-Normal - Instalment 1/6",
+                            "amount": "1999.90",
+                            "units": "8.253",
+                            "nav": "242.3345",
+                            "balance": "50.094",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-11-17",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-11-24",
+                            "description": "Purchase - Systematic-Normal - Instalment 2/6",
+                            "amount": "1999.90",
+                            "units": "8.157",
+                            "nav": "245.1696",
+                            "balance": "58.251",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-11-24",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-12-05",
+                            "description": "Purchase - Systematic-Normal - Instalment 3/6",
+                            "amount": "1999.90",
+                            "units": "7.983",
+                            "nav": "250.5279",
+                            "balance": "66.234",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-12-05",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-12-12",
+                            "description": "Purchase - Systematic-Normal - Instalment 4/6",
+                            "amount": "1999.90",
+                            "units": "8.034",
+                            "nav": "248.9179",
+                            "balance": "74.268",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-12-12",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-12-19",
+                            "description": "Purchase - Systematic-Normal - Instalment 5/6",
+                            "amount": "1999.90",
+                            "units": "8.048",
+                            "nav": "248.4914",
+                            "balance": "82.316",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-12-19",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-12-23",
+                            "description": "Purchase - Systematic-Normal - Instalment 6/6",
+                            "amount": "1999.90",
+                            "units": "8.441",
+                            "nav": "236.9214",
+                            "balance": "90.757",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2022-12-23",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.10",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "43142144 / 0",
+            "amc": "SBI Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "SBI Contra Fund - Direct Plan - Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "LD036G",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF200K01RA0",
+                    "amfi": "119835",
+                    "nominees": [],
+                    "open": "0.000",
+                    "close": "12.532",
+                    "close_calculated": "12.532",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "383.4223",
+                        "cost": "5000.00",
+                        "value": "4805.05"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2025-02-05",
+                            "description": "Purchase - Systematic-Normal - Instalment 1/108",
+                            "amount": "4999.75",
+                            "units": "12.532",
+                            "nav": "398.9660",
+                            "balance": "12.532",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-02-05",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.25",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "folio": "4351542 / 22",
+            "amc": "Tata Mutual Fund",
+            "PAN": "AVYPR0077R",
+            "KYC": "OK",
+            "PANKYC": "OK",
+            "schemes": [
+                {
+                    "scheme": "Tata Digital India Fund Direct Plan Growth (Non-Demat",
+                    "advisor": "DIRECT",
+                    "rta_code": "TDIFGZ",
+                    "rta": "CAMS",
+                    "type": "EQUITY",
+                    "isin": "INF277K01Z77",
+                    "amfi": "135800",
+                    "nominees": [
+                        "Purnima Singh"
+                    ],
+                    "open": "0.000",
+                    "close": "2529.683",
+                    "close_calculated": "2529.683",
+                    "valuation": {
+                        "date": "2025-02-14",
+                        "nav": "57.4200",
+                        "cost": "145000.00",
+                        "value": "145254.40"
+                    },
+                    "transactions": [
+                        {
+                            "date": "2018-07-12",
+                            "description": "Purchase SIP - via Internet",
+                            "amount": "1500.00",
+                            "units": "100.049",
+                            "nav": "14.9926",
+                            "balance": "100.049",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-08-06",
+                            "description": "Purchase SIP - Instalment 2/13",
+                            "amount": "1500.00",
+                            "units": "97.046",
+                            "nav": "15.4566",
+                            "balance": "197.095",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-09-04",
+                            "description": "Purchase SIP - Instalment 3/13",
+                            "amount": "1500.00",
+                            "units": "90.937",
+                            "nav": "16.4950",
+                            "balance": "288.032",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-09-21",
+                            "description": "Purchase - via Internet",
+                            "amount": "10000.00",
+                            "units": "622.421",
+                            "nav": "16.0663",
+                            "balance": "910.453",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-10-04",
+                            "description": "Purchase SIP - Instalment 4/13",
+                            "amount": "1500.00",
+                            "units": "95.379",
+                            "nav": "15.7267",
+                            "balance": "1005.832",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-11-05",
+                            "description": "Purchase SIP - Instalment 5/13",
+                            "amount": "1500.00",
+                            "units": "101.559",
+                            "nav": "14.7697",
+                            "balance": "1107.391",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2018-12-04",
+                            "description": "Purchase SIP - Instalment 6/13",
+                            "amount": "1500.00",
+                            "units": "99.539",
+                            "nav": "15.0695",
+                            "balance": "1206.930",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-01-04",
+                            "description": "Purchase SIP - Instalment 7/13",
+                            "amount": "1500.00",
+                            "units": "103.135",
+                            "nav": "14.5441",
+                            "balance": "1310.065",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-02-04",
+                            "description": "Purchase SIP - Instalment 8/13",
+                            "amount": "1500.00",
+                            "units": "93.763",
+                            "nav": "15.9977",
+                            "balance": "1403.828",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-03-05",
+                            "description": "Purchase SIP - Instalment 9/13",
+                            "amount": "1500.00",
+                            "units": "94.310",
+                            "nav": "15.9050",
+                            "balance": "1498.138",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-04-04",
+                            "description": "Purchase SIP - Instalment 10/13",
+                            "amount": "1500.00",
+                            "units": "94.702",
+                            "nav": "15.8392",
+                            "balance": "1592.840",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-05-06",
+                            "description": "Purchase SIP - Instalment 11/13",
+                            "amount": "1500.00",
+                            "units": "93.573",
+                            "nav": "16.0302",
+                            "balance": "1686.413",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-06-04",
+                            "description": "Purchase SIP - Instalment 12/13",
+                            "amount": "1500.00",
+                            "units": "93.423",
+                            "nav": "16.0560",
+                            "balance": "1779.836",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2019-07-04",
+                            "description": "Purchase SIP - Instalment 13/13",
+                            "amount": "1500.00",
+                            "units": "93.606",
+                            "nav": "16.0246",
+                            "balance": "1873.442",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-10-06",
+                            "description": "Purchase SIP - via Internet",
+                            "amount": "999.95",
+                            "units": "46.054",
+                            "nav": "21.7125",
+                            "balance": "1919.496",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-10-06",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.05",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-10-06",
+                            "description": "Purchase - via Internet",
+                            "amount": "9999.50",
+                            "units": "460.541",
+                            "nav": "21.7125",
+                            "balance": "2380.037",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2020-10-06",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-06-28",
+                            "description": "Purchase - via Online - DIRECT",
+                            "amount": "39998.00",
+                            "units": "1210.161",
+                            "nav": "33.0518",
+                            "balance": "3590.198",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-06-28",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "2.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-10-25",
+                            "description": "Redemption - NEFT/RTGS PAYOUT - via Online - N301211689342855 , less STT",
+                            "amount": "-147859.75",
+                            "units": "-3590.198",
+                            "nav": "41.1847",
+                            "balance": "0.000",
+                            "type": "REDEMPTION",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2021-10-25",
+                            "description": "*** STT Paid ***",
+                            "amount": "1.48",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STT_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-05-30",
+                            "description": "Purchase- via MFCentral - DIRECT",
+                            "amount": "14999.25",
+                            "units": "407.316",
+                            "nav": "36.8246",
+                            "balance": "407.316",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2023-05-30",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.75",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-11-14",
+                            "description": "Purchase- via MFCentral - CAT-1-EOP-0009",
+                            "amount": "9999.50",
+                            "units": "165.876",
+                            "nav": "60.2830",
+                            "balance": "573.192",
+                            "type": "PURCHASE",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-11-14",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "0.50",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-12-02",
+                            "description": "Purchase SIP - Instalment 1/6 - via Online - DIRECT",
+                            "amount": "39998.00",
+                            "units": "640.969",
+                            "nav": "62.4024",
+                            "balance": "1214.161",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2024-12-02",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "2.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-01-01",
+                            "description": "Purchase SIP - Instalment 2/6 - via Online - DIRECT",
+                            "amount": "39998.00",
+                            "units": "639.500",
+                            "nav": "62.5457",
+                            "balance": "1853.661",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-01-01",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "2.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-02-03",
+                            "description": "Purchase SIP - Instalment 3/6 - via Online - DIRECT",
+                            "amount": "39998.00",
+                            "units": "676.022",
+                            "nav": "59.1667",
+                            "balance": "2529.683",
+                            "type": "PURCHASE_SIP",
+                            "dividend_rate": null
+                        },
+                        {
+                            "date": "2025-02-03",
+                            "description": "*** Stamp Duty ***",
+                            "amount": "2.00",
+                            "units": null,
+                            "nav": null,
+                            "balance": null,
+                            "type": "STAMP_DUTY_TAX",
+                            "dividend_rate": null
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "investor_info": {
+        "name": "ANKIT RANA",
+        "email": "ankit.kumar.rana@gmail.com",
+        "address": "C8 GROUND FLOOR C BLOCK SOUTHEND FLOORS NEAR SAPPHIRE\nMALL SOUTH CITY -II\nGURGAON - 122018\nHaryana\nIndia\nMobile: 9717108640",
+        "mobile": "9717108640"
+    },
+    "cas_type": "DETAILED",
+    "file_type": "CAMS"
+}

@@ -1,7 +1,7 @@
 import psycopg2
 import os
 from dotenv import load_dotenv
-load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
+load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 print(f"Loaded DATABASE_URL: {DATABASE_URL}")

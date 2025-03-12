@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-
+DBURL = os.getenv("DATABASE_URL")
 # Configure root logger
 logging.basicConfig(
     level=getattr(logging, log_level, logging.INFO),  # Set root logger level

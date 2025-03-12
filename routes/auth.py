@@ -1,4 +1,5 @@
 # File: routes/auth.py
+from venv import logger
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -12,8 +13,14 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 @router.post("/register", response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
+    try:
     # Check if user already exists
-    db_user = db.query(User).filter(User.email == user.email).first()
+        logger.info(f"{user.email} {user.password}")
+        db_user = db.query(User).filter(User.email == user.email).first()
+    except Exception as e:
+        logger.error(f"Unable to read DB {e}")
+        raise HTTPException(status_code=status.HTTP_424_FAILED_DEPENDENCY, detail="Unable to read DB or something like that")
+
     if db_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
     hashed_password = get_password_hash(user.password)
