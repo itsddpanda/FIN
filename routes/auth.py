@@ -3,7 +3,6 @@ from venv import logger
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-
 from db import get_db
 from models import User
 from schemas import Token, UserOut, UserCreate
