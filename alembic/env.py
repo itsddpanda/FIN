@@ -1,10 +1,7 @@
 #File: alembic/env.py
-import os
 from logging.config import fileConfig
 from sqlalchemy import create_engine
-import logging
 from alembic import context
-from models import User, StatementPeriod, Folio, Scheme, Valuation, Transaction
 from db import Base  # Import your Base from db.py
 from logging_config import logger, DBURL
 # this is the Alembic Config object, which provides
