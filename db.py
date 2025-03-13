@@ -7,8 +7,10 @@ from alembic.config import Config
 from alembic.script import ScriptDirectory
 from alembic.runtime.environment import MigrationContext
 from logging_config import logger, DBURL
+import logging
 import psycopg2
 
+logger = logging.getLogger("db.py")
 # Use environment variables to configure your database URL securely
 DATABASE_URL = DBURL
 if not DBURL:
@@ -16,7 +18,7 @@ if not DBURL:
     raise ValueError("DATABASE_URL environment variable is not set.")
 
 logger.info(f"DB URL fetched from .env file")
-logger.info(f"from DB.PY Database : {DATABASE_URL}")
+logger.debug(f"from DB.PY Database : {DATABASE_URL}")
 
 # For SQLite, include connect_args; otherwise, remove or adjust accordingly
 engine = create_engine(
@@ -46,7 +48,7 @@ def check_and_create_db():
             host = host_port[0]
             port = host_port[1] if len(host_port) > 1 else "5432"
             db_name = DBURL.split("/")[-1]
-
+            logger.debug(f"user: {user}, password: {password}, host: {host}, port: {port}, db_name: {db_name}")
             conn = psycopg2.connect(user=user, password=password, host=host, port=port, database="postgres")
             conn.autocommit = True
             cur = conn.cursor()
@@ -93,5 +95,6 @@ def run_migrations():
 
 
 def init_db():
-    check_and_create_db()
-    run_migrations()
+    Base.metadata.create_all(bind=engine)
+    # check_and_create_db()
+    # run_migrations()

@@ -1,7 +1,10 @@
 # File: schemas.py
+from operator import is_
 from pydantic import BaseModel, EmailStr, Field
 from typing import List, Optional
 from datetime import date
+
+from models import User
 
 class UserBase(BaseModel):
     email: EmailStr
@@ -16,6 +19,12 @@ class UserOut(UserBase):
     class Config:
         from_attributes = True
 
+class Usernoid(UserBase):
+    is_active: bool
+
+    class Config:
+        from_attributes = True
+        
 class Token(BaseModel):
     access_token: str
     token_type: str

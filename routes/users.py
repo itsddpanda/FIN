@@ -3,6 +3,7 @@ from ipaddress import ip_address
 from math import log
 from pickle import FALSE
 from venv import logger
+from wsgiref import headers
 from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form
 from fastapi.responses import RedirectResponse, JSONResponse, HTMLResponse
 from sqlalchemy.orm import Session
@@ -14,7 +15,7 @@ import os
 from db import get_db
 from routes.pdf_converter import clear_database_for_identifier
 from models import User, Folio, Scheme, AMC, Valuation
-from schemas import UserOut, SchemeOut, PortfolioOut, FolioOut, AMCOut, SchemeDetailsOut, TransactionOut, ValuationOut, AMCWithSchemesOut
+from schemas import UserOut, SchemeOut, PortfolioOut, FolioOut, AMCOut, SchemeDetailsOut, TransactionOut, Usernoid, ValuationOut, AMCWithSchemesOut
 from auth import SECRET_KEY, ALGORITHM
 from routes.pdf_converter import convertpdf, process_log_messages
 
@@ -23,7 +24,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 logger = logging.getLogger("users")
 
-def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User | Usernoid:
     # If middleware already set the user email, use it.
     if hasattr(request.state, "user_email") and request.state.user_email != "Anonymous":
         email = request.state.user_email
@@ -48,16 +49,20 @@ def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: 
                 detail="Could not validate credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
+        except HTTPException as http_exc:
+            raise http_exc
     # Now, query the database using the email (as sub contains the email)
     try:
         user = db.query(User).filter(User.email == email).first()
-        isactive = user.is_active
-        if not user or not isactive:
+        if not user or not user.is_active:
             logger.info("User Record not found")
-            return False
+            return Usernoid(email=email, is_active=False) # return Usernoid if user not found or inactive
+        return user
+    except HTTPException as http_exc:
+        raise http_exc
     except Exception as e:
         logger.error(f"Error in fetching user record: {e}", exc_info=False)
-        return False
+        return Usernoid(email=email, is_active=False) # return Usernoid on error
     # folios = db.query(Folio).join(User, Folio.user_id == User.user_id).filter(User.email == email).all()
     # if not folios:
     #     logger.info("User folio record not found; redirecting to /users/getstarted")
@@ -66,60 +71,56 @@ def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: 
     #             content={"detail": "Unauthorized. Please log in", "status" : "Error"},
     #             status_code=401
     #         )
-    return user
+
 
 # Endpoint to fetch current user details (if user exists)
-@router.get("/me", response_model=UserOut)
+@router.get("/me", response_model=Usernoid)
 def read_users_me(request: Request, current_user = Depends(get_current_user),):
-    if isinstance(current_user, RedirectResponse):
+    if isinstance(current_user, Usernoid): #check if current_user is Usernoid
         logger.info("User not found in database.")
-        return JSONResponse(
-        who = request.client.host,
-        status_code=401,
-        content=UserOut(email="no@e.mail", is_active=False, user_id="").model_dump(),
-    )
-    elif current_user is False: #check for false return value.
-        logger.info("User not found in database.")
-        return JSONResponse(
-        who = request.client.host,
-        status_code=401,
-        content=UserOut(email="no@.mail", is_active=False, user_id="").model_dump(),
-    )
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized. Please log in or ensure your account is active."
+        )
+    
     logger.info("User validated via /me endpoint.")
-    current_user.user_id = "hidden response"
-    return current_user
+    return Usernoid.model_validate(current_user)
 
-@router.post("/deleteme", response_model=UserOut)
-def del_users_me(current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    if isinstance(current_user, RedirectResponse):
-        return current_user
+@router.post("/deleteme", response_model=Usernoid)
+def del_users_me(request: Request, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
+    if isinstance(current_user, Usernoid):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized. Please log in or ensure your account is active."
+        )
     
     try:
         if clear_database_for_identifier(db, current_user.user_id, "user_id"):
             logger.info(f"User {current_user.full_name} deleted from database.")
             current_user.is_active = False
-            current_user.user_id = "hidden response"
-            return current_user
+            # current_user.user_id = "hidden response"
+            return Usernoid.model_validate(current_user)
         else:
             logger.error(f"Unable to delete user {current_user.user_id} from database.")
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to delete user.")
+    except HTTPException as http_exc:
+        raise http_exc
     except Exception as e:
-        logger.error(f"Unable to delete user {current_user.user_id} from database. Error: {e}")
+        logger.error(f"Unable to delete user from database. Error: {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to delete user.")
 
 # USER PROFILE ENDPOINT
-@router.post("/uploading", response_class=HTMLResponse)
+@router.post("/uploading", response_model=Usernoid)
 async def upload_file(
     request: Request,
     file: UploadFile = File(...),
     password: str = Form(...),
     current_user = Depends(get_current_user)
 ):
-    if current_user is False:
-        return JSONResponse(
-            who = request.client.host,
-            status_code=401,
-            content={"detail": "Unauthorized. Please log in", "status" : "Error"},
+    if isinstance(current_user, Usernoid):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized. Please log in or ensure your account is active."
         )
     email = current_user.email 
     # Define the upload folder and ensure it exists.
@@ -133,30 +134,37 @@ async def upload_file(
         f.write(content)
     try:
         logger.info(f"Received file '{file.filename}' with provided password.")
-        temp = convertpdf(file_location,password,email)
-        response = process_log_messages (temp)
-        html_content = f"<html><body><h1>{response}</h1></body></html>"
-        return html_content
+        convertpdf(file_location,password,email)
+        # response = process_log_messages (temp)
+        # html_content = f"<html><body><h1>{response}</h1></body></html>"
+        # return html_content
+        return Usernoid.model_validate(current_user)
+    except HTTPException as http_exc:
+        raise http_exc
     except Exception as e:
-        logger.info(f"Error in execution {e}")
-        response = e
-        html_content = f"<html><body><h1>{response}</h1></body></html>"
-        return html_content
+        logger.info(f"Error in execution {e}", exc_info=False)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to delete user.")
+    
+        # response = e
+        # html_content = f"<html><body><h1>{response}</h1></body></html>"
+        # return html_content
 
 # API Endpoints
-@router.get("/{user_id}/portfolio", response_model=PortfolioOut)
+@router.get("/portfolio", response_model=PortfolioOut)
 def get_portfolio(request: Request, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    if current_user is False:
-        return JSONResponse(
-            who = request.client.host,
-            status_code=401,
-            content={"detail": "Unauthorized. Please log in", "status" : "Error"},
+    if isinstance(current_user, Usernoid):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized. Please log in or ensure your account is active."
         )
     logger.info(f"USER EMAIL: {request.state.user_email}")
     user_email = request.state.user_email
     user = db.query(User).filter(User.email == user_email).first()
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized. Please log in or ensure your account is active."
+        )
 
     portfolio_value = 0.0
     total_investment = 0.0
@@ -202,11 +210,10 @@ def get_portfolio(request: Request, current_user = Depends(get_current_user), db
 
 @router.get("/schemes/{scheme_id}", response_model=SchemeDetailsOut)
 def get_scheme_details(request: Request,scheme_id: int,current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    if current_user is False:
-        raise JSONResponse(
-            who = request.client.host,
-            status_code=401,
-            content={"detail": "Unauthorized. Please log in", "status" : "Error"},
+    if isinstance(current_user, Usernoid):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized. Please log in or ensure your account is active."
         )
     scheme = db.query(Scheme).filter(Scheme.id == scheme_id).first()
     if not scheme:
@@ -235,6 +242,11 @@ def get_amc_schemes_with_valuation(amc_id: int,request: Request, db: Session = D
     Raises:
         HTTPException: If the AMC is not found or a database error occurs.
     """
+    if isinstance(current_user, Usernoid):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauthorized. Please log in or ensure your account is active."
+        )
     try:
         amc = db.query(AMC).filter(AMC.id == amc_id).first()
         if not amc:

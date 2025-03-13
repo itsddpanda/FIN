@@ -8,14 +8,6 @@ from urllib.parse import urlparse
 load_dotenv()
 log_level = os.getenv("LOG_LEVEL", "INFO").upper()
 DBURL = os.getenv("DATABASE_URL")
-parsed_url = urlparse(DBURL)
-
-user = parsed_url.username
-password = parsed_url.password
-host = parsed_url.hostname  # Make sure this is "db", not "localhost"
-port = parsed_url.port
-dbname = parsed_url.path[1:]  # Remove leading "/"
-print(f"Connecting to DB at {host}:{port} as {user}")
 
 # Configure root logger
 logging.basicConfig(
@@ -32,3 +24,10 @@ logger = logging.getLogger()  # Get the root logger
 logger.setLevel(getattr(logging, log_level, logging.INFO))  # Explicitly set level
 
 print(f"Logging initialized. Log level set to: {logging.getLevelName(logger.level)}")
+parsed_url = urlparse(DBURL)
+user = parsed_url.username
+password = parsed_url.password
+host = parsed_url.hostname  # Make sure this is "db", not "localhost"
+port = parsed_url.port
+dbname = parsed_url.path[1:]  # Remove leading "/"
+logger.info(f"Connecting to DB at {host}:{port} as {user}")

@@ -6,8 +6,8 @@ services:
       POSTGRES_USER: postgres # Use 'postgres' as user (or choose your username)
       POSTGRES_PASSWORD: ${PG_PASS} # **Replace with a real password!**
       POSTGRES_DB: finapp_data
-#    ports:
-#      - "5432:5432" # Map host port 5432 to container port 5432
+    ports:
+      - "5432:5432" # Map host port 5432 to container port 5432
     networks:
       - MFA
     volumes:
