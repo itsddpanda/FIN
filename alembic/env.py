@@ -4,6 +4,9 @@ from sqlalchemy import create_engine
 from alembic import context
 from db import Base  # Import your Base from db.py
 from logging_config import logger, DBURL
+import os
+logger = logger.getChild("al.env")
+logger.info(f"DATABASE_URL from env.py: {os.environ.get('DATABASE_URL')}")
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -12,10 +15,6 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
 target_metadata = Base.metadata  # Corrected to point to Base.metadata
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

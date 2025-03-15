@@ -1,16 +1,16 @@
 # File: routes/pdf_converter.py
+from email.policy import HTTP
 import json
 import logging
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form
-from fastapi.responses import RedirectResponse, JSONResponse
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import delete, update
 import casparser
 import os
-from models import User, Folio, StatementPeriod, Scheme, Valuation, Transaction, AMC
+from models import User, Folio, StatementPeriod, Scheme, Valuation, Transaction, AMC, SchemeMaster, SchemeNavHistory
 from db import SessionLocal
-from dotenv import load_dotenv
+
 # from logging_config import logger 
 logger = logging.getLogger("PDF")
 class ProgressHandler(logging.Handler):
@@ -112,7 +112,7 @@ def clear_database_for_identifier(db: Session, identifier: str, identifier_type:
                 logger.info(f"StatementPeriod {sp_id} deleted for user {user_id}")
         logger.info(f"StatementPeriods cleanup completed for user {user_id}")
 
-        # 7. Finally, delete the user record.
+        # 7. Finally, is_active is false for the user record.
         db.execute(
             update(User)
             .where(User.user_id == user_id)
@@ -129,115 +129,134 @@ def clear_database_for_identifier(db: Session, identifier: str, identifier_type:
         logger.error(f"Error clearing database for {identifier}: {e}", exc_info=False)
         raise
 
-def publish_json_to_db(data: dict) -> bool:
-    """
-    Parses the JSON data and updates the DB.
-    For each folio:
-      - If the folio is new, a new StatementPeriod is created and all schemes,
-        valuations and transactions are inserted.
-      - If the folio already exists (for the user), the existing StatementPeriod
-        is examined. The new statement period from the JSON is compared against
-        the stored period. Only transactions falling into the "new" period (i.e.,
-        outside the existing date range) are added. If the new period extends the
-        existing range, the valuation record is updated accordingly.
-    """
+from datetime import datetime
+from sqlalchemy.exc import SQLAlchemyError
+from fastapi import HTTPException
+
+def publish_json_to_db(data: dict, emailr: str) -> bool:
     session = SessionLocal()
 
     def parse_date(date_str: str) -> datetime.date:
-        """
-        Try multiple date formats.
-        Formats include:
-          - "YYYY-MM-DD" (e.g., "2025-03-05")
-          - "YYYY-MMM-DD" (e.g., "2025-Mar-05")
-          - "DD-MMM-YYYY" (e.g., "01-Jan-2025")
-        """
+        """Helper function to parse dates in multiple formats."""
         for fmt in ("%Y-%m-%d", "%Y-%b-%d", "%d-%b-%Y"):
             try:
                 return datetime.strptime(date_str, fmt).date()
             except (ValueError, TypeError):
                 continue
-        raise ValueError(f"Date format for '{date_str}' not recognized.")
+        raise ValueError(f"Unrecognized date format: {date_str}")
 
     try:
-        # 1. Extract and parse the new statement period from JSON.
+        # Extract and validate statement period
         sp_data = data.get("statement_period")
         if not sp_data:
             raise ValueError("Missing 'statement_period' in JSON data.")
         new_sp_from = parse_date(sp_data.get("from"))
         new_sp_to = parse_date(sp_data.get("to"))
-        logger.debug(f"New Statement from: {new_sp_from} to {new_sp_to}")
-        # 2. Process investor info and obtain the user.
+
+        # Get investor details
         investor_info = data.get("investor_info", {})
-        email = "test@ting.com"  # for testing purposes else investor_info.get("email") 
+        email = emailr
         name = investor_info.get("name")
+
         if not email:
             raise ValueError("Investor email is missing.")
 
+        # Fetch user from DB
         user = session.query(User).filter_by(email=email).first()
-        logger.debug(f"Uesr feteched for {email} is {user}")
         if not user:
-            logger.error(f"User with email {email} not found.")
-            raise ValueError("User not found.")
-        else:
-            # If the user exists but their full name is missing, update it.
-            if not user.full_name:
-                user.full_name = name
-                session.add(user)
-                session.flush()
+            raise ValueError(f"User with email '{email}' not found.")
 
-        # 3. Process each folio in the JSON.
+        # Update user name if missing
+        if not user.full_name and name:
+            user.full_name = name
+            session.add(user)
+            session.flush()
+
+        # Process folios
         for folio_data in data.get("folios", []):
             folio_number = folio_data.get("folio")
-            amc = folio_data.get("amc")
             pan = folio_data.get("PAN")
+            amc_name = folio_data.get("amc")
+            if not folio_number or not amc_name:
+                continue  # Skip invalid folios
 
-            # Query for an existing folio (belongs to this user).
+            # Ensure AMC exists
+            amc_obj = session.query(AMC).filter_by(name=amc_name).first()
+            if not amc_obj:
+                amc_obj = AMC(name=amc_name)
+                session.add(amc_obj)
+                session.flush()
+
+            # Check if folio exists
             existing_folio = session.query(Folio).filter_by(
                 folio_number=folio_number, user_id=user.user_id
             ).first()
-            logger.debug(f"Existing Folio: {existing_folio}")
+
+            # Ensure statement period exists
+            sp = session.query(StatementPeriod).filter_by(
+                from_date=new_sp_from, to_date=new_sp_to, user_id=user.user_id
+            ).first()
+            if not sp:
+                sp = StatementPeriod(from_date=new_sp_from, to_date=new_sp_to, user_id=user.user_id)
+                session.add(sp)
+                session.flush()
+
             if not existing_folio:
-                # New folio: create a new statement period and associate with the folio.
-                logger.debug(f"Adding New Folio for statement {new_sp_from} to {new_sp_to}")
-                # Check if a statement period with these parameters already exists
-                existing_sp = session.query(StatementPeriod).filter_by(
-                    from_date=new_sp_from, 
-                    to_date=new_sp_to, 
-                    user_id=user.user_id
-                ).first()
-
-                if existing_sp:
-                    # Use the existing statement period
-                    sp = existing_sp
-                    logger.info("Using existing statement period")
-                    logger.debug(f"Using existing statement period: {sp.id} ({sp.from_date} to {sp.to_date})")
-                else:
-                    # Create a new statement period
-                    sp = StatementPeriod(from_date=new_sp_from, to_date=new_sp_to, user_id=user.user_id)
-                    session.add(sp)
-                    session.flush()  # assign an id to sp
-                    logger.debug(f"Created new statement period: {sp.id} ({sp.from_date} to {sp.to_date})")
-
                 folio_obj = Folio(
                     folio_number=folio_number,
                     pan=pan,
                     statement_period=sp,
-                    user=user
+                    user=user,
+                    amc_id=amc_obj.id
                 )
                 session.add(folio_obj)
                 session.flush()
-                logger.debug(f"Folio Deatils: {folio_obj}")
-                # For a new folio, add all schemes, valuations and transactions.
-                for scheme_data in folio_data.get("schemes", []):
+            else:
+                folio_obj = existing_folio
+                # Update statement period range if necessary
+                if new_sp_from < sp.from_date or new_sp_to > sp.to_date:
+                    sp.from_date = min(sp.from_date, new_sp_from)
+                    sp.to_date = max(sp.to_date, new_sp_to)
+                    session.add(sp)
+                    session.flush()
+
+            # Process schemes
+            for scheme_data in folio_data.get("schemes", []):
+                scheme_isin = scheme_data.get("isin")
+                scheme_amfi = scheme_data.get("amfi")
+                scheme_name = scheme_data.get("scheme")
+                scheme_type = scheme_data.get("type")
+
+                if not (scheme_isin or scheme_amfi):
+                    continue
+
+                # Ensure SchemeMaster exists
+                scheme_master = session.query(SchemeMaster).filter_by(scheme_isin=scheme_isin).first()
+                # 🔥 Ensure SchemeMaster exists with correct amc_id
+                if not scheme_master:
+                    scheme_master = SchemeMaster(
+                        scheme_name=scheme_name,  
+                        scheme_isin=scheme_isin,  
+                        scheme_amfi_code=scheme_amfi,
+                        amc_id=amc_obj.id,  # ✅ Fix: Ensure amc_id is set
+                        scheme_type=scheme_type
+                    )
+                    session.add(scheme_master)
+                    session.flush()
+
+                # Check if scheme exists
+                existing_scheme = session.query(Scheme).filter_by(
+                    folio_id=folio_obj.folio_number, scheme_master_id=scheme_master.scheme_id
+                ).first()
+
+                if not existing_scheme:
                     scheme_obj = Scheme(
-                        folio_id=folio_number,
-                        scheme_name=scheme_data.get("scheme"),
+                        folio_id=folio_obj.folio_number,  # ✅ Correct: Use the primary key of Folio
+                        amc_id=amc_obj.id,
+                        scheme_master_id=scheme_master.scheme_id,
                         advisor=scheme_data.get("advisor"),
                         rta_code=scheme_data.get("rta_code"),
                         rta=scheme_data.get("rta"),
-                        scheme_type=scheme_data.get("type"),
-                        isin=scheme_data.get("isin"),
-                        amfi_code=scheme_data.get("amfi"),
                         nominees=scheme_data.get("nominees"),
                         open_units=scheme_data.get("open"),
                         close_units=scheme_data.get("close"),
@@ -245,10 +264,22 @@ def publish_json_to_db(data: dict) -> bool:
                     )
                     session.add(scheme_obj)
                     session.flush()
-                    logger.debug(f"Schemes Added: {scheme_obj}")
-                    # Add valuation
-                    valuation_data = scheme_data.get("valuation")
-                    if valuation_data:
+                else:
+                    scheme_obj = existing_scheme
+
+                # Process valuation
+                valuation_data = scheme_data.get("valuation")
+                if valuation_data and new_sp_to >= sp.to_date:
+                    existing_valuation = session.query(Valuation).filter_by(
+                        scheme_id=scheme_obj.id
+                    ).first()
+
+                    if existing_valuation:
+                        existing_valuation.valuation_date = parse_date(valuation_data.get("date"))
+                        existing_valuation.valuation_nav = valuation_data.get("nav")
+                        existing_valuation.valuation_value = valuation_data.get("value")
+                        existing_valuation.valuation_cost = valuation_data.get("cost")
+                    else:
                         valuation_obj = Valuation(
                             scheme=scheme_obj,
                             valuation_date=parse_date(valuation_data.get("date")),
@@ -258,150 +289,36 @@ def publish_json_to_db(data: dict) -> bool:
                         )
                         session.add(valuation_obj)
 
-                    # Add all transactions.
-                    for txn_data in scheme_data.get("transactions", []):
-                        txn_date = parse_date(txn_data.get("date"))
-                        txn_obj = Transaction(
-                            scheme=scheme_obj,
-                            transaction_date=txn_date,
-                            description=txn_data.get("description"),
-                            amount=txn_data.get("amount"),
-                            units=txn_data.get("units"),
-                            nav=txn_data.get("nav"),
-                            balance=txn_data.get("balance"),
-                            transaction_type=txn_data.get("type"),
-                            dividend_rate=txn_data.get("dividend_rate")
-                        )
-                        session.add(txn_obj)
-
-            else:
-                logger.info(f"Existing Folio found {folio_data.get('folio')} with {amc}")
-                # Existing folio: use its associated statement period.
-                sp = existing_folio.statement_period
-                # Determine if the new statement period extends the stored period.
-                missing_periods = []
-                if new_sp_from < sp.from_date:
-                    missing_periods.append((new_sp_from, min(new_sp_to, sp.from_date)))
-                if new_sp_to > sp.to_date:
-                    missing_periods.append((max(new_sp_from, sp.to_date), new_sp_to))
-
-                # Update the StatementPeriod record if the new period extends the boundaries.
-                new_union_from = min(sp.from_date, new_sp_from)
-                new_union_to = max(sp.to_date, new_sp_to)
-                if new_union_from != sp.from_date or new_union_to != sp.to_date:
-                    logger.info(
-                        f"Updating StatementPeriod for folio {folio_number} from {sp.from_date} - {sp.to_date} "
-                        f"to {new_union_from} - {new_union_to}"
+                # Process transactions
+                for txn_data in scheme_data.get("transactions", []):
+                    txn_date = parse_date(txn_data.get("date"))
+                    txn_obj = Transaction(
+                        scheme=scheme_obj,
+                        transaction_date=txn_date,
+                        description=txn_data.get("description"),
+                        amount=txn_data.get("amount"),
+                        units=txn_data.get("units"),
+                        nav=txn_data.get("nav"),
+                        balance=txn_data.get("balance"),
+                        transaction_type=txn_data.get("type"),
+                        dividend_rate=txn_data.get("dividend_rate")
                     )
-                    sp.from_date = new_union_from
-                    sp.to_date = new_union_to
-                    sp.user_id=user.user_id
-                    session.add(sp)
-                    session.flush()
-
-                # Process each scheme for the folio.
-                for scheme_data in folio_data.get("schemes", []):
-                    scheme_name = scheme_data.get("scheme")
-                    existing_scheme = session.query(Scheme).filter_by(
-                        folio_id=folio_number, scheme_name=scheme_name
-                    ).first()
-
-                    if not existing_scheme:
-                        # New scheme in an existing folio: add it with all related data.
-                        scheme_obj = Scheme(
-                            folio_id=folio_number,
-                            scheme_name=scheme_name,
-                            advisor=scheme_data.get("advisor"),
-                            rta_code=scheme_data.get("rta_code"),
-                            rta=scheme_data.get("rta"),
-                            scheme_type=scheme_data.get("type"),
-                            isin=scheme_data.get("isin"),
-                            amfi_code=scheme_data.get("amfi"),
-                            nominees=scheme_data.get("nominees"),
-                            open_units=scheme_data.get("open"),
-                            close_units=scheme_data.get("close"),
-                            close_calculated_units=scheme_data.get("close_calculated")
-                        )
-                        session.add(scheme_obj)
-                        session.flush()
-
-                        valuation_data = scheme_data.get("valuation")
-                        if valuation_data:
-                            valuation_obj = Valuation(
-                                scheme=scheme_obj,
-                                valuation_date=parse_date(valuation_data.get("date")),
-                                valuation_nav=valuation_data.get("nav"),
-                                valuation_value=valuation_data.get("value"),
-                                valuation_cost=valuation_data.get("cost")
-                            )
-                            session.add(valuation_obj)
-
-                        for txn_data in scheme_data.get("transactions", []):
-                            txn_date = parse_date(txn_data.get("date"))
-                            txn_obj = Transaction(
-                                scheme=scheme_obj,
-                                transaction_date=txn_date,
-                                description=txn_data.get("description"),
-                                amount=txn_data.get("amount"),
-                                units=txn_data.get("units"),
-                                nav=txn_data.get("nav"),
-                                balance=txn_data.get("balance"),
-                                transaction_type=txn_data.get("type"),
-                                dividend_rate=txn_data.get("dividend_rate")
-                            )
-                            session.add(txn_obj)
-                    else:
-                        # Existing scheme: add only transactions that fall in the "missing" (new) periods.
-                        for txn_data in scheme_data.get("transactions", []):
-                            txn_date = parse_date(txn_data.get("date"))
-                            add_txn = any(period_start <= txn_date < period_end for period_start, period_end in missing_periods)
-                            if add_txn:
-                                txn_obj = Transaction(
-                                    scheme=existing_scheme,
-                                    transaction_date=txn_date,
-                                    description=txn_data.get("description"),
-                                    amount=txn_data.get("amount"),
-                                    units=txn_data.get("units"),
-                                    nav=txn_data.get("nav"),
-                                    balance=txn_data.get("balance"),
-                                    transaction_type=txn_data.get("type"),
-                                    dividend_rate=txn_data.get("dividend_rate")
-                                )
-                                session.add(txn_obj)
-
-                        # Update valuation if the new period extends beyond the existing period.
-                        valuation_data = scheme_data.get("valuation")
-                        if valuation_data and new_sp_to > sp.to_date:
-                            existing_valuation = session.query(Valuation).filter_by(
-                                scheme_id=existing_scheme.id
-                            ).first()
-                            if existing_valuation:
-                                existing_valuation.valuation_date = parse_date(valuation_data.get("date"))
-                                existing_valuation.valuation_nav = valuation_data.get("nav")
-                                existing_valuation.valuation_value = valuation_data.get("value")
-                                existing_valuation.valuation_cost = valuation_data.get("cost")
-                                session.add(existing_valuation)
-                            else:
-                                valuation_obj = Valuation(
-                                    scheme=existing_scheme,
-                                    valuation_date=parse_date(valuation_data.get("date")),
-                                    valuation_nav=valuation_data.get("nav"),
-                                    valuation_value=valuation_data.get("value"),
-                                    valuation_cost=valuation_data.get("cost")
-                                )
-                                session.add(valuation_obj)
+                    session.add(txn_obj)
 
         session.commit()
-        logger.info("Finished DB query.")
         return True
-
+    except SQLAlchemyError as e:
+        session.rollback()
+        logger.error(f"Database error: {e}", exc_info=False)
+        raise HTTPException(status_code=500, detail="Database error. Raise a ticket for support.")
+    except ValueError as e:
+        session.rollback()
+        logger.error(f"Data validation error: {e}", exc_info=False)
+        raise HTTPException(status_code=400, detail=f"Invalid data: {e}")
     except Exception as e:
         session.rollback()
-        if e == "User not found.":
-            logger.error(f"Error publishing JSON to DB, Exception: Is user registered?!", exc_info=False)
-            logger.warning("Unauthorised access to add data to db")
-        logger.error(f"Error publishing JSON to DB, Exception: {e}", exc_info=False)
-        return False
+        logger.error(f"Unexpected error: {e}", exc_info=False)
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
     finally:
         session.close()
 
@@ -513,14 +430,14 @@ def publish_to_db(data: dict, emailr: str) -> bool:
                 ).first()
                 if existing_sp:
                     sp = existing_sp
-                    logger.info("Using existing statement period")
-                    logger.debug(f"Using existing statement period: {sp.id} ({sp.from_date} to {sp.to_date})")
+                    # logger.info("Using existing statement period") #change in prod
+                    logger.info(f"Using existing statement period: {sp.id} ({sp.from_date} to {sp.to_date})")
                 else:
                     sp = StatementPeriod(from_date=new_sp_from, to_date=new_sp_to, user_id=user.user_id)
                     session.add(sp)
                     session.flush()
-                    logger.debug(f"Created new statement period: {sp.id} ({sp.from_date} to {sp.to_date})")
-
+                    logger.info(f"Created new statement period: {sp.id} ({sp.from_date} to {sp.to_date})") #change in prod to debug
+ 
                 # Create new Folio with AMC_ID set.
                 folio_obj = Folio(
                     folio_number=folio_number,
@@ -727,16 +644,15 @@ def convertpdf(pdf_file_path: str, password: str, email: str):
     except Exception as e:
         logger.error(f"Conversion PDF PARSER Module FAILED. {e}", exc_info=False)
         logger.removeHandler(progress_handler)
-        return None
-
+        raise HTTPException(status_code=500, detail=f"PDF Conversion Module FAILED. {e}")
     try:
         data = json.loads(json_str)
     except json.JSONDecodeError as e:
         logger.error(f"Invalid JSON format: {e}", exc_info=False)
         logger.removeHandler(progress_handler)
-        return None
+        raise HTTPException(status_code=500, detail="Invalid JSON format.")
     logger.info("Adding data to DB")
-    if not publish_to_db(data, email):
+    if not publish_json_to_db(data, email):
         logger.error("Failed to push data to DB.")
         logger.removeHandler(progress_handler)
         return progress_report

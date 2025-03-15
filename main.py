@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Request, HTTPException, UploadFile, File, Form
-from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+# from fastapi.templating import Jinja2Templates
 import time
-import os
+#needed to initialize the db
+from models import User, StatementPeriod, AMC, Folio, Scheme, Valuation, Transaction, SchemeNavHistory, SchemeMaster
 from collections import defaultdict
 from starlette.middleware.base import BaseHTTPMiddleware
 from jose import JWTError, jwt
@@ -14,7 +15,7 @@ import pkgutil
 from routes import __name__ as routes_pkg_name
 # from routes.dash import get_user_dashboard
 from db import init_db
-from routes import auth, users
+# from routes import auth, users
 from logging_config import logger  # Import the configured logger
 
 app = FastAPI(title="Full Stack FastAPI App") # for dev
@@ -27,12 +28,7 @@ logger.info("Application started")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Configure Jinja2 templates
-templates = Jinja2Templates(directory="templates")
-
-@app.get("/", response_class=HTMLResponse)
-def read_index(request: Request):
-    logger.info("Rending index")
-    return templates.TemplateResponse("index.html", {"request": request})
+#templates = Jinja2Templates(directory="templates")
 
 
 for _, module_name, _ in pkgutil.iter_modules(['routes']):
@@ -103,4 +99,4 @@ app.add_middleware(AuthLoggingMiddleware)
 app.add_middleware(RateLimitMiddleware)  
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, server_header=False) #true for dev env
+    uvicorn.run("main:app", host="0.0.0.0", port=8100, server_header=False) #true for dev env

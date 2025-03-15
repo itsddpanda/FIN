@@ -45,15 +45,31 @@ class FolioOut(BaseModel):
 
     model_config = {'from_attributes': True}
 
+class SchemeMasterOut(BaseModel):
+    scheme_id: int
+    scheme_isin: str
+    scheme_amfi_code: Optional[str] = None
+    scheme_name: str
+    amc_id: int
+    scheme_type: Optional[str] = None
+
+    model_config = {'from_attributes': True}
+
 class SchemeOut(BaseModel):
     id: int
     scheme_name: str
     isin: Optional[str] = None
     amfi_code: Optional[str] = None
+    advisor: Optional[str] = None
+    rta_code: Optional[str] = None
+    rta: Optional[str] = None
+    nominees: Optional[List[str]] = None
     open_units: Optional[float] = None
     close_units: Optional[float] = None
     close_calculated_units: Optional[float] = None
     valuation: Optional["ValuationOut"] = None
+    scheme_master_id: int
+    scheme_master: Optional["SchemeMasterOut"] = None  # Add relationship
 
     model_config = {'from_attributes': True}
 
@@ -85,9 +101,6 @@ class PortfolioOut(BaseModel):
     total_gain_loss_percent: float = 0.0
     folios: List[FolioOut]
 
-class SchemeDetailsOut(BaseModel):
-    scheme: SchemeOut
-    transactions: List[TransactionOut]
 
 class DashboardOut(BaseModel):
     user: UserOut
@@ -99,3 +112,39 @@ class DashboardOut(BaseModel):
 class AMCWithSchemesOut(BaseModel):
     amc: AMCOut
     schemes: List[SchemeOut]
+
+class MetaData(BaseModel):
+    fund_house: str
+    scheme_type: str
+    scheme_category: str
+    scheme_code: int
+    scheme_name: str
+    isin_growth: str
+    isin_div_reinvestment: Optional[str] = None
+
+class NavData(BaseModel):
+    date: str
+    nav: str
+
+class HistoricalDataResponse(BaseModel):
+    meta: MetaData
+    data: List[NavData]
+    status: str
+
+class HistoricalDataOut(BaseModel):
+    data: HistoricalDataResponse
+
+class SchemeDetailsOut(BaseModel):
+    scheme: SchemeOut
+    transactions: List[TransactionOut]
+    historical_data: Optional[HistoricalDataOut] = None
+
+
+
+class SchemeNavHistoryOut(BaseModel):
+    id: int
+    scheme_master_id: int  # Updated from scheme_id
+    nav_date: date
+    nav_value: float
+
+    model_config = {'from_attributes': True}

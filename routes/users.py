@@ -1,10 +1,8 @@
 # File: routes/users.py
-from ipaddress import ip_address
-from math import log
-from pickle import FALSE
+
 from venv import logger
 from wsgiref import headers
-from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form, BackgroundTasks
 from fastapi.responses import RedirectResponse, JSONResponse, HTMLResponse
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -15,9 +13,10 @@ import os
 from db import get_db
 from routes.pdf_converter import clear_database_for_identifier
 from models import User, Folio, Scheme, AMC, Valuation
-from schemas import UserOut, SchemeOut, PortfolioOut, FolioOut, AMCOut, SchemeDetailsOut, TransactionOut, Usernoid, ValuationOut, AMCWithSchemesOut
+from schemas import HistoricalDataOut, SchemeOut, PortfolioOut, FolioOut, AMCOut, SchemeDetailsOut, TransactionOut, Usernoid, ValuationOut, AMCWithSchemesOut, SchemeMasterOut
 from auth import SECRET_KEY, ALGORITHM
-from routes.pdf_converter import convertpdf, process_log_messages
+from routes.pdf_converter import convertpdf
+from .history import get_hist_data
 
 router = APIRouter(prefix="/users", tags=["Users"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
@@ -57,7 +56,7 @@ def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: 
         if not user or not user.is_active:
             logger.info("User Record not found")
             return Usernoid(email=email, is_active=False) # return Usernoid if user not found or inactive
-        return user
+        return user # pass the test, return the user
     except HTTPException as http_exc:
         raise http_exc
     except Exception as e:
@@ -93,7 +92,6 @@ def del_users_me(request: Request, current_user = Depends(get_current_user), db:
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unauthorized. Please log in or ensure your account is active."
         )
-    
     try:
         if clear_database_for_identifier(db, current_user.user_id, "user_id"):
             logger.info(f"User {current_user.full_name} deleted from database.")
@@ -115,7 +113,8 @@ async def upload_file(
     request: Request,
     file: UploadFile = File(...),
     password: str = Form(...),
-    current_user = Depends(get_current_user)
+    current_user = Depends(get_current_user),
+    background_tasks: BackgroundTasks = BackgroundTasks(),
 ):
     if isinstance(current_user, Usernoid):
         raise HTTPException(
@@ -136,18 +135,15 @@ async def upload_file(
         logger.info(f"Received file '{file.filename}' with provided password.")
         convertpdf(file_location,password,email)
         # response = process_log_messages (temp)
-        # html_content = f"<html><body><h1>{response}</h1></body></html>"
-        # return html_content
+        # Only add the background task if convertpdf succeeds
+        background_tasks.add_task(process_scheme_data, email)
         return Usernoid.model_validate(current_user)
     except HTTPException as http_exc:
         raise http_exc
     except Exception as e:
         logger.info(f"Error in execution {e}", exc_info=False)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to delete user.")
-    
-        # response = e
-        # html_content = f"<html><body><h1>{response}</h1></body></html>"
-        # return html_content
+
 
 # API Endpoints
 @router.get("/portfolio", response_model=PortfolioOut)
@@ -209,7 +205,7 @@ def get_portfolio(request: Request, current_user = Depends(get_current_user), db
     )
 
 @router.get("/schemes/{scheme_id}", response_model=SchemeDetailsOut)
-def get_scheme_details(request: Request,scheme_id: int,current_user = Depends(get_current_user), db: Session = Depends(get_db)):
+async def get_scheme_details(request: Request,scheme_id: int,current_user = Depends(get_current_user), db: Session = Depends(get_db)):
     if isinstance(current_user, Usernoid):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -218,10 +214,18 @@ def get_scheme_details(request: Request,scheme_id: int,current_user = Depends(ge
     scheme = db.query(Scheme).filter(Scheme.id == scheme_id).first()
     if not scheme:
         raise HTTPException(status_code=404, detail="Scheme not found")
-
+    # scheme_out = SchemeOut.model_validate(scheme)
+    historical_data = None
+    if scheme.amfi_code:
+        try:
+            hist_data = await get_hist_data(scheme.amfi_code, scheme_id)
+            historical_data = HistoricalDataOut(data=hist_data)
+        except HTTPException as e:
+            logger.error(f"Error getting historical data for scheme id {scheme_id}: {e.detail}")
     return SchemeDetailsOut(
         scheme=SchemeOut.model_validate(scheme),
         transactions=[TransactionOut.model_validate(transaction) for transaction in scheme.transactions],
+        historical_data=historical_data,
     )
 
 class AMCNotFoundException(Exception):
@@ -291,3 +295,25 @@ def get_amc_schemes_with_valuation(amc_id: int,request: Request, db: Session = D
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {e}")
+
+async def process_scheme_data(email: str, db: Session = Depends(get_db)):
+    try:
+        scheme_data = db.query(Scheme).filter(Scheme.amfi_code != None).all()
+        for scheme in scheme_data:
+            scheme_id = scheme["scheme_id"]
+            amfi_code = scheme["amfi_code"]
+            if amfi_code:
+                try:
+                    await get_hist_data(amfi_code, scheme_id) #get_hist_data needs to be async if you are using await.
+                    # Handle successful get_hist_data call (e.g., logging)
+                    logger.info(f"Successfully processed scheme_id: {scheme_id}, AMFI code: {amfi_code}")
+                except Exception as hist_data_error:
+                    # Handle errors from get_hist_data
+                    logger.info(f"Error processing scheme_id: {scheme_id}, AMFI code: {amfi_code}: {hist_data_error}")
+            else:
+                logger.error(f"AMFI code not found for scheme_id: {scheme_id}")
+
+    except Exception as e:
+        # Handle errors during scheme data processing
+        logger.error(f"Error processing scheme data for email {email}: {e}")
+    

@@ -31,7 +31,8 @@ class AMC(Base):
     # AMC now only has a name.
     # Relationships:
     folios = relationship("Folio", back_populates="amc")
-    schemes = relationship("Scheme", back_populates="amc")
+    schemes = relationship("Scheme", back_populates="amc", cascade="all, delete-orphan")
+    scheme_masters = relationship("SchemeMaster", back_populates="amc") #added
 
 class Folio(Base):
     __tablename__ = 'folio'
@@ -52,13 +53,10 @@ class Scheme(Base):
     id = Column(Integer, primary_key=True, index=True)
     folio_id = Column(String, ForeignKey('folio.folio_number'))
     amc_id = Column(Integer, ForeignKey('amc.id'), nullable=False)
-    scheme_name = Column(String)
+    scheme_master_id = Column(Integer, ForeignKey('scheme_master.scheme_id'), nullable=False)
     advisor = Column(String, nullable=True)
     rta_code = Column(String, nullable=True)
     rta = Column(String, nullable=True)
-    scheme_type = Column(String, nullable=True)
-    isin = Column(String, nullable=True)       # Scheme-specific ISIN
-    amfi_code = Column(String, nullable=True)    # Scheme-specific AMFI code
     nominees = Column(ARRAY(String), nullable=True)
     open_units = Column(Float, nullable=True)
     close_units = Column(Float, nullable=True)
@@ -67,9 +65,7 @@ class Scheme(Base):
     amc = relationship("AMC", back_populates="schemes")
     valuation = relationship("Valuation", back_populates="scheme", uselist=False, cascade="all, delete-orphan")
     transactions = relationship("Transaction", back_populates="scheme", cascade="all, delete-orphan")
-    __table_args__ = (
-        UniqueConstraint('folio_id', 'scheme_name', name='uq_scheme_folio'),
-    )
+    scheme_master = relationship("SchemeMaster", back_populates="schemes")
 
 class Valuation(Base):
     __tablename__ = 'valuation'
@@ -94,3 +90,25 @@ class Transaction(Base):
     transaction_type = Column(String, nullable=True)
     dividend_rate = Column(Float, nullable=True)
     scheme = relationship("Scheme", back_populates="transactions")
+
+class SchemeNavHistory(Base):
+    __tablename__ = 'scheme_nav_history'
+    id = Column(Integer, primary_key=True, index=True)
+    nav_date = Column(Date)
+    nav_value = Column(Float)
+    scheme_master_id = Column(Integer, ForeignKey('scheme_master.scheme_id'))  # ✅ Must match SchemeMaster's primary key
+    scheme_master = relationship("SchemeMaster", back_populates="nav_history") #Updated relationship
+
+class SchemeMaster(Base):
+    __tablename__ = 'scheme_master'
+    scheme_id = Column(Integer, primary_key=True, autoincrement=True)  # ✅ Primary key
+    scheme_isin = Column(String, nullable=False, unique=True)
+    scheme_amfi_code = Column(String, nullable=True, unique=True)
+    scheme_name = Column(String, nullable=False)
+    amc_id = Column(Integer, ForeignKey('amc.id'), nullable=False)
+    scheme_type = Column(String, nullable=True)
+    amc = relationship("AMC", back_populates="scheme_masters")  # ✅ Fixed duplication
+    nav_history = relationship("SchemeNavHistory", back_populates="scheme_master", cascade="all, delete-orphan")  # ✅ Fixed
+    schemes = relationship("Scheme", back_populates="scheme_master", cascade="all, delete-orphan")  # ✅ Consistent
+
+
