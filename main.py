@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
-# from fastapi.templating import Jinja2Templates
 import time
 #needed to initialize the db
 from models import User, StatementPeriod, AMC, Folio, Scheme, Valuation, Transaction, SchemeNavHistory, SchemeMaster

@@ -1,15 +1,19 @@
 # File: routes/pdf_converter.py
-from email.policy import HTTP
 import json
 import logging
 from datetime import datetime
-from fastapi import HTTPException
+from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import delete, update
 import casparser
+from typing import Dict, Any, List, Optional
+from sqlalchemy.exc import SQLAlchemyError
 import os
+from datetime import datetime, date
+from decimal import Decimal
 from models import User, Folio, StatementPeriod, Scheme, Valuation, Transaction, AMC, SchemeMaster, SchemeNavHistory
-from db import SessionLocal
+from schemas import TransactionType
+from db import SessionLocal, get_db
 
 # from logging_config import logger 
 logger = logging.getLogger("PDF")
@@ -129,15 +133,23 @@ def clear_database_for_identifier(db: Session, identifier: str, identifier_type:
         logger.error(f"Error clearing database for {identifier}: {e}", exc_info=False)
         raise
 
-from datetime import datetime
-from sqlalchemy.exc import SQLAlchemyError
-from fastapi import HTTPException
+def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
+    """
+    Adds data from parsed JSON to the database.
 
-def publish_json_to_db(data: dict, emailr: str) -> bool:
-    session = SessionLocal()
+    Args:
+        data: A dictionary containing the parsed JSON data.
+        email: The email of the user uploading the data.
+        db:   The database session.
 
-    def parse_date(date_str: str) -> datetime.date:
+    Returns:
+        True if the data was successfully added to the database, False otherwise.
+    """
+
+    def parse_date(date_str: str) -> Optional[date]:
         """Helper function to parse dates in multiple formats."""
+        if not date_str:
+            return None
         for fmt in ("%Y-%m-%d", "%Y-%b-%d", "%d-%b-%Y"):
             try:
                 return datetime.strptime(date_str, fmt).date()
@@ -146,181 +158,283 @@ def publish_json_to_db(data: dict, emailr: str) -> bool:
         raise ValueError(f"Unrecognized date format: {date_str}")
 
     try:
-        # Extract and validate statement period
+        # 1. Extract and validate statement period
         sp_data = data.get("statement_period")
         if not sp_data:
             raise ValueError("Missing 'statement_period' in JSON data.")
         new_sp_from = parse_date(sp_data.get("from"))
         new_sp_to = parse_date(sp_data.get("to"))
 
-        # Get investor details
+        if not new_sp_from or not new_sp_to:
+            raise ValueError("Invalid date format for statement period.")
+
+        # 2. Get investor details
         investor_info = data.get("investor_info", {})
-        email = emailr
         name = investor_info.get("name")
+        mobile = investor_info.get("mobile")
+        address = investor_info.get("address")
 
         if not email:
             raise ValueError("Investor email is missing.")
 
-        # Fetch user from DB
-        user = session.query(User).filter_by(email=email).first()
+        # 3. Fetch user from DB
+        user = db.query(User).filter_by(email=email).first()
         if not user:
             raise ValueError(f"User with email '{email}' not found.")
 
-        # Update user name if missing
+        # 4. Update user details if missing
         if not user.full_name and name:
             user.full_name = name
-            session.add(user)
-            session.flush()
+        if not user.mobile and mobile:
+            user.mobile = mobile
+        if not user.address and address:
+            user.address = address
 
-        # Process folios
-        for folio_data in data.get("folios", []):
+        db.add(user)
+
+        # 5. Process folios
+        folios_data: List[Dict[str, Any]] = data.get("folios",)  # type: ignore
+        for folio_data in folios_data:
             folio_number = folio_data.get("folio")
             pan = folio_data.get("PAN")
             amc_name = folio_data.get("amc")
+            # kyc_status = folio_data.get("KYC")
+            # pan_kyc_status = folio_data.get("PANKYC")
+
             if not folio_number or not amc_name:
-                continue  # Skip invalid folios
+                logger.warning(f"Skipping invalid folio: {folio_data}")
+                continue
 
-            # Ensure AMC exists
-            amc_obj = session.query(AMC).filter_by(name=amc_name).first()
-            if not amc_obj:
-                amc_obj = AMC(name=amc_name)
-                session.add(amc_obj)
-                session.flush()
+            # 6. Ensure AMC exists
+            try:
+                amc_obj = db.query(AMC).filter_by(amc_name=amc_name).first()
+                if not amc_obj:
+                    amc_obj = AMC(amc_name=amc_name)
+                    db.add(amc_obj)
+                    db.flush()  # Get amc_obj.amc_id
+            except SQLAlchemyError as e:
+                logger.error(f"Error fetching/creating AMC: {e}", exc_info=True)
+                raise
 
-            # Check if folio exists
-            existing_folio = session.query(Folio).filter_by(
+            # 7. Check if folio exists
+            existing_folio = db.query(Folio).filter_by(
                 folio_number=folio_number, user_id=user.user_id
             ).first()
 
-            # Ensure statement period exists
-            sp = session.query(StatementPeriod).filter_by(
+            # 8. Ensure statement period exists
+            sp = db.query(StatementPeriod).filter_by(
                 from_date=new_sp_from, to_date=new_sp_to, user_id=user.user_id
             ).first()
             if not sp:
                 sp = StatementPeriod(from_date=new_sp_from, to_date=new_sp_to, user_id=user.user_id)
-                session.add(sp)
-                session.flush()
+                db.add(sp)
+                db.flush()  # Get sp.id
 
             if not existing_folio:
                 folio_obj = Folio(
                     folio_number=folio_number,
                     pan=pan,
-                    statement_period=sp,
-                    user=user,
-                    amc_id=amc_obj.id
+                    statement_period_id=sp.id,  # Use sp.id
+                    user_id=user.user_id,
+                    amc_id=amc_obj.amc_id,  # Use amc_obj.amc_id
+                    # kyc_status=kyc_status,
+                    # pan_kyc_status=pan_kyc_status,
                 )
-                session.add(folio_obj)
-                session.flush()
+                db.add(folio_obj)
             else:
                 folio_obj = existing_folio
                 # Update statement period range if necessary
                 if new_sp_from < sp.from_date or new_sp_to > sp.to_date:
                     sp.from_date = min(sp.from_date, new_sp_from)
                     sp.to_date = max(sp.to_date, new_sp_to)
-                    session.add(sp)
-                    session.flush()
+                    db.add(sp)
 
-            # Process schemes
-            for scheme_data in folio_data.get("schemes", []):
+            # 9. Process schemes
+            schemes_data: List[Dict[str, Any]] = folio_data.get("schemes",)  # type: ignore
+            for scheme_data in schemes_data:
+                scheme_name = scheme_data.get("scheme")
                 scheme_isin = scheme_data.get("isin")
                 scheme_amfi = scheme_data.get("amfi")
-                scheme_name = scheme_data.get("scheme")
+                scheme_advisor = scheme_data.get("advisor")
+                scheme_rta_code = scheme_data.get("rta_code")
+                scheme_rta = scheme_data.get("rta")
                 scheme_type = scheme_data.get("type")
+                scheme_nominees = scheme_data.get("nominees")
+                scheme_open = scheme_data.get("open")
+                scheme_close = scheme_data.get("close")
+                scheme_close_calculated = scheme_data.get("close_calculated")
 
                 if not (scheme_isin or scheme_amfi):
+                    logger.warning(f"Skipping scheme with missing isin/amfi: {scheme_data}")
                     continue
 
-                # Ensure SchemeMaster exists
-                scheme_master = session.query(SchemeMaster).filter_by(scheme_isin=scheme_isin).first()
-                # 🔥 Ensure SchemeMaster exists with correct amc_id
-                if not scheme_master:
-                    scheme_master = SchemeMaster(
-                        scheme_name=scheme_name,  
-                        scheme_isin=scheme_isin,  
-                        scheme_amfi_code=scheme_amfi,
-                        amc_id=amc_obj.id,  # ✅ Fix: Ensure amc_id is set
-                        scheme_type=scheme_type
-                    )
-                    session.add(scheme_master)
-                    session.flush()
-
-                # Check if scheme exists
-                existing_scheme = session.query(Scheme).filter_by(
-                    folio_id=folio_obj.folio_number, scheme_master_id=scheme_master.scheme_id
-                ).first()
-
-                if not existing_scheme:
-                    scheme_obj = Scheme(
-                        folio_id=folio_obj.folio_number,  # ✅ Correct: Use the primary key of Folio
-                        amc_id=amc_obj.id,
-                        scheme_master_id=scheme_master.scheme_id,
-                        advisor=scheme_data.get("advisor"),
-                        rta_code=scheme_data.get("rta_code"),
-                        rta=scheme_data.get("rta"),
-                        nominees=scheme_data.get("nominees"),
-                        open_units=scheme_data.get("open"),
-                        close_units=scheme_data.get("close"),
-                        close_calculated_units=scheme_data.get("close_calculated")
-                    )
-                    session.add(scheme_obj)
-                    session.flush()
-                else:
-                    scheme_obj = existing_scheme
-
-                # Process valuation
-                valuation_data = scheme_data.get("valuation")
-                if valuation_data and new_sp_to >= sp.to_date:
-                    existing_valuation = session.query(Valuation).filter_by(
-                        scheme_id=scheme_obj.id
+                # 10. Ensure SchemeMaster exists (with amc_id check)
+                try:
+                    scheme_master = db.query(SchemeMaster).filter_by(
+                        scheme_isin=scheme_isin, amc_id=amc_obj.amc_id
                     ).first()
-
-                    if existing_valuation:
-                        existing_valuation.valuation_date = parse_date(valuation_data.get("date"))
-                        existing_valuation.valuation_nav = valuation_data.get("nav")
-                        existing_valuation.valuation_value = valuation_data.get("value")
-                        existing_valuation.valuation_cost = valuation_data.get("cost")
-                    else:
-                        valuation_obj = Valuation(
-                            scheme=scheme_obj,
-                            valuation_date=parse_date(valuation_data.get("date")),
-                            valuation_nav=valuation_data.get("nav"),
-                            valuation_value=valuation_data.get("value"),
-                            valuation_cost=valuation_data.get("cost")
+                    if not scheme_master:
+                        scheme_master = SchemeMaster(
+                            scheme_name=scheme_name,
+                            scheme_isin=scheme_isin,
+                            scheme_amfi_code=scheme_amfi,
+                            amc_id=amc_obj.amc_id,  # Use amc_id
+                            scheme_type=scheme_type,
                         )
-                        session.add(valuation_obj)
+                        db.add(scheme_master)
+                        db.flush()  # Get scheme_master.scheme_id
+                except SQLAlchemyError as e:
+                    logger.error(f"Error fetching/creating SchemeMaster: {e}", exc_info=True)
+                    raise
 
-                # Process transactions
-                for txn_data in scheme_data.get("transactions", []):
-                    txn_date = parse_date(txn_data.get("date"))
-                    txn_obj = Transaction(
-                        scheme=scheme_obj,
-                        transaction_date=txn_date,
-                        description=txn_data.get("description"),
-                        amount=txn_data.get("amount"),
-                        units=txn_data.get("units"),
-                        nav=txn_data.get("nav"),
-                        balance=txn_data.get("balance"),
-                        transaction_type=txn_data.get("type"),
-                        dividend_rate=txn_data.get("dividend_rate")
-                    )
-                    session.add(txn_obj)
+                # 11. Check if scheme exists
+                try:
+                    existing_scheme = db.query(Scheme).filter_by(
+                        folio_id=folio_obj.folio_number,
+                        scheme_master_id=scheme_master.scheme_id,  # Use scheme_master.scheme_id
+                    ).first()
+                    if not existing_scheme:
+                        scheme_obj = Scheme(
+                            folio_id=folio_obj.folio_number,  # Use folio_obj.folio_number
+                            amc_id=amc_obj.amc_id,
+                            scheme_master_id=scheme_master.scheme_id,
+                            advisor=scheme_advisor,
+                            rta_code=scheme_rta_code,
+                            rta=scheme_rta,
+                            nominees=scheme_nominees,
+                            open_units=scheme_open,
+                            close_units=scheme_close,
+                            close_calculated_units=scheme_close_calculated,
+                        )
+                        db.add(scheme_obj)
+                        db.flush()  # Get scheme_obj.id
+                    else:
+                        scheme_obj = existing_scheme
+                except SQLAlchemyError as e:
+                    logger.error(f"Error fetching/creating Scheme: {e}", exc_info=True)
+                    raise
 
-        session.commit()
+                # 12. Process valuation
+                valuation_data = scheme_data.get("valuation")
+                if valuation_data:
+                    valuation_date_str = valuation_data.get("date")
+                    valuation_date = parse_date(valuation_date_str) if valuation_date_str else None
+                    valuation_nav = valuation_data.get("nav")
+                    valuation_value = valuation_data.get("value")
+                    valuation_cost = valuation_data.get("cost")
+
+                    if not valuation_date:
+                        logger.warning(f"Skipping valuation with invalid date: {valuation_data}")
+                        continue
+
+                    try:
+                        existing_valuation = db.query(Valuation).filter_by(
+                            scheme_id=scheme_obj.id
+                        ).first()
+                        if existing_valuation:
+                            existing_valuation.valuation_date = valuation_date
+                            existing_valuation.valuation_nav = (
+                                Decimal(str(valuation_nav)) if valuation_nav is not None else None
+                            )
+                            existing_valuation.valuation_value = (
+                                Decimal(str(valuation_value)) if valuation_value is not None else None
+                            )
+                            existing_valuation.valuation_cost = (
+                                Decimal(str(valuation_cost)) if valuation_cost is not None else None
+                            )
+                            db.add(existing_valuation)
+                        else:
+                            valuation_obj = Valuation(
+                                scheme_id=scheme_obj.id,
+                                valuation_date=valuation_date,
+                                valuation_nav=Decimal(str(valuation_nav)) if valuation_nav is not None else None,
+                                valuation_value=Decimal(str(valuation_value)) if valuation_value is not None else None,
+                                valuation_cost=Decimal(str(valuation_cost)) if valuation_cost is not None else None,
+                            )
+                            db.add(valuation_obj)
+                    except SQLAlchemyError as e:
+                        logger.error(f"Error handling valuation: {e}", exc_info=True)
+                        raise
+
+                # 13. Process transactions
+                transactions_data: List[Dict[str, Any]] = scheme_data.get("transactions",)  # type: ignore
+                for txn_data in transactions_data:
+                    txn_date_str = txn_data.get("date")
+                    txn_date = parse_date(txn_date_str) if txn_date_str else None
+                    txn_description = txn_data.get("description")
+                    txn_amount = txn_data.get("amount")
+                    txn_units = txn_data.get("units")
+                    txn_nav = txn_data.get("nav")
+                    txn_balance = txn_data.get("balance")
+                    txn_type = txn_data.get("type")
+                    txn_dividend_rate = txn_data.get("dividend_rate")
+
+                    if not txn_date:
+                        logger.warning(f"Skipping transaction with invalid date: {txn_data}")
+                        continue
+
+                    # 14. Transaction Type Validation
+                    try:
+                        transaction_type = TransactionType(txn_type) if txn_type else None
+                    except ValueError:
+                        logger.error(f"Invalid transaction type: {txn_type}")
+                        raise ValueError(f"Invalid transaction type: {txn_type}")
+
+                    # 15. Dividend Rate Validation
+                    if transaction_type in (TransactionType.DIVIDEND_PAYOUT, TransactionType.DIVIDEND_REINVESTMENT):
+                        if txn_dividend_rate is None:
+                            logger.error("dividend_rate is required for DIVIDEND transactions")
+                            raise ValueError("dividend_rate is required for DIVIDEND transactions")
+                    else:
+                        if txn_dividend_rate is not None:
+                            logger.warning("dividend_rate should be None for non-DIVIDEND transactions")
+
+                    # 16. Check for duplicate transactions (simplified example)
+                    try:
+                        existing_txn = db.query(Transaction).filter_by(
+                            scheme_id=scheme_obj.id,
+                            transaction_date=txn_date,
+                            amount=Decimal(str(txn_amount)) if txn_amount is not None else None,
+                            units=Decimal(str(txn_units)) if txn_units is not None else None,
+                        ).first()
+                        if not existing_txn:
+                            txn_obj = Transaction(
+                                scheme_id=scheme_obj.id,
+                                transaction_date=txn_date,
+                                description=txn_description,
+                                amount=Decimal(str(txn_amount)) if txn_amount is not None else None,
+                                units=Decimal(str(txn_units)) if txn_units is not None else None,
+                                nav=Decimal(str(txn_nav)) if txn_nav is not None else None,
+                                balance=Decimal(str(txn_balance)) if txn_balance is not None else None,
+                                transaction_type=transaction_type,
+                                dividend_rate=Decimal(str(txn_dividend_rate))
+                                if txn_dividend_rate is not None
+                                else None,
+                            )
+                            db.add(txn_obj)
+                    except SQLAlchemyError as e:
+                        logger.error(f"Error handling transaction: {e}", exc_info=True)
+                        raise
+
+        db.commit()
         return True
     except SQLAlchemyError as e:
-        session.rollback()
-        logger.error(f"Database error: {e}", exc_info=False)
+        db.rollback()
+        logger.error(f"Database error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Database error. Raise a ticket for support.")
     except ValueError as e:
-        session.rollback()
+        db.rollback()
         logger.error(f"Data validation error: {e}", exc_info=False)
         raise HTTPException(status_code=400, detail=f"Invalid data: {e}")
+    except HTTPException as e:
+        db.rollback()
+        raise e  # Re-raise HTTPException to be handled by caller
     except Exception as e:
-        session.rollback()
-        logger.error(f"Unexpected error: {e}", exc_info=False)
+        db.rollback()
+        logger.error(f"Unexpected error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="An unexpected error occurred.")
     finally:
-        session.close()
+        db.close()
 
 def process_log_messages(log_messages: list):
     """
@@ -339,293 +453,10 @@ def process_log_messages(log_messages: list):
     html_content = f"<html><body><h1>Log Messages:</h1>{log_items_html}</body></html>"
     return html_content
 
-def publish_to_db(data: dict, emailr: str) -> bool:
-    """
-    Parses the JSON data and updates the DB.
-    For each folio:
-      - If the folio is new, a new StatementPeriod is created and all schemes,
-        valuations, and transactions are inserted.
-      - If the folio already exists (for the user), the existing StatementPeriod
-        is examined. The new statement period from the JSON is compared against
-        the stored period. Only transactions falling into the "new" period (i.e.,
-        outside the existing date range) are added. If the new period extends the
-        existing range, the valuation record is updated accordingly.
-    """
-    session = SessionLocal()
-
-    def parse_date(date_str: str) -> datetime.date:
-        """
-        Try multiple date formats.
-        Formats include:
-          - "YYYY-MM-DD" (e.g., "2025-03-05")
-          - "YYYY-MMM-DD" (e.g., "2025-Mar-05")
-          - "DD-MMM-YYYY" (e.g., "01-Jan-2025")
-        """
-        for fmt in ("%Y-%m-%d", "%Y-%b-%d", "%d-%b-%Y"):
-            try:
-                return datetime.strptime(date_str, fmt).date()
-            except (ValueError, TypeError):
-                continue
-        raise ValueError(f"Date format for '{date_str}' not recognized.")
-
-    try:
-        # 1. Extract and parse the new statement period from JSON.
-        sp_data = data.get("statement_period")
-        if not sp_data:
-            raise ValueError("Missing 'statement_period' in JSON data.")
-        new_sp_from = parse_date(sp_data.get("from"))
-        new_sp_to = parse_date(sp_data.get("to"))
-        logger.debug(f"New Statement from: {new_sp_from} to {new_sp_to}")
-
-        # 2. Process investor info and obtain the user.
-        investor_info = data.get("investor_info", {})
-        email = emailr  # Use the provided email parameter.
-        name = investor_info.get("name")
-        if not email:
-            raise ValueError("Investor email is missing.")
-
-        user = session.query(User).filter_by(email=email).first()
-        logger.debug(f"User fetched for {email} is {user}")
-        if not user:
-            logger.error(f"User with email {email} not found.")
-            raise ValueError("User not found.")
-        else:
-            if not user.full_name:
-                user.full_name = name
-                session.add(user)
-                session.flush()
-
-        # 3. Process each folio in the JSON.
-        for folio_data in data.get("folios", []):
-            folio_number = folio_data.get("folio")
-            pan = folio_data.get("PAN")
-
-            # --- Process AMC details ---
-            # Expect JSON field: "amc"
-            amc_name = folio_data.get("amc")
-            if not amc_name:
-                logger.warning(f"Skipping folio {folio_number} because AMC name is missing.")
-                continue
-
-            # Lookup AMC; if not found, create a new AMC record.
-            amc_obj = session.query(AMC).filter_by(name=amc_name).first()
-            if not amc_obj:
-                amc_obj = AMC(name=amc_name)
-                session.add(amc_obj)
-                session.flush()  # Assigns id to amc_obj
-
-            # Query for an existing folio (for this user).
-            existing_folio = session.query(Folio).filter_by(
-                folio_number=folio_number, user_id=user.user_id
-            ).first()
-            logger.debug(f"Existing Folio: {existing_folio}")
-
-            if not existing_folio:
-                # New folio: create or use an existing StatementPeriod.
-                logger.debug(f"Adding New Folio for statement {new_sp_from} to {new_sp_to}")
-                existing_sp = session.query(StatementPeriod).filter_by(
-                    from_date=new_sp_from,
-                    to_date=new_sp_to,
-                    user_id=user.user_id
-                ).first()
-                if existing_sp:
-                    sp = existing_sp
-                    # logger.info("Using existing statement period") #change in prod
-                    logger.info(f"Using existing statement period: {sp.id} ({sp.from_date} to {sp.to_date})")
-                else:
-                    sp = StatementPeriod(from_date=new_sp_from, to_date=new_sp_to, user_id=user.user_id)
-                    session.add(sp)
-                    session.flush()
-                    logger.info(f"Created new statement period: {sp.id} ({sp.from_date} to {sp.to_date})") #change in prod to debug
- 
-                # Create new Folio with AMC_ID set.
-                folio_obj = Folio(
-                    folio_number=folio_number,
-                    pan=pan,
-                    statement_period=sp,
-                    user=user,
-                    amc_id=amc_obj.id
-                )
-                session.add(folio_obj)
-                session.flush()
-                logger.debug(f"Folio Details: {folio_obj}")
-
-                # For a new folio, add all schemes, valuations, and transactions.
-                for scheme_data in folio_data.get("schemes", []):
-                    scheme_isin = scheme_data.get("isin")
-                    scheme_amfi = scheme_data.get("amfi")
-                    if not (scheme_isin or scheme_amfi):
-                        logger.warning(f"Skipping scheme addition for folio {folio_number} due to missing both ISIN and AMFI code.")
-                        continue
-                    else:
-                        scheme_obj = Scheme(
-                            folio_id=folio_number,
-                            amc_id=amc_obj.id,
-                            scheme_name=scheme_data.get("scheme"),
-                            advisor=scheme_data.get("advisor"),
-                            rta_code=scheme_data.get("rta_code"),
-                            rta=scheme_data.get("rta"),
-                            scheme_type=scheme_data.get("type"),
-                            isin=scheme_isin,
-                            amfi_code=scheme_amfi,
-                            nominees=scheme_data.get("nominees"),
-                            open_units=scheme_data.get("open"),
-                            close_units=scheme_data.get("close"),
-                            close_calculated_units=scheme_data.get("close_calculated")
-                        )
-                        session.add(scheme_obj)
-                        session.flush()
-                        logger.debug(f"Scheme Added: {scheme_obj}")
-                        valuation_data = scheme_data.get("valuation")
-                        if valuation_data:
-                            valuation_obj = Valuation(
-                                scheme=scheme_obj,
-                                valuation_date=parse_date(valuation_data.get("date")),
-                                valuation_nav=valuation_data.get("nav"),
-                                valuation_value=valuation_data.get("value"),
-                                valuation_cost=valuation_data.get("cost")
-                            )
-                            session.add(valuation_obj)
-                        for txn_data in scheme_data.get("transactions", []):
-                            txn_date = parse_date(txn_data.get("date"))
-                            txn_obj = Transaction(
-                                scheme=scheme_obj,
-                                transaction_date=txn_date,
-                                description=txn_data.get("description"),
-                                amount=txn_data.get("amount"),
-                                units=txn_data.get("units"),
-                                nav=txn_data.get("nav"),
-                                balance=txn_data.get("balance"),
-                                transaction_type=txn_data.get("type"),
-                                dividend_rate=txn_data.get("dividend_rate")
-                            )
-                            session.add(txn_obj)
-            else:
-                logger.info(f"Existing Folio found {folio_number} with AMC {amc_name}")
-                sp = existing_folio.statement_period
-                missing_periods = []
-                if new_sp_from < sp.from_date:
-                    missing_periods.append((new_sp_from, min(new_sp_to, sp.from_date)))
-                if new_sp_to > sp.to_date:
-                    missing_periods.append((max(new_sp_from, sp.to_date), new_sp_to))
-                new_union_from = min(sp.from_date, new_sp_from)
-                new_union_to = max(sp.to_date, new_sp_to)
-                if new_union_from != sp.from_date or new_union_to != sp.to_date:
-                    logger.info(
-                        f"Updating StatementPeriod for folio {folio_number} from {sp.from_date} - {sp.to_date} "
-                        f"to {new_union_from} - {new_union_to}"
-                    )
-                    sp.from_date = new_union_from
-                    sp.to_date = new_union_to
-                    sp.user_id = user.user_id
-                    session.add(sp)
-                    session.flush()
-
-                for scheme_data in folio_data.get("schemes", []):
-                    scheme_name = scheme_data.get("scheme")
-                    existing_scheme = session.query(Scheme).filter_by(
-                        folio_id=folio_number, scheme_name=scheme_name
-                    ).first()
-                    if not existing_scheme:
-                        scheme_obj = Scheme(
-                            folio_id=folio_number,
-                            amc_id=amc_obj.id,
-                            scheme_name=scheme_name,
-                            advisor=scheme_data.get("advisor"),
-                            rta_code=scheme_data.get("rta_code"),
-                            rta=scheme_data.get("rta"),
-                            scheme_type=scheme_data.get("type"),
-                            isin=scheme_data.get("isin"),
-                            amfi_code=scheme_data.get("amfi"),
-                            nominees=scheme_data.get("nominees"),
-                            open_units=scheme_data.get("open"),
-                            close_units=scheme_data.get("close"),
-                            close_calculated_units=scheme_data.get("close_calculated")
-                        )
-                        session.add(scheme_obj)
-                        session.flush()
-                        valuation_data = scheme_data.get("valuation")
-                        if valuation_data:
-                            valuation_obj = Valuation(
-                                scheme=scheme_obj,
-                                valuation_date=parse_date(valuation_data.get("date")),
-                                valuation_nav=valuation_data.get("nav"),
-                                valuation_value=valuation_data.get("value"),
-                                valuation_cost=valuation_data.get("cost")
-                            )
-                            session.add(valuation_obj)
-                        for txn_data in scheme_data.get("transactions", []):
-                            txn_date = parse_date(txn_data.get("date"))
-                            txn_obj = Transaction(
-                                scheme=scheme_obj,
-                                transaction_date=txn_date,
-                                description=txn_data.get("description"),
-                                amount=txn_data.get("amount"),
-                                units=txn_data.get("units"),
-                                nav=txn_data.get("nav"),
-                                balance=txn_data.get("balance"),
-                                transaction_type=txn_data.get("type"),
-                                dividend_rate=txn_data.get("dividend_rate")
-                            )
-                            session.add(txn_obj)
-                    else:
-                        for txn_data in scheme_data.get("transactions", []):
-                            txn_date = parse_date(txn_data.get("date"))
-                            add_txn = any(period_start <= txn_date < period_end
-                                          for period_start, period_end in missing_periods)
-                            if add_txn:
-                                txn_obj = Transaction(
-                                    scheme=existing_scheme,
-                                    transaction_date=txn_date,
-                                    description=txn_data.get("description"),
-                                    amount=txn_data.get("amount"),
-                                    units=txn_data.get("units"),
-                                    nav=txn_data.get("nav"),
-                                    balance=txn_data.get("balance"),
-                                    transaction_type=txn_data.get("type"),
-                                    dividend_rate=txn_data.get("dividend_rate")
-                                )
-                                session.add(txn_obj)
-                        valuation_data = scheme_data.get("valuation")
-                        if valuation_data and new_sp_to > sp.to_date:
-                            existing_valuation = session.query(Valuation).filter_by(
-                                scheme_id=existing_scheme.id
-                            ).first()
-                            if existing_valuation:
-                                existing_valuation.valuation_date = parse_date(valuation_data.get("date"))
-                                existing_valuation.valuation_nav = valuation_data.get("nav")
-                                existing_valuation.valuation_value = valuation_data.get("value")
-                                existing_valuation.valuation_cost = valuation_data.get("cost")
-                                session.add(existing_valuation)
-                            else:
-                                valuation_obj = Valuation(
-                                    scheme=existing_scheme,
-                                    valuation_date=parse_date(valuation_data.get("date")),
-                                    valuation_nav=valuation_data.get("nav"),
-                                    valuation_value=valuation_data.get("value"),
-                                    valuation_cost=valuation_data.get("cost")
-                                )
-                                session.add(valuation_obj)
-
-        session.commit()
-        logger.info("Finished DB query.")
-        return True
-
-    except Exception as e:
-        session.rollback()
-        if str(e) == "User not found.":
-            logger.error("Error publishing JSON to DB, Exception: Is user registered?!", exc_info=False)
-            logger.warning("Unauthorised access to add data to db")
-        logger.error(f"Error publishing JSON to DB, Exception: {e}", exc_info=True)
-        return False
-
-    finally:
-        session.close()
-
-
-def convertpdf(pdf_file_path: str, password: str, email: str):
+def convertpdf(pdf_file_path: str, password: str, email: str) -> bool:
     """
     Converts a CAS PDF to JSON data, then attempts to publish the JSON data to the DB.
+    Returns True on success, raises HTTPException on failure.
     """
     logger.info("File Conversion START")
     try:
@@ -633,31 +464,46 @@ def convertpdf(pdf_file_path: str, password: str, email: str):
         json_str = casparser.read_cas_pdf(pdf_file_path, password, output="json")
         data = json.loads(json_str)
 
-        # Ensure the output file exists (create if missing)
-        if not os.path.exists("output.json"):
-            with open("output.json", "w") as f:
-                f.write("")  # Create an empty file
-
         with open("output.json", "w") as f:
             json.dump(data, f, indent=4)
         logger.info("File Conversion FINISH")
-    except Exception as e:
+    except casparser.exceptions.CASParserError as e:  # Catching specific exception
         logger.error(f"Conversion PDF PARSER Module FAILED. {e}", exc_info=False)
-        logger.removeHandler(progress_handler)
-        raise HTTPException(status_code=500, detail=f"PDF Conversion Module FAILED. {e}")
-    try:
-        data = json.loads(json_str)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  # Use appropriate status code
+            detail=f"PDF Conversion Module FAILED. {e}"
+        )
     except json.JSONDecodeError as e:
         logger.error(f"Invalid JSON format: {e}", exc_info=False)
-        logger.removeHandler(progress_handler)
-        raise HTTPException(status_code=500, detail="Invalid JSON format.")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Invalid JSON format."
+        )
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {e}", exc_info=True)  # Catching other exceptions
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred."
+        )
+
     logger.info("Adding data to DB")
-    if not publish_json_to_db(data, email):
-        logger.error("Failed to push data to DB.")
-        logger.removeHandler(progress_handler)
-        return progress_report
-    logger.removeHandler(progress_handler)
-    return progress_report
+    try:
+        db = SessionLocal()
+        if not publish_json_to_db(data, email,db):
+            logger.error("Failed to push data to DB.")
+            raise HTTPException(  # Raise HTTPException for DB failure
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to push data to DB."
+            )
+        return True  # Indicate success
+    except HTTPException as e:
+        raise e # Re-raise HTTPException to be handled by caller
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during database operation: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred during database operation."
+        )
 
 
 

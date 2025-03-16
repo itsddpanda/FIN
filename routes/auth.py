@@ -5,13 +5,13 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from db import get_db
 from models import User
-from schemas import Token, UserOut, UserCreate, Usernoid
+from schemas import Token, UserOut, UserCreate, UserOut
 from auth import verify_password, get_password_hash, create_access_token, generate_userid
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 logger = logger.getChild("auth.py")
 
-@router.post("/register", response_model=Usernoid)
+@router.post("/register", response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
     try:
         logger.info(f"Registering user with email: {user.email}")
@@ -30,7 +30,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
                 db.commit()
                 db.refresh(db_user)
                 logger.info(f"User {user.email} re-registered")
-                return Usernoid.model_validate(db_user)
+                return UserOut.model_validate(db_user)
 
         hashed_password = get_password_hash(user.password)
         user_id = generate_userid()
@@ -39,7 +39,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_user)
         logger.info(f"New user registered with ID: {user_id}")
-        return Usernoid.model_validate(new_user)
+        return UserOut.model_validate(new_user)
 
     except HTTPException as http_exc:
         raise http_exc # re-raise the http exception

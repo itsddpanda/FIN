@@ -1,32 +1,58 @@
-# File: db.py
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from logging_config import logger, DBURL
+import os
 import logging
+from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
+from logging_config import logger  # Ensure this is correctly initialized before import
 
+logger = logging.getLogger("env")
 
-logger = logging.getLogger("db.py")
-# Use environment variables to configure your database URL securely
-DATABASE_URL = DBURL
-if not DBURL:
-    logger.error("DATABASE_URL environment variable is not set.")
-    raise ValueError("DATABASE_URL environment variable is not set.")
+# Load DATABASE_URL from environment
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-logger.info(f"DB URL fetched from .env file")
-logger.debug(f"from DB.PY Database : {DATABASE_URL}")
+if not DATABASE_URL:
+    logger.error("DATABASE_URL is not set.")
+    raise ValueError("DATABASE_URL is not set.")
 
-# For SQLite, include connect_args; otherwise, remove or adjust accordingly
-engine = create_engine(
+# ✅ Convert for Async if using PostgreSQL
+ASYNC_DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://") if DATABASE_URL.startswith("postgresql://") else DATABASE_URL
+
+logger.debug(f"Sync Database URL: {DATABASE_URL}")
+logger.debug(f"Async Database URL: {ASYNC_DATABASE_URL}")
+
+# ✅ Sync Engine (For APIs)
+sync_engine = create_engine(
     DATABASE_URL,
-    connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {},
     pool_pre_ping=True,
+    pool_size=10,           # Set pool size (adjust based on load)
+    max_overflow=20         # Allow additional connections beyond the pool
 )
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# ✅ Async Engine (For Background Tasks)
+async_engine = create_async_engine(
+    ASYNC_DATABASE_URL,
+    echo=False,             # Set to False in production
+    pool_pre_ping=True
+)
+
+# ✅ Sync Session Factory (For APIs)
+SessionLocal = sessionmaker(
+    bind=sync_engine,
+    autocommit=False,
+    autoflush=False
+)
+
+# ✅ Async Session Factory (For Background Tasks)
+AsyncSessionLocal = sessionmaker(
+    bind=async_engine,
+    class_=AsyncSession,
+    expire_on_commit=False
+)
+
+# ✅ Base Model
 Base = declarative_base()
 
-# Dependency to get DB session in routes
+# ✅ Sync DB Dependency (For APIs)
 def get_db():
     db = SessionLocal()
     try:
@@ -34,7 +60,20 @@ def get_db():
     finally:
         db.close()
 
+# ✅ Async DB Dependency (For Background Tasks)
+async def get_async_db():
+    async with AsyncSessionLocal() as db:
+        yield db
+
+# ✅ Sync Database Initialization (Only for Local Development)
 def init_db():
-    logger.info("INIT DB")
-    Base.metadata.create_all(bind=engine)
-    logger.info("DB INITIALIZED")
+    logger.info("Initializing Database...")
+    logger.info(Base.metadata.create_all(bind=sync_engine))
+    logger.info("Database Initialized") 
+    # logger.info(Base.metadata.drop_all(bind=sync_engine))
+
+# ✅ Async Database Initialization (For Background Tasks & Development)
+async def async_init_db():
+    async with async_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    logger.info("Async Database Initialized")

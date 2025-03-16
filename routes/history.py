@@ -1,68 +1,93 @@
-# file: history.py
-import requests
 import logging
 from fastapi import Depends, HTTPException, status
 from schemas import HistoricalDataResponse
-from models import SchemeNavHistory
-from db import get_db
+from models import Scheme, SchemeNavHistory
+from db import get_async_db,AsyncSessionLocal
 from datetime import datetime
-from sqlalchemy.orm import Session
-from sqlalchemy import exists, and_
+import asyncio
+from pydantic import ValidationError
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from sqlalchemy import and_
+import httpx
 
 logger = logging.getLogger("history")
 
-def save_scheme_nav_history(scheme_id: int, historical_data, db: Session = Depends(get_db)):
-    """Saves the scheme NAV history to the database."""
+async def save_scheme_nav_history(scheme_id: int, historical_data, db: AsyncSession):
+    """Efficiently saves NAV history with bulk inserts and schema validation."""
     try:
-        for nav_entry in historical_data.data:
-            nav_date = datetime.strptime(nav_entry.date, "%d-%m-%Y").date()
-            nav_value = float(nav_entry.nav)
+        # Fetch correct scheme_master_id
+        result = await db.execute(
+            select(Scheme.scheme_master_id).where(Scheme.id == scheme_id)
+        )
+        scheme_master_id = result.scalar()
+        logger.info(f"Scheme Master = {scheme_master_id} where scheme_id was {scheme_id}")
+        if not scheme_master_id:
+            raise HTTPException(status_code=400, detail="Invalid scheme_id")
 
-            # Check for existing record
-            existing_record = db.query(exists().where(and_(
-                SchemeNavHistory.scheme_id == scheme_id,
-                SchemeNavHistory.nav_date == nav_date
-            ))).scalar()
+        # Fetch existing NAV history for the given scheme_master_id
+        existing_records = await db.execute(
+            select(SchemeNavHistory.nav_date)
+            .where(SchemeNavHistory.scheme_master_id == scheme_master_id)
+        )
+        existing_dates = set(existing_records.scalars().all())  # Convert to a set
 
-            if not existing_record:
-                nav_history_entry = SchemeNavHistory(
-                    scheme_id=scheme_id,
+        # Prepare bulk insert data
+        nav_entries = []
+        for nav_entry in historical_data["data"]:  # ✅ Corrected dictionary access
+            nav_date = datetime.strptime(nav_entry["date"], "%d-%m-%Y").date()
+            nav_value = float(nav_entry["nav"])
+
+            if nav_date not in existing_dates:
+                # logging.info(f"Adding {nav_date} ")
+                nav_entries.append(SchemeNavHistory(
+                    scheme_master_id=scheme_master_id,
                     nav_date=nav_date,
-                    nav_value=nav_value,
-                )
-                db.add(nav_history_entry)
+                    nav_value=nav_value
+                ))
 
-        db.commit()
+        if nav_entries:
+            db.add_all(nav_entries)  # Alternative: Use `db.execute(insert(SchemeNavHistory), nav_entries)`
+            await db.commit()
+            logger.info(f"Inserted {len(nav_entries)} records for scheme_master: {scheme_master_id}.")
+        else:
+            logger.info(f"DUPES not added for scheme_master: {scheme_master_id}")
+
     except Exception as e:
-        db.rollback()
-        raise e
-    finally:
-        db.close()
+        await db.rollback()
+        logger.error(f"Error saving NAV history for scheme_id {scheme_id}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Failed to save NAV history")
 
-async def get_hist_data(amfi_code: str, scheme_id: int) -> HistoricalDataResponse:
-    URL = f"https://api.mfapi.in/mf/{amfi_code}"
-    try:
-        logger.info(f"Fetching Historical Data for {amfi_code} ")
-        response = requests.get(URL)
-        response.raise_for_status()  # Check for HTTP errors
+async def get_hist_data(amfi_code: str, scheme_id: int):
+    """Fetches NAV history for a scheme from AMFI API and saves it."""
+    async with AsyncSessionLocal() as db:
+        try:
+            # Validate and fetch the correct scheme_master_id
+            scheme_master_id = await db.execute(
+                select(Scheme.scheme_master_id).where(Scheme.id == scheme_id)
+            )
+            scheme_master_id = scheme_master_id.scalar()
+            if not scheme_master_id:
+                raise HTTPException(status_code=400, detail="Invalid scheme_id")
 
-        data = response.json()
-        historical_data = HistoricalDataResponse(**data) # Validate with Pydantic
+            url = f"https://api.mfapi.in/mf/{amfi_code}"
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url)
 
-        if historical_data.status != "SUCCESS":
-            logger.error(f"External API returned non-success status for amfi_code: {amfi_code}. Status: {historical_data.status}")
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="External API returned non-success status")
-        save_scheme_nav_history(scheme_id, historical_data)
-        return historical_data
+            # Validate API response
+            if response.status_code != 200:
+                raise HTTPException(status_code=502, detail="Failed to fetch NAV history")
+            # logger.info(f"Got response for {amfi_code}")
+            data = response.json()
+            if not data or "data" not in data:
+                logger.error("Invalid response")
+                raise HTTPException(status_code=400, detail="Invalid NAV data received")
 
-    except requests.RequestException as e:
-        logger.error(f"Error fetching data from {URL}: {e}", exc_info=False)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error fetching data from external API")
-    except ValueError as e: # Handle JSON decoding errors
-        logger.error(f"Error decoding JSON from {URL}: {e}", exc_info=False)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error decoding JSON from external API")
-    except Exception as e: # Handle any other exception.
-        logger.error(f"Unexpected error from {URL}: {e}", exc_info=False)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unexpected error from external API")
-    
+            # Call save function
+            # logger.info("Calling Save Scheme NAV")
+            await save_scheme_nav_history(scheme_master_id, data, db)
+
+        except Exception as e:
+            logger.error(f"Error in get_hist_data for scheme_id {scheme_id}: {e}", exc_info=True)
+            raise HTTPException(status_code=500, detail="Internal server error")
 

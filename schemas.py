@@ -1,11 +1,10 @@
-# File: schemas.py
-from operator import is_
 from pydantic import BaseModel, EmailStr, Field
 from typing import List, Optional
 from datetime import date
+from decimal import Decimal
+from enum import Enum
 
-from models import User
-
+### User Schemas
 class UserBase(BaseModel):
     email: EmailStr
 
@@ -14,30 +13,26 @@ class UserCreate(UserBase):
 
 class UserOut(UserBase):
     is_active: bool
-    user_id: str
 
-    class Config:
-        from_attributes = True
+    model_config = {'from_attributes': True}
 
-class Usernoid(UserBase):
-    is_active: bool
-
-    class Config:
-        from_attributes = True
-        
+### Token
 class Token(BaseModel):
     access_token: str
     token_type: str
-# Pydantic Models for API Responses
+
+### AMC Schemas
 class AMCOut(BaseModel):
     id: int
     name: str
-    valuation_value: float = 0.0
-    valuation_cost: float = 0.0
-    gain_loss: float = 0.0
-    gain_loss_percent: float = 0.0
 
     model_config = {'from_attributes': True}
+
+class AMCWithValuationOut(AMCOut):
+    valuation_value: Decimal = 0.0
+    valuation_cost: Decimal = 0.0
+    gain_loss: Decimal = 0.0
+    gain_loss_percent: Decimal = 0.0
 
 class FolioOut(BaseModel):
     folio_number: str
@@ -45,74 +40,92 @@ class FolioOut(BaseModel):
 
     model_config = {'from_attributes': True}
 
+### Scheme Master Schema (Reference Data)
 class SchemeMasterOut(BaseModel):
-    scheme_id: int
-    scheme_isin: str
-    scheme_amfi_code: Optional[str] = None
-    scheme_name: str
+    id: int
+    isin: Optional[str] = None
+    amfi_code: Optional[str] = None
+    name: str
     amc_id: int
     scheme_type: Optional[str] = None
 
     model_config = {'from_attributes': True}
 
+class ValuationOut(BaseModel):
+    valuation_date: date  # Valuation date is required
+    valuation_nav: Optional[Decimal] = None
+    valuation_cost: Optional[Decimal] = None
+    valuation_value: Optional[Decimal] = None
+
+    model_config = {'from_attributes': True}
+
+### Scheme Schema (Linked to SchemeMaster)
 class SchemeOut(BaseModel):
     id: int
-    scheme_name: str
-    isin: Optional[str] = None
-    amfi_code: Optional[str] = None
+    folio_id: int
+    # amc_id: int  # Removed redundant amc_id
+    scheme_master: SchemeMasterOut
     advisor: Optional[str] = None
     rta_code: Optional[str] = None
     rta: Optional[str] = None
     nominees: Optional[List[str]] = None
-    open_units: Optional[float] = None
-    close_units: Optional[float] = None
-    close_calculated_units: Optional[float] = None
-    valuation: Optional["ValuationOut"] = None
-    scheme_master_id: int
-    scheme_master: Optional["SchemeMasterOut"] = None  # Add relationship
+    open_units: Optional[Decimal] = None
+    close_units: Optional[Decimal] = None
+    close_calculated_units: Optional[Decimal] = None
+    valuation: Optional[ValuationOut] = None
 
     model_config = {'from_attributes': True}
 
-class ValuationOut(BaseModel):
-    valuation_date: Optional[date] = None
-    valuation_nav: Optional[float] = None
-    valuation_cost: Optional[float] = None
-    valuation_value: Optional[float] = None
-
-    model_config = {'from_attributes': True}
+class TransactionType(str, Enum):
+    PURCHASE = "PURCHASE"
+    PURCHASE_SIP = "PURCHASE_SIP"
+    REDEMPTION = "REDEMPTION"
+    SWITCH_IN = "SWITCH_IN"
+    SWITCH_IN_MERGER = "SWITCH_IN_MERGER"
+    SWITCH_OUT = "SWITCH_OUT"
+    SWITCH_OUT_MERGER = "SWITCH_OUT_MERGER"
+    DIVIDEND_PAYOUT = "DIVIDEND_PAYOUT"
+    DIVIDEND_REINVESTMENT = "DIVIDEND_REINVESTMENT"
+    SEGREGATION = "SEGREGATION"
+    STAMP_DUTY_TAX = "STAMP_DUTY_TAX"
+    TDS_TAX = "TDS_TAX"
+    STT_TAX = "STT_TAX"
+    MISC = "MISC"
 
 class TransactionOut(BaseModel):
     transaction_date: Optional[date] = None
     description: Optional[str] = None
-    amount: Optional[float] = None
-    units: Optional[float] = None
-    nav: Optional[float] = None
-    balance: Optional[float] = None
-    transaction_type: Optional[str] = None
-    dividend_rate: Optional[float] = None
+    amount: Optional[Decimal] = None
+    units: Optional[Decimal] = None
+    nav: Optional[Decimal] = None
+    balance: Optional[Decimal] = None
+    transaction_type: Optional[TransactionType] = None  # Using Enum
+    dividend_rate: Optional[Decimal] = None
 
     model_config = {'from_attributes': True}
 
-
+### Portfolio Schema
 class PortfolioOut(BaseModel):
-    portfolio_value: float = 0.0
-    total_investment: float = 0.0
-    total_gain_loss: float = 0.0
-    total_gain_loss_percent: float = 0.0
+    portfolio_value: Decimal = 0.0
+    total_investment: Decimal = 0.0
+    total_gain_loss: Decimal = 0.0
+    total_gain_loss_percent: Decimal = 0.0
     folios: List[FolioOut]
 
-
+### Dashboard Schema
 class DashboardOut(BaseModel):
     user: UserOut
-    portfolio_value: float = Field(..., description="Total portfolio value")
-    total_investment: float = Field(..., description="Total investment cost")
-    total_gain_loss: float = Field(..., description="Total gain or loss")
-    total_gain_loss_percent: float = Field(..., description="Total gain or loss percent")
+    portfolio_value: Decimal = Field(..., description="Total portfolio value")
+    total_investment: Decimal = Field(..., description="Total investment cost")
+    total_gain_loss: Decimal = Field(..., description="Total gain or loss")
+    total_gain_loss_percent: Decimal = Field(..., description="Total gain or loss percent")
 
+### AMC with Schemes Response
 class AMCWithSchemesOut(BaseModel):
-    amc: AMCOut
+    amc: AMCWithValuationOut
     schemes: List[SchemeOut]
 
+### Historical NAV Data
 class MetaData(BaseModel):
     fund_house: str
     scheme_type: str
@@ -139,12 +152,10 @@ class SchemeDetailsOut(BaseModel):
     transactions: List[TransactionOut]
     historical_data: Optional[HistoricalDataOut] = None
 
-
-
 class SchemeNavHistoryOut(BaseModel):
     id: int
-    scheme_master_id: int  # Updated from scheme_id
+    scheme_master_id: int
     nav_date: date
-    nav_value: float
-
+    nav_value: Decimal
+    
     model_config = {'from_attributes': True}

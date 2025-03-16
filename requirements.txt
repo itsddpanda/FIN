@@ -1,6 +1,6 @@
 fastapi==0.100.0
 uvicorn[standard]==0.22.0
-SQLAlchemy==2.0.17
+#SQLAlchemy==2.0.17
 python-jose==3.3.0
 passlib[bcrypt]==1.7.4
 pydantic===2.3.0
@@ -11,8 +11,10 @@ alembic==1.14.1
 psycopg2-binary==2.9.6
 python-multipart==0.0.5
 jinja2==3.1.2
-jsonify==0.5
 casparser==0.7.4
 casparser_isin==2024.12.5
 bcrypt==4.0.1
 requests==2.31.0
+httpx==0.25.2
+asyncpg==0.29.0
+sqlalchemy[asyncio]==2.0.30

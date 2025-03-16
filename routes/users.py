@@ -1,93 +1,115 @@
 # File: routes/users.py
-
-from venv import logger
-from wsgiref import headers
+import asyncio
 from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form, BackgroundTasks
-from fastapi.responses import RedirectResponse, JSONResponse, HTMLResponse
-from sqlalchemy.orm import Session
+from pydantic import EmailStr
+from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.future import select
+import uuid  # For generating unique filenames
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 import logging
 import os
-from db import get_db
+from db import SessionLocal, get_db, AsyncSessionLocal  
 from routes.pdf_converter import clear_database_for_identifier
-from models import User, Folio, Scheme, AMC, Valuation
-from schemas import HistoricalDataOut, SchemeOut, PortfolioOut, FolioOut, AMCOut, SchemeDetailsOut, TransactionOut, Usernoid, ValuationOut, AMCWithSchemesOut, SchemeMasterOut
+from models import User, Folio, Scheme, AMC, Valuation, SchemeMaster
+from schemas import HistoricalDataOut, SchemeOut, PortfolioOut, FolioOut, AMCOut, SchemeDetailsOut, TransactionOut, UserOut, ValuationOut, AMCWithSchemesOut, SchemeMasterOut
 from auth import SECRET_KEY, ALGORITHM
 from routes.pdf_converter import convertpdf
-from .history import get_hist_data
+from .history import get_hist_data, save_scheme_nav_history
 
 router = APIRouter(prefix="/users", tags=["Users"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 logger = logging.getLogger("users")
 
-def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User | Usernoid:
-    # If middleware already set the user email, use it.
-    if hasattr(request.state, "user_email") and request.state.user_email != "Anonymous":
-        email = request.state.user_email
-        logger.info("Got email from request")
-    else:
-        # Fallback: decode the token if for some reason the middleware didn't set it.
-        try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            email = payload.get("sub")
-            logger.info("Got email from JWT")
-            if email is None:
-                logger.info("No email found in token payload.")
+def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
+    """
+    Retrieves the current user based on the provided token.
+
+    Args:
+        request: The incoming request object.
+        token: The JWT token obtained from the Authorization header.
+        db: The database session.
+
+    Returns:
+        The User object corresponding to the authenticated user.
+
+    Raises:
+        HTTPException:
+            - 401 UNAUTHORIZED: If credentials could not be validated (e.g., invalid token, no email in token, user not found or inactive).
+            - 500 INTERNAL SERVER ERROR: If any unexpected error occurs during user retrieval.
+    """
+    try:
+        # 1. Get email from request state (if available)
+        email = getattr(request.state, "user_email", None)
+        if email == "Anonymous" or not email:
+            # 2. Fallback: Decode the token
+            try:
+                payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+                email = payload.get("sub")
+                if not email:
+                    logger.info("No email found in token payload.")
+                    raise HTTPException(
+                        status_code=status.HTTP_401_UNAUTHORIZED,
+                        detail="Could not validate credentials",
+                        headers={"WWW-Authenticate": "Bearer"},
+                    )
+            except JWTError:
+                logger.info("JWT error during token decoding.")
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Could not validate credentials",
                     headers={"WWW-Authenticate": "Bearer"},
                 )
-        except JWTError:
-            logger.info("JWT error during token decoding.")
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        except HTTPException as http_exc:
+    except HTTPException as http_exc:
             raise http_exc
-    # Now, query the database using the email (as sub contains the email)
+        # 3. Validate email format
+    # try:
+    #     EmailStr(email)
+    # except ValueError:
+    #     logger.error(f"Invalid email format: {email}")
+    #     raise HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST,
+    #         detail="Invalid email format"
+    #     )
+    # 4. Query the database
     try:
         user = db.query(User).filter(User.email == email).first()
         if not user or not user.is_active:
-            logger.info("User Record not found")
-            return Usernoid(email=email, is_active=False) # return Usernoid if user not found or inactive
-        return user # pass the test, return the user
-    except HTTPException as http_exc:
-        raise http_exc
-    except Exception as e:
-        logger.error(f"Error in fetching user record: {e}", exc_info=False)
-        return Usernoid(email=email, is_active=False) # return Usernoid on error
-    # folios = db.query(Folio).join(User, Folio.user_id == User.user_id).filter(User.email == email).all()
-    # if not folios:
-    #     logger.info("User folio record not found; redirecting to /users/getstarted")
-    #     # Return a RedirectResponse if the user is new (i.e. no record in DB)
-    #     return JSONResponse(
-    #             content={"detail": "Unauthorized. Please log in", "status" : "Error"},
-    #             status_code=401
-    #         )
-
-
-# Endpoint to fetch current user details (if user exists)
-@router.get("/me", response_model=Usernoid)
-def read_users_me(request: Request, current_user = Depends(get_current_user),):
-    if isinstance(current_user, Usernoid): #check if current_user is Usernoid
-        logger.info("User not found in database.")
-        raise HTTPException(
+            logger.info(f"User with email {email} not found or inactive.")
+            raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unauthorized. Please log in or ensure your account is active."
         )
-    
-    logger.info("User validated via /me endpoint.")
-    return Usernoid.model_validate(current_user)
+        return user
+    except HTTPException as http_exc:
+        raise http_exc
+    except Exception as e:
+        logger.error(f"Error in fetching user record: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Could not retrieve user"
+        )
 
-@router.post("/deleteme", response_model=Usernoid)
+# Endpoint to fetch current user details (if user exists)
+@router.get("/me", response_model=UserOut)
+def read_users_me(request: Request, current_user: User = Depends(get_current_user)):
+    """
+    Retrieves the details of the currently authenticated user.
+
+    Args:
+        request: The incoming request object.
+        current_user: The User object obtained from the get_current_user dependency.
+
+    Returns:
+        A UserOut object representing the current user's details.
+    """
+    return UserOut.model_validate(current_user)
+
+@router.post("/deleteme", response_model=UserOut)
 def del_users_me(request: Request, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    if isinstance(current_user, Usernoid):
+    if isinstance(current_user, UserOut):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unauthorized. Please log in or ensure your account is active."
@@ -97,7 +119,7 @@ def del_users_me(request: Request, current_user = Depends(get_current_user), db:
             logger.info(f"User {current_user.full_name} deleted from database.")
             current_user.is_active = False
             # current_user.user_id = "hidden response"
-            return Usernoid.model_validate(current_user)
+            return UserOut.model_validate(current_user)
         else:
             logger.error(f"Unable to delete user {current_user.user_id} from database.")
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to delete user.")
@@ -108,93 +130,150 @@ def del_users_me(request: Request, current_user = Depends(get_current_user), db:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to delete user.")
 
 # USER PROFILE ENDPOINT
-@router.post("/uploading", response_model=Usernoid)
+@router.post("/uploading", response_model=UserOut)
 async def upload_file(
     request: Request,
     file: UploadFile = File(...),
     password: str = Form(...),
-    current_user = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
     background_tasks: BackgroundTasks = BackgroundTasks(),
-):
-    if isinstance(current_user, Usernoid):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized. Please log in or ensure your account is active."
-        )
-    email = current_user.email 
-    # Define the upload folder and ensure it exists.
-    pwd = os.getcwd()
-    UPLOAD_FOLDER = os.path.join(pwd, "upload")
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-    
-    file_location = os.path.join(UPLOAD_FOLDER, file.filename)
-    with open(file_location, "wb") as f:
-        content = await file.read()
-        f.write(content)
+) -> UserOut:
+    """
+    Handles file uploads, processes the uploaded file, and initiates background tasks.
+
+    Args:
+        request: The incoming request.
+        file: The uploaded file.
+        password: The password provided for PDF access.
+        current_user: The authenticated user.
+        background_tasks: Background tasks manager.
+
+    Returns:
+        UserOut: Details of the current user.
+
+    Raises:
+        HTTPException:
+            - 400 Bad Request: If the file type is invalid or other validation errors occur.
+            - 401 Unauthorized: If the user is not authenticated.
+            - 500 Internal Server Error: For any errors during file processing, PDF conversion, or background task initiation.
+    """
+    email = current_user.email
     try:
-        logger.info(f"Received file '{file.filename}' with provided password.")
-        convertpdf(file_location,password,email)
-        # response = process_log_messages (temp)
-        # Only add the background task if convertpdf succeeds
-        background_tasks.add_task(process_scheme_data, email)
-        return Usernoid.model_validate(current_user)
+        # 1. Validate file type
+        if file.content_type != "application/pdf":
+            logger.error(f"Invalid file type: {file.content_type}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid file type. Only PDF files are allowed.",
+            )
+
+        # 2. Sanitize filename and define upload directory
+        upload_dir = "upload"  # Define upload directory
+        os.makedirs(upload_dir, exist_ok=True)  # Ensure directory exists
+        file_extension = os.path.splitext(file.filename)[1]
+        unique_filename = f"{uuid.uuid4()}{file_extension}"  # Generate unique filename
+        file_location = os.path.join(upload_dir, unique_filename)
+
+        # 3. Save the file
+        logger.info(f"Saving uploaded file: {file.filename} to {file_location}")
+        try:
+            with open(file_location, "wb") as f:
+                content = await file.read()
+                f.write(content)
+        except Exception as e:
+            logger.error(f"Error saving file: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Error saving uploaded file.",
+            )
+        # 4. Process the PDF (Ensure password is not logged)
+        logger.info(f"Processing PDF file: {file_location}")
+        try:
+            convertpdf(file_location, password, email)  # Pass password directly
+        except Exception as e:
+            logger.error(f"Error processing PDF: {e}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Error processing PDF.",
+            )
+
+        # 5. Add background task (before convertpdf or handle errors explicitly)
+        try:
+            background_tasks.add_task(process_scheme_data, email)
+            logger.info("Background task added successfully.")
+        except Exception as e:
+            logger.error(f"Error adding background task: {e}", exc_info=True)
+            # Consider how to handle this - possibly log and continue or raise an exception
+            # For now, logging and continuing
+            # raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Error adding background task.")
+
+        # 6. Return success
+        logger.info(f"File '{file.filename}' processed successfully.")
+        return UserOut.model_validate(current_user)
+
     except HTTPException as http_exc:
         raise http_exc
     except Exception as e:
-        logger.info(f"Error in execution {e}", exc_info=False)
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to delete user.")
-
+        logger.error(f"Unexpected error during file upload: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Unexpected error during file upload.",
+        )
 
 # API Endpoints
 @router.get("/portfolio", response_model=PortfolioOut)
 def get_portfolio(request: Request, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    if isinstance(current_user, Usernoid):
+    if not isinstance(current_user, User):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unauthorized. Please log in or ensure your account is active."
         )
-    logger.info(f"USER EMAIL: {request.state.user_email}")
-    user_email = request.state.user_email
-    user = db.query(User).filter(User.email == user_email).first()
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized. Please log in or ensure your account is active."
-        )
-
+    logger.info(f"USER EMAIL: {current_user.email}")
     portfolio_value = 0.0
     total_investment = 0.0
     folios_out = []
+    amc_valuations = {}
 
-    amc_valuations = {} # store amc data, to only do loop once.
+    # Optimized Query to Reduce Database Calls
+    folios = db.query(Folio)\
+        .filter(Folio.user_id == current_user.user_id)\
+        .options(joinedload(Folio.schemes).joinedload(Scheme.valuation))\
+        .all()
 
-    for folio in user.folios:
+    for folio in folios:
         amc = folio.amc
         amc_id = amc.id
+
         if amc_id not in amc_valuations:
             amc_valuations[amc_id] = {"valuation_value": 0.0, "valuation_cost": 0.0}
 
         for scheme in folio.schemes:
             if scheme.valuation:
-                portfolio_value += scheme.valuation.valuation_value or 0.0
-                total_investment += scheme.valuation.valuation_cost or 0.0
-                amc_valuations[amc_id]["valuation_value"] += scheme.valuation.valuation_value or 0.0
-                amc_valuations[amc_id]["valuation_cost"] += scheme.valuation.valuation_cost or 0.0
+                valuation_value = scheme.valuation.valuation_value or 0.0
+                valuation_cost = scheme.valuation.valuation_cost or 0.0
+                portfolio_value += valuation_value
+                total_investment += valuation_cost
+                amc_valuations[amc_id]["valuation_value"] += valuation_value
+                amc_valuations[amc_id]["valuation_cost"] += valuation_cost
 
-    for folio in user.folios:
-        amc_id = folio.amc.id
+        # Compute AMC Summary
         amc_data = amc_valuations[amc_id]
         gain_loss = amc_data["valuation_value"] - amc_data["valuation_cost"]
-        gain_loss_percent = (gain_loss / amc_data["valuation_cost"]) * 100 if amc_data["valuation_cost"] else 0.0
-        amc_out = AMCOut.model_validate(folio.amc)
-        amc_out.valuation_value = amc_data["valuation_value"]
-        amc_out.valuation_cost = amc_data["valuation_cost"]
-        amc_out.gain_loss = gain_loss
-        amc_out.gain_loss_percent = gain_loss_percent
+        gain_loss_percent = (gain_loss / amc_data["valuation_cost"] * 100) if amc_data["valuation_cost"] else 0.0
+
+        amc_out = AMCOut(
+            id=amc.id,
+            name=amc.name,
+            valuation_value=amc_data["valuation_value"],
+            valuation_cost=amc_data["valuation_cost"],
+            gain_loss=gain_loss,
+            gain_loss_percent=gain_loss_percent
+        )
+
         folios_out.append(FolioOut(folio_number=folio.folio_number, amc=amc_out))
 
     total_gain_loss = portfolio_value - total_investment
-    total_gain_loss_percent = (total_gain_loss / total_investment) * 100 if total_investment else 0.0
+    total_gain_loss_percent = (total_gain_loss / total_investment * 100) if total_investment else 0.0
 
     return PortfolioOut(
         folios=folios_out,
@@ -205,26 +284,56 @@ def get_portfolio(request: Request, current_user = Depends(get_current_user), db
     )
 
 @router.get("/schemes/{scheme_id}", response_model=SchemeDetailsOut)
-async def get_scheme_details(request: Request,scheme_id: int,current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    if isinstance(current_user, Usernoid):
+async def get_scheme_details(
+    request: Request,
+    scheme_id: int,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if isinstance(current_user, UserOut):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized. Please log in or ensure your account is active."
+            detail="Unauthorized. Please log in or ensure your account is active.",
         )
-    scheme = db.query(Scheme).filter(Scheme.id == scheme_id).first()
+
+    scheme = (
+        db.query(Scheme)
+        .filter(Scheme.id == scheme_id)
+        .options(
+            joinedload(Scheme.scheme_master),
+            joinedload(Scheme.transactions),
+        )
+        .first()
+    )
+
     if not scheme:
         raise HTTPException(status_code=404, detail="Scheme not found")
-    # scheme_out = SchemeOut.model_validate(scheme)
+
+    if not scheme.scheme_master:
+        logger.error(f"Scheme Master not found for scheme_id {scheme_id}")
+        raise HTTPException(status_code=500, detail="Scheme master not found")
+
+    scheme_data = scheme.__dict__
+    scheme_data["scheme_name"] = scheme.scheme_master.scheme_name
+    scheme_out = SchemeOut.model_validate(scheme_data)
+
+    # Historical Data Fetching
     historical_data = None
-    if scheme.amfi_code:
+    amfi_code = scheme.scheme_master.scheme_amfi_code if scheme.scheme_master else None
+    if amfi_code:
         try:
-            hist_data = await get_hist_data(scheme.amfi_code, scheme_id)
+            hist_data = await get_hist_data(amfi_code, scheme_id)
             historical_data = HistoricalDataOut(data=hist_data)
         except HTTPException as e:
-            logger.error(f"Error getting historical data for scheme id {scheme_id}: {e.detail}")
+            logger.error(f"Error getting historical data for scheme_id {scheme_id}: {e.detail}")
+    else:
+        logger.warning(f"No AMFI code for scheme_id {scheme_id}, skipping historical data")
+
     return SchemeDetailsOut(
-        scheme=SchemeOut.model_validate(scheme),
-        transactions=[TransactionOut.model_validate(transaction) for transaction in scheme.transactions],
+        scheme=scheme_out,
+        transactions=[
+            TransactionOut.model_validate(transaction) for transaction in scheme.transactions or []
+        ],
         historical_data=historical_data,
     )
 
@@ -232,88 +341,130 @@ class AMCNotFoundException(Exception):
     """Custom exception for when an AMC is not found."""
     pass
 @router.get("/amc/{amc_id}", response_model=AMCWithSchemesOut)
-def get_amc_schemes_with_valuation(amc_id: int,request: Request, db: Session = Depends(get_db), current_user = Depends(get_current_user)) -> AMCWithSchemesOut:
+def get_amc_schemes_with_valuation(
+    amc_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
+) -> AMCWithSchemesOut:
     """
     Retrieves schemes data for a given AMC, along with AMC valuation.
-
-    Args:
-        amc_id: The ID of the AMC.
-        db: The database session (provided as a dependency).
-
-    Returns:
-        An AMCWithSchemesOut object containing AMC details and schemes.
-
-    Raises:
-        HTTPException: If the AMC is not found or a database error occurs.
     """
-    if isinstance(current_user, Usernoid):
+
+    if not isinstance(current_user, User):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Unauthorized. Please log in or ensure your account is active."
         )
+
     try:
+        # Fetch AMC
         amc = db.query(AMC).filter(AMC.id == amc_id).first()
         if not amc:
             logger.warning(f"AMC with ID {amc_id} not found.")
             raise HTTPException(status_code=404, detail=f"AMC with ID {amc_id} not found.")
 
-        schemes = db.query(Scheme).filter(Scheme.amc_id == amc_id).all()
+        # Fetch schemes linked to the user's folios for the given AMC
+        schemes = (
+            db.query(Scheme)
+            .join(Folio)
+            .filter(Folio.user_id == current_user.user_id, Scheme.amc_id == amc_id)
+            .options(
+                joinedload(Scheme.valuation),
+                joinedload(Scheme.scheme_master)  # ✅ Preload SchemeMaster for related fields
+            )
+            .all()
+        )
 
-        scheme_outs = []
         total_valuation_value = 0.0
         total_valuation_cost = 0.0
 
-        for scheme in schemes:
-            valuation = db.query(Valuation).filter(Valuation.scheme_id == scheme.id).first()
+        scheme_outs = [
+            SchemeOut(
+                id=scheme.id,
+                folio_id=scheme.folio_id,
+                amc_id=scheme.amc_id,
+                scheme_master_id=scheme.scheme_master_id,
+                scheme_master=SchemeMasterOut.model_validate(scheme.scheme_master) if scheme.scheme_master else None,
+                advisor=scheme.advisor,
+                rta_code=scheme.rta_code,
+                rta=scheme.rta,
+                nominees=scheme.nominees,
+                open_units=scheme.open_units,
+                close_units=scheme.close_units,
+                close_calculated_units=scheme.close_calculated_units,
+                valuation=ValuationOut.model_validate(scheme.valuation) if scheme.valuation else None
+            )
+            for scheme in schemes
+        ]
 
-            scheme_out = SchemeOut.model_validate(scheme)
-            if valuation:
-                valuation_out = ValuationOut.model_validate(valuation)
-                scheme_out.valuation = valuation_out
-                total_valuation_value += valuation.valuation_value or 0.0
-                total_valuation_cost += valuation.valuation_cost or 0.0
-
-            scheme_outs.append(scheme_out)
+        # Calculate total valuation values
+        total_valuation_value = sum(s.valuation.valuation_value or 0.0 for s in schemes if s.valuation)
+        total_valuation_cost = sum(s.valuation.valuation_cost or 0.0 for s in schemes if s.valuation)
 
         gain_loss = total_valuation_value - total_valuation_cost
-        gain_loss_percent = (gain_loss / total_valuation_cost) * 100 if total_valuation_cost else 0
+        gain_loss_percent = (gain_loss / total_valuation_cost * 100) if total_valuation_cost else 0.0
 
-        amc_out = AMCOut.model_validate(amc)
-        amc_out.valuation_value = total_valuation_value
-        amc_out.valuation_cost = total_valuation_cost
-        amc_out.gain_loss = gain_loss
-        amc_out.gain_loss_percent = gain_loss_percent
+        amc_out = AMCOut(
+            id=amc.id,
+            name=amc.name,
+            valuation_value=total_valuation_value,
+            valuation_cost=total_valuation_cost,
+            gain_loss=gain_loss,
+            gain_loss_percent=gain_loss_percent
+        )
 
-        logger.info(f"Retrieved AMC {amc_id} schemes with valuation.")
+        logger.info(f"Retrieved AMC {amc_id} schemes for user {current_user.user_id}.")
         return AMCWithSchemesOut(amc=amc_out, schemes=scheme_outs)
 
     except SQLAlchemyError as e:
         logger.error(f"Database error: {e}")
-        raise HTTPException(status_code=500, detail=f"Database error: {e}")
+        raise HTTPException(status_code=500, detail="Database error occurred.")
     except HTTPException as http_exc:
         raise http_exc
     except Exception as e:
         logger.error(f"An unexpected error occurred: {e}")
-        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {e}")
+        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
 
-async def process_scheme_data(email: str, db: Session = Depends(get_db)):
-    try:
-        scheme_data = db.query(Scheme).filter(Scheme.amfi_code != None).all()
-        for scheme in scheme_data:
-            scheme_id = scheme["scheme_id"]
-            amfi_code = scheme["amfi_code"]
-            if amfi_code:
-                try:
-                    await get_hist_data(amfi_code, scheme_id) #get_hist_data needs to be async if you are using await.
-                    # Handle successful get_hist_data call (e.g., logging)
-                    logger.info(f"Successfully processed scheme_id: {scheme_id}, AMFI code: {amfi_code}")
-                except Exception as hist_data_error:
-                    # Handle errors from get_hist_data
-                    logger.info(f"Error processing scheme_id: {scheme_id}, AMFI code: {amfi_code}: {hist_data_error}")
-            else:
-                logger.error(f"AMFI code not found for scheme_id: {scheme_id}")
+async def process_scheme_data(email: str):
+    """Processes scheme data asynchronously in the background."""
+    logger.info(f"Starting scheme data processing for {email}")
 
-    except Exception as e:
-        # Handle errors during scheme data processing
-        logger.error(f"Error processing scheme data for email {email}: {e}")
+    async with AsyncSessionLocal() as db:
+        try:
+            # Fetch schemes with valid AMFI codes
+            result = await db.execute(select(SchemeMaster).where(SchemeMaster.scheme_amfi_code.isnot(None)))
+            schemes = result.scalars().all()
+
+            # Run all tasks concurrently
+            tasks = []
+            for scheme in schemes:
+                scheme_master_id, amfi_code = scheme.scheme_id, scheme.scheme_amfi_code
+                if amfi_code:
+                    tasks.append(get_hist_data(amfi_code, scheme_master_id))
+                else:
+                    logger.warning(f"No AMFI code for scheme_master_id: {scheme_master_id}")
+
+            # Execute all `get_hist_data` tasks concurrently
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+
+            # Log any failures
+            for scheme, result in zip(schemes, results):
+                if isinstance(result, Exception):
+                    logger.error(f"Failed processing scheme_master_id {scheme.scheme_id}: {result}")
+
+            # ✅ Commit only if everything runs successfully
+            await db.commit()
+
+        except Exception as e:
+            await db.rollback()
+            logger.error(f"Background task error for {email}: {e}", exc_info=True)
+
+    logger.info(f"Finished processing scheme data for {email}")
+
+
+
+
+
+
     
