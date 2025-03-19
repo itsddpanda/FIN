@@ -18,6 +18,23 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    networks:
+      - MFA
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   app:
     build: .
     image: backend:v0.9
@@ -34,10 +51,13 @@ services:
       TZ: "Asia/Kolkata" # Set timezone to IST
     depends_on:
       - db
+      - redis
 
 volumes:
   postgres_data:
    external: true
+  redis_data:
+    external: true
 networks:
   MFA:
     external: true

@@ -6,3 +6,5 @@ __py*
 *.sql*
 alembic/versions/*
 alembic/versions/README*
+upload/*
+output.json

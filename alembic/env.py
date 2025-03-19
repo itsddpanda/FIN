@@ -5,7 +5,8 @@ from alembic import context
 from db import Base  # Import your Base from db.py
 from logging_config import logger, DBURL
 import os
-logger = logger.getChild("al.env")
+import logging
+logger = logging.getLogger("al.env")
 logger.info(f"DATABASE_URL from env.py: {os.environ.get('DATABASE_URL')}")
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

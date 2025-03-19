@@ -68,7 +68,7 @@ class Scheme(Base):
     id = Column(Integer, primary_key=True, index=True)
     folio_id = Column(String, ForeignKey('folio.folio_number'))
     amc_id = Column(Integer, ForeignKey('amc.amc_id'), nullable=False)
-    scheme_master_id = Column(Integer, ForeignKey('scheme_master.scheme_id'), nullable=False, index=True)
+    scheme_master_id = Column(Integer, ForeignKey('scheme_master.scheme_id'), nullable=False)
     advisor = Column(String, nullable=True)
     rta_code = Column(String, nullable=True)
     rta = Column(String, nullable=True)

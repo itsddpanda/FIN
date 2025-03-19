@@ -1,3 +1,4 @@
+# file schemas.py
 from pydantic import BaseModel, EmailStr, Field
 from typing import List, Optional
 from datetime import date
@@ -62,7 +63,7 @@ class ValuationOut(BaseModel):
 ### Scheme Schema (Linked to SchemeMaster)
 class SchemeOut(BaseModel):
     id: int
-    folio_id: int
+    folio_id: str
     # amc_id: int  # Removed redundant amc_id
     scheme_master: SchemeMasterOut
     advisor: Optional[str] = None
@@ -159,3 +160,14 @@ class SchemeNavHistoryOut(BaseModel):
     nav_value: Decimal
     
     model_config = {'from_attributes': True}
+
+class PortfoliowithAMCOut(BaseModel):
+    portfolio_value: Decimal = 0.0
+    total_investment: Decimal = 0.0
+    total_gain_loss: Decimal = 0.0
+    total_gain_loss_percent: Decimal = 0.0
+    AMC: List[AMCWithValuationOut]
+
+class SchemeDetailsOut(BaseModel):
+    scheme: SchemeOut
+    nav_history: Optional[List[SchemeNavHistoryOut]] = None

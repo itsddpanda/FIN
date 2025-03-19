@@ -1,17 +1,20 @@
+# file: routes/history.py
 import logging
-from fastapi import Depends, HTTPException, status
-from schemas import HistoricalDataResponse
-from models import Scheme, SchemeNavHistory
+from fastapi import Depends, HTTPException, status, APIRouter, Request
+from models import Scheme, SchemeNavHistory, Valuation
 from db import get_async_db,AsyncSessionLocal
 from datetime import datetime
-import asyncio
+from typing import List
+from sqlalchemy.orm import Session, joinedload
 from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import and_
+from sqlalchemy import func
 import httpx
 
 logger = logging.getLogger("history")
+router = APIRouter(prefix="/test", tags=["test"])
 
 async def save_scheme_nav_history(scheme_id: int, historical_data, db: AsyncSession):
     """Efficiently saves NAV history with bulk inserts and schema validation."""
@@ -83,11 +86,80 @@ async def get_hist_data(amfi_code: str, scheme_id: int):
                 logger.error("Invalid response")
                 raise HTTPException(status_code=400, detail="Invalid NAV data received")
 
-            # Call save function
-            # logger.info("Calling Save Scheme NAV")
             await save_scheme_nav_history(scheme_master_id, data, db)
 
         except Exception as e:
             logger.error(f"Error in get_hist_data for scheme_id {scheme_id}: {e}", exc_info=True)
             raise HTTPException(status_code=500, detail="Internal server error")
 
+async def update_allvaluations_async(db: AsyncSession = Depends(get_async_db)):
+    """
+    Asynchronously updates the Valuation table based on SchemeNavHistory.
+
+    Args:
+        db: An asynchronous database session.
+    """
+    try:
+        # 1. Fetch all Schemes
+        logger.info("Starting with Scheme valuation")
+        query = select(Scheme)  # Remove joinedload
+        result = await db.execute(query)
+        schemes: List[Scheme] = result.scalars().all()
+
+        for scheme in schemes:
+            # 2. Get the latest nav_date from SchemeNavHistory for the scheme's master
+            subquery = (
+                select(func.max(SchemeNavHistory.nav_date))
+                .filter(SchemeNavHistory.scheme_master_id == scheme.scheme_master_id)
+                .scalar_subquery()
+            )
+            query = select(SchemeNavHistory).filter(
+                SchemeNavHistory.scheme_master_id == scheme.scheme_master_id,
+                SchemeNavHistory.nav_date == subquery
+            )
+            result = await db.execute(query)
+            latest_nav_history = result.scalars().first()
+            logger.info("Fetching NAV History")
+            if latest_nav_history:
+                # 3. Fetch the latest Valuation
+                valuation_query = select(Valuation).filter(Valuation.scheme_id == scheme.id)
+                valuation_result = await db.execute(valuation_query)
+                scheme.valuation = valuation_result.scalars().first()
+
+                # 4. Compare dates and update Valuation
+                if (
+                    scheme.valuation is not None and
+                    latest_nav_history.nav_date > scheme.valuation.valuation_date
+                ):
+                    logger.info(f"For Scheme {scheme.id} Latest: {latest_nav_history.nav_date} is newer than {scheme.valuation.valuation_date}")
+                    scheme.valuation.valuation_date = latest_nav_history.nav_date
+                    scheme.valuation.valuation_nav = float(latest_nav_history.nav_value)
+                    # Valuation cost remains unchanged
+                    scheme.valuation.valuation_value = scheme.close_units * scheme.valuation.valuation_nav
+                    db.add(scheme.valuation)
+                    # change below to debug for prod
+                    logger.info(
+                        f"Updated valuation for scheme_id: {scheme.id} to "
+                        f"date: {scheme.valuation.valuation_date}, "
+                        f"nav: {scheme.valuation.valuation_nav}, "
+                        f"close units: {scheme.close_units}, "
+                        f"value: {scheme.valuation.valuation_value}"
+                    )
+                else:
+                    logger.info(
+                        f"No valuation update needed for scheme_id: {scheme.id}."
+                    )
+            else:
+                logger.warning(
+                    f"No NAV history found for scheme_master_id: {scheme.scheme_master_id}"
+                )
+
+        await db.commit()
+        logger.info("Valuation updates completed.")
+
+    except Exception as e:
+        logger.error(f"Error updating valuations: {e}", exc_info=True)
+        await db.rollback()
+        raise
+    finally:
+        await db.close()

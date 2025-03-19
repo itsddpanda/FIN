@@ -4,8 +4,10 @@ from fastapi.staticfiles import StaticFiles
 import time
 #needed to initialize the db
 from models import User, StatementPeriod, AMC, Folio, Scheme, Valuation, Transaction, SchemeNavHistory, SchemeMaster
+from fastapi.exceptions import RequestValidationError
 from collections import defaultdict
 from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 from jose import JWTError, jwt
 from auth import SECRET_KEY, ALGORITHM  
 import uvicorn
@@ -25,10 +27,6 @@ logger.info("Application started")
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Configure Jinja2 templates
-#templates = Jinja2Templates(directory="templates")
-
 
 for _, module_name, _ in pkgutil.iter_modules(['routes']):
     module = importlib.import_module(f"routes.{module_name}")
@@ -54,7 +52,6 @@ class AuthLoggingMiddleware(BaseHTTPMiddleware):
         # Redirect unauthenticated users (API gets JSON, frontend gets redirect)
         if user_email == "Anonymous" and request.url.path.startswith("/users"):
             logger.info(f"Unauthenticated access attempt to {request.url}")
-            
             # if "text/html" in request.headers.get("accept", ""):    
                 # return RedirectResponse(url="/auth/login")
             process_time = time.time() - start_time
@@ -63,7 +60,6 @@ class AuthLoggingMiddleware(BaseHTTPMiddleware):
                 content={"detail": "Unauthorized. Please log in", "status" : "Error"},
                 status_code=401
             )
-
         logger.info(f"User: {user_email} | Request: {request.method} {request.url}")
         request.state.user_email = user_email
         response = await call_next(request)
@@ -80,17 +76,14 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         client_ip = request.client.host
         current_time = time.time()
-
         # Remove outdated requests
         request_counts[client_ip] = [t for t in request_counts[client_ip] if current_time - t < TIME_WINDOW]
-
         if len(request_counts[client_ip]) >= RATE_LIMIT:
             logger.warning(f"Rate limit exceeded for IP: {client_ip}")
             return JSONResponse(
                 content={"detail": "Too many requests. Try again later.", "status":"Error"},
                 status_code=429
             )
-
         request_counts[client_ip].append(current_time)
         return await call_next(request)
 

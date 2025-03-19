@@ -1,22 +1,23 @@
 # File: routes/users.py
+from decimal import Decimal
+from typing import List
 import asyncio
 from fastapi import APIRouter, Depends, HTTPException, status, Request, UploadFile, File, Form, BackgroundTasks
-from pydantic import EmailStr
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.future import select
 import uuid  # For generating unique filenames
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import False_, func
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 import logging
 import os
 from db import SessionLocal, get_db, AsyncSessionLocal  
 from routes.pdf_converter import clear_database_for_identifier
-from models import User, Folio, Scheme, AMC, Valuation, SchemeMaster
-from schemas import HistoricalDataOut, SchemeOut, PortfolioOut, FolioOut, AMCOut, SchemeDetailsOut, TransactionOut, UserOut, ValuationOut, AMCWithSchemesOut, SchemeMasterOut
+from models import User, Folio, Scheme, AMC, Valuation, SchemeMaster, Transaction, SchemeNavHistory
+from schemas import HistoricalDataOut, SchemeOut, PortfoliowithAMCOut, MetaData, AMCOut, SchemeDetailsOut,NavData,HistoricalDataResponse, TransactionOut, UserOut, ValuationOut, AMCWithSchemesOut, SchemeMasterOut, AMCWithValuationOut
 from auth import SECRET_KEY, ALGORITHM
 from routes.pdf_converter import convertpdf
-from .history import get_hist_data, save_scheme_nav_history
+from .history import get_hist_data, update_allvaluations_async
 
 router = APIRouter(prefix="/users", tags=["Users"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
@@ -64,16 +65,6 @@ def get_current_user(request: Request, token: str = Depends(oauth2_scheme), db: 
                 )
     except HTTPException as http_exc:
             raise http_exc
-        # 3. Validate email format
-    # try:
-    #     EmailStr(email)
-    # except ValueError:
-    #     logger.error(f"Invalid email format: {email}")
-    #     raise HTTPException(
-    #         status_code=status.HTTP_400_BAD_REQUEST,
-    #         detail="Invalid email format"
-    #     )
-    # 4. Query the database
     try:
         user = db.query(User).filter(User.email == email).first()
         if not user or not user.is_active:
@@ -166,7 +157,6 @@ async def upload_file(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Invalid file type. Only PDF files are allowed.",
             )
-
         # 2. Sanitize filename and define upload directory
         upload_dir = "upload"  # Define upload directory
         os.makedirs(upload_dir, exist_ok=True)  # Ensure directory exists
@@ -209,8 +199,8 @@ async def upload_file(
 
         # 6. Return success
         logger.info(f"File '{file.filename}' processed successfully.")
+        os.remove(file_location) # remove file uploaded
         return UserOut.model_validate(current_user)
-
     except HTTPException as http_exc:
         raise http_exc
     except Exception as e:
@@ -221,244 +211,307 @@ async def upload_file(
         )
 
 # API Endpoints
-@router.get("/portfolio", response_model=PortfolioOut)
-def get_portfolio(request: Request, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    if not isinstance(current_user, User):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized. Please log in or ensure your account is active."
+@router.get("/portfolio", response_model=PortfoliowithAMCOut)
+async def get_portfolio(includezerovalue: bool = False, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    user_id = current_user.user_id
+    # Fetch valid schemes (close_units > 0)
+    if includezerovalue:
+        valid_schemes = (
+            db.query(Scheme)
+            .join(Folio)
+            .filter(Folio.user_id == user_id) #, Scheme.close_units > 0
+            .all()
         )
-    logger.info(f"USER EMAIL: {current_user.email}")
-    portfolio_value = 0.0
-    total_investment = 0.0
-    folios_out = []
+    else:
+        valid_schemes = (
+            db.query(Scheme)
+            .join(Folio)
+            .filter(Folio.user_id == user_id, Scheme.close_units > 0)
+            .all()
+        )
+    if not valid_schemes:
+        raise HTTPException(status_code=404, detail="No valid schemes found")
+
+    # Initialize portfolio totals
+    total_valuation = Decimal(0)
+    total_investment = Decimal(0)
     amc_valuations = {}
+    transactions_list = []
 
-    # Optimized Query to Reduce Database Calls
-    folios = db.query(Folio)\
-        .filter(Folio.user_id == current_user.user_id)\
-        .options(joinedload(Folio.schemes).joinedload(Scheme.valuation))\
-        .all()
+    for scheme in valid_schemes:
+        valuation = scheme.valuation
+        if valuation:
+            total_valuation += Decimal(valuation.valuation_value or 0)
+            total_investment += Decimal(valuation.valuation_cost or 0)
 
-    for folio in folios:
-        amc = folio.amc
-        amc_id = amc.id
+            # Aggregate AMC-wise valuations
+            amc_id = scheme.amc_id
+            if amc_id not in amc_valuations:
+                amc_valuations[amc_id] = {
+                    "name": scheme.amc.amc_name,
+                    "valuation_value": Decimal(0),
+                    "valuation_cost": Decimal(0)
+                }
+            amc_valuations[amc_id]["valuation_value"] += Decimal(valuation.valuation_value or 0)
+            amc_valuations[amc_id]["valuation_cost"] += Decimal(valuation.valuation_cost or 0)
 
-        if amc_id not in amc_valuations:
-            amc_valuations[amc_id] = {"valuation_value": 0.0, "valuation_cost": 0.0}
+        # Fetch transactions
+        for txn in scheme.transactions:
+            transaction_value = Decimal(txn.amount or 0)
+            if txn.transaction_type in ["PURCHASE", "PURCHASE_SIP", "SWITCH_IN"]:
+                transaction_value = -transaction_value
+            transactions_list.append(
+                TransactionOut(
+                    transaction_date=txn.transaction_date,
+                    description=txn.description,
+                    amount=round(transaction_value, 4),
+                    units=round(Decimal(txn.units or 0), 4),
+                    nav=round(Decimal(txn.nav or 0), 4),
+                    balance=round(Decimal(txn.balance or 0), 4),
+                    transaction_type=txn.transaction_type,
+                    dividend_rate=round(Decimal(txn.dividend_rate or 0), 4)
+                )
+            )
 
-        for scheme in folio.schemes:
-            if scheme.valuation:
-                valuation_value = scheme.valuation.valuation_value or 0.0
-                valuation_cost = scheme.valuation.valuation_cost or 0.0
-                portfolio_value += valuation_value
-                total_investment += valuation_cost
-                amc_valuations[amc_id]["valuation_value"] += valuation_value
-                amc_valuations[amc_id]["valuation_cost"] += valuation_cost
+    # Compute gain/loss
+    total_gain_loss = total_valuation - total_investment
+    total_gain_loss_percent = (total_gain_loss / total_investment * 100) if total_investment > 0 else Decimal(0)
 
-        # Compute AMC Summary
-        amc_data = amc_valuations[amc_id]
-        gain_loss = amc_data["valuation_value"] - amc_data["valuation_cost"]
-        gain_loss_percent = (gain_loss / amc_data["valuation_cost"] * 100) if amc_data["valuation_cost"] else 0.0
+    # Prepare AMC output
+    amc_output = [
+        AMCWithValuationOut(
+            id=amc_id,
+            name=amc["name"],
+            valuation_value=round(amc["valuation_value"], 4),
+            valuation_cost=round(amc["valuation_cost"], 4),
+            gain_loss=round(amc["valuation_value"] - amc["valuation_cost"], 4),
+            gain_loss_percent=round((amc["valuation_value"] - amc["valuation_cost"]) / amc["valuation_cost"] * 100, 4) if amc["valuation_cost"] > 0 else Decimal(0),
+        )
+        for amc_id, amc in amc_valuations.items()
+    ]
 
-        amc_out = AMCOut(
-            id=amc.id,
-            name=amc.name,
-            valuation_value=amc_data["valuation_value"],
-            valuation_cost=amc_data["valuation_cost"],
-            gain_loss=gain_loss,
-            gain_loss_percent=gain_loss_percent
+    return PortfoliowithAMCOut(
+        portfolio_value=round(total_valuation, 4),
+        total_investment=round(total_investment, 4),
+        total_gain_loss=round(total_gain_loss, 4),
+        total_gain_loss_percent=round(total_gain_loss_percent, 4),
+        AMC=amc_output,
+    )
+
+@router.get("/amc/{amc_id}")
+def get_amc_schemes(
+    amc_id: int,
+    exclude_zero_close_units: bool = False,  # Renamed for clarity
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+) -> List[SchemeOut]:  # Specify return type for clarity
+    """
+    Retrieves schemes for a given AMC and user, with an option to exclude schemes with zero close units.
+
+    Args:
+        amc_id: The ID of the AMC.
+        exclude_zero_close_units: If True, excludes schemes with close_units <= 0.
+        db: The database session.
+        current_user: The current user.
+
+    Returns:
+        A tuple containing the count of schemes and a list of SchemeOut objects.
+    """
+    # Build the base query
+    query = db.query(Scheme).join(Folio, Scheme.folio_id == Folio.folio_number).filter(
+        Folio.amc_id == amc_id, Folio.user_id == current_user.user_id
+    )
+    # Add the filter for close_units if exclude_zero_close_units is True
+    if exclude_zero_close_units:
+        query = query.filter(Scheme.close_units > 0)
+
+    # Count the schemes
+    count_query = db.query(func.count(Scheme.scheme_master_id.distinct())).join(
+        Folio, Scheme.folio_id == Folio.folio_number
+    ).filter(Folio.amc_id == amc_id, Folio.user_id == current_user.user_id)
+
+    if exclude_zero_close_units:
+        count_query = count_query.filter(Scheme.close_units > 0)
+
+    count = count_query.scalar()
+
+    # Retrieve the schemes
+    schemes = query.all()
+
+    # Convert Scheme objects to SchemeOut objects
+    scheme_out_list = list()
+    for scheme in schemes:
+        scheme_master_out = SchemeMasterOut(
+            id=scheme.scheme_master.scheme_id,
+            isin=scheme.scheme_master.scheme_isin,
+            amfi_code=scheme.scheme_master.scheme_amfi_code,
+            name=scheme.scheme_master.scheme_name,
+            amc_id=scheme.scheme_master.amc_id,
+            scheme_type=scheme.scheme_master.scheme_type,
         )
 
-        folios_out.append(FolioOut(folio_number=folio.folio_number, amc=amc_out))
+        valuation_out = None
+        if scheme.valuation:
+            valuation_out = ValuationOut(
+                valuation_date=scheme.valuation.valuation_date,
+                valuation_nav=scheme.valuation.valuation_nav,
+                valuation_cost=scheme.valuation.valuation_cost,
+                valuation_value=scheme.valuation.valuation_value,
+            )
 
-    total_gain_loss = portfolio_value - total_investment
-    total_gain_loss_percent = (total_gain_loss / total_investment * 100) if total_investment else 0.0
+        scheme_out = SchemeOut(
+            id=scheme.id,
+            folio_id=scheme.folio_id,
+            scheme_master=scheme_master_out,
+            advisor=scheme.advisor,
+            rta_code=scheme.rta_code,
+            rta=scheme.rta,
+            nominees=scheme.nominees,
+            open_units=scheme.open_units,
+            close_units=scheme.close_units,
+            close_calculated_units=scheme.close_calculated_units,
+            valuation=valuation_out,
+        )
+        scheme_out_list.append(scheme_out)
 
-    return PortfolioOut(
-        folios=folios_out,
-        portfolio_value=portfolio_value,
-        total_investment=total_investment,
-        total_gain_loss=total_gain_loss,
-        total_gain_loss_percent=total_gain_loss_percent,
-    )
+    return scheme_out_list
 
 @router.get("/schemes/{scheme_id}", response_model=SchemeDetailsOut)
-async def get_scheme_details(
-    request: Request,
+def get_scheme_details(
     scheme_id: int,
-    current_user=Depends(get_current_user),
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user) # If you need user authentication
 ):
-    if isinstance(current_user, UserOut):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized. Please log in or ensure your account is active.",
-        )
+    """
+    Retrieves a specific scheme along with its NAV history.
 
-    scheme = (
-        db.query(Scheme)
-        .filter(Scheme.id == scheme_id)
-        .options(
-            joinedload(Scheme.scheme_master),
-            joinedload(Scheme.transactions),
-        )
-        .first()
-    )
+    Args:
+        scheme_id: The ID of the scheme to retrieve.
+        db: The database session.
+        # current_user: The current user (if authentication is needed).
+
+    Returns:
+        A SchemeDetailsOut object containing the scheme and its NAV history.
+
+    Raises:
+        HTTPException: 404 if the scheme is not found.
+    """
+
+    # Retrieve the scheme
+    scheme = db.query(Scheme).filter(Scheme.id == scheme_id).first()
 
     if not scheme:
         raise HTTPException(status_code=404, detail="Scheme not found")
 
-    if not scheme.scheme_master:
-        logger.error(f"Scheme Master not found for scheme_id {scheme_id}")
-        raise HTTPException(status_code=500, detail="Scheme master not found")
+    # Retrieve the NAV history for the scheme's master
+    nav_history = db.query(SchemeNavHistory).filter(
+        SchemeNavHistory.scheme_master_id == scheme.scheme_master_id
+    ).all()
 
-    scheme_data = scheme.__dict__
-    scheme_data["scheme_name"] = scheme.scheme_master.scheme_name
-    scheme_out = SchemeOut.model_validate(scheme_data)
-
-    # Historical Data Fetching
-    historical_data = None
-    amfi_code = scheme.scheme_master.scheme_amfi_code if scheme.scheme_master else None
-    if amfi_code:
-        try:
-            hist_data = await get_hist_data(amfi_code, scheme_id)
-            historical_data = HistoricalDataOut(data=hist_data)
-        except HTTPException as e:
-            logger.error(f"Error getting historical data for scheme_id {scheme_id}: {e.detail}")
-    else:
-        logger.warning(f"No AMFI code for scheme_id {scheme_id}, skipping historical data")
-
-    return SchemeDetailsOut(
-        scheme=scheme_out,
-        transactions=[
-            TransactionOut.model_validate(transaction) for transaction in scheme.transactions or []
-        ],
-        historical_data=historical_data,
+    # Construct the SchemeOut object
+    scheme_master_out = SchemeMasterOut(
+        id=scheme.scheme_master.scheme_id,
+        isin=scheme.scheme_master.scheme_isin,
+        amfi_code=scheme.scheme_master.scheme_amfi_code,
+        name=scheme.scheme_master.scheme_name,
+        amc_id=scheme.scheme_master.amc_id,
+        scheme_type=scheme.scheme_master.scheme_type,
     )
 
-class AMCNotFoundException(Exception):
-    """Custom exception for when an AMC is not found."""
-    pass
-@router.get("/amc/{amc_id}", response_model=AMCWithSchemesOut)
-def get_amc_schemes_with_valuation(
-    amc_id: int,
-    request: Request,
-    db: Session = Depends(get_db),
-    current_user=Depends(get_current_user)
-) -> AMCWithSchemesOut:
-    """
-    Retrieves schemes data for a given AMC, along with AMC valuation.
-    """
-
-    if not isinstance(current_user, User):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized. Please log in or ensure your account is active."
+    valuation_out = None
+    if scheme.valuation:
+        valuation_out = ValuationOut(
+            valuation_date=scheme.valuation.valuation_date,
+            valuation_nav=scheme.valuation.valuation_nav,
+            valuation_cost=scheme.valuation.valuation_cost,
+            valuation_value=scheme.valuation.valuation_value,
         )
 
-    try:
-        # Fetch AMC
-        amc = db.query(AMC).filter(AMC.id == amc_id).first()
-        if not amc:
-            logger.warning(f"AMC with ID {amc_id} not found.")
-            raise HTTPException(status_code=404, detail=f"AMC with ID {amc_id} not found.")
+    scheme_out = SchemeOut(
+        id=scheme.id,
+        folio_id=scheme.folio_id,
+        scheme_master=scheme_master_out,
+        advisor=scheme.advisor,
+        rta_code=scheme.rta_code,
+        rta=scheme.rta,
+        nominees=scheme.nominees,
+        open_units=scheme.open_units,
+        close_units=scheme.close_units,
+        close_calculated_units=scheme.close_calculated_units,
+        valuation=valuation_out,
+    )
 
-        # Fetch schemes linked to the user's folios for the given AMC
-        schemes = (
-            db.query(Scheme)
-            .join(Folio)
-            .filter(Folio.user_id == current_user.user_id, Scheme.amc_id == amc_id)
-            .options(
-                joinedload(Scheme.valuation),
-                joinedload(Scheme.scheme_master)  # ✅ Preload SchemeMaster for related fields
-            )
-            .all()
-        )
+    # Construct the SchemeDetailsOut object
+    scheme_details_out = SchemeDetailsOut(
+        scheme=scheme_out,
+        nav_history=nav_history,
+    )
 
-        total_valuation_value = 0.0
-        total_valuation_cost = 0.0
-
-        scheme_outs = [
-            SchemeOut(
-                id=scheme.id,
-                folio_id=scheme.folio_id,
-                amc_id=scheme.amc_id,
-                scheme_master_id=scheme.scheme_master_id,
-                scheme_master=SchemeMasterOut.model_validate(scheme.scheme_master) if scheme.scheme_master else None,
-                advisor=scheme.advisor,
-                rta_code=scheme.rta_code,
-                rta=scheme.rta,
-                nominees=scheme.nominees,
-                open_units=scheme.open_units,
-                close_units=scheme.close_units,
-                close_calculated_units=scheme.close_calculated_units,
-                valuation=ValuationOut.model_validate(scheme.valuation) if scheme.valuation else None
-            )
-            for scheme in schemes
-        ]
-
-        # Calculate total valuation values
-        total_valuation_value = sum(s.valuation.valuation_value or 0.0 for s in schemes if s.valuation)
-        total_valuation_cost = sum(s.valuation.valuation_cost or 0.0 for s in schemes if s.valuation)
-
-        gain_loss = total_valuation_value - total_valuation_cost
-        gain_loss_percent = (gain_loss / total_valuation_cost * 100) if total_valuation_cost else 0.0
-
-        amc_out = AMCOut(
-            id=amc.id,
-            name=amc.name,
-            valuation_value=total_valuation_value,
-            valuation_cost=total_valuation_cost,
-            gain_loss=gain_loss,
-            gain_loss_percent=gain_loss_percent
-        )
-
-        logger.info(f"Retrieved AMC {amc_id} schemes for user {current_user.user_id}.")
-        return AMCWithSchemesOut(amc=amc_out, schemes=scheme_outs)
-
-    except SQLAlchemyError as e:
-        logger.error(f"Database error: {e}")
-        raise HTTPException(status_code=500, detail="Database error occurred.")
-    except HTTPException as http_exc:
-        raise http_exc
-    except Exception as e:
-        logger.error(f"An unexpected error occurred: {e}")
-        raise HTTPException(status_code=500, detail="An unexpected error occurred.")
+    return scheme_details_out
 
 async def process_scheme_data(email: str):
-    """Processes scheme data asynchronously in the background."""
+    """Processes scheme data asynchronously in the background for the user email"""
     logger.info(f"Starting scheme data processing for {email}")
 
     async with AsyncSessionLocal() as db:
         try:
-            # Fetch schemes with valid AMFI codes
-            result = await db.execute(select(SchemeMaster).where(SchemeMaster.scheme_amfi_code.isnot(None)))
-            schemes = result.scalars().all()
+            try:
+                user = await db.execute(select(User).filter_by(email=email))
+                user = user.scalars().first()
 
-            # Run all tasks concurrently
+                if not user:
+                    logger.error(f"User with email {email} not found.")
+                    return  # Exit if user is not found
+            except Exception as e:
+                logger.error(f"User not found {email}: {e}", exc_info=True)
+
+            # 2. Fetch schemes associated with the user
+            # Construct a query that joins User, Folio, Scheme, and SchemeMaster
+            query = select(SchemeMaster).join(
+                Scheme, Scheme.scheme_master_id == SchemeMaster.scheme_id
+            ).join(
+                Folio, Scheme.folio_id == Folio.folio_number
+            ).join(
+                User, Folio.user_id == User.user_id
+            ).where(
+                User.email == email,
+                SchemeMaster.scheme_amfi_code.isnot(None)  # Filter for valid AMFI codes
+            )
+            result = await db.execute(query)
+            scheme_masters = result.scalars().all()  # Fetch SchemeMaster instead of Scheme
+
             tasks = []
-            for scheme in schemes:
-                scheme_master_id, amfi_code = scheme.scheme_id, scheme.scheme_amfi_code
+            for scheme_master in scheme_masters:  # Iterate through SchemeMaster
+                scheme_master_id, amfi_code = scheme_master.scheme_id, scheme_master.scheme_amfi_code
                 if amfi_code:
                     tasks.append(get_hist_data(amfi_code, scheme_master_id))
                 else:
                     logger.warning(f"No AMFI code for scheme_master_id: {scheme_master_id}")
 
-            # Execute all `get_hist_data` tasks concurrently
+            # 4. Execute all `get_hist_data` tasks concurrently
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
-            # Log any failures
-            for scheme, result in zip(schemes, results):
+            # 5. Log any failures
+            for scheme_master, result in zip(scheme_masters, results):  # zip with SchemeMaster
                 if isinstance(result, Exception):
-                    logger.error(f"Failed processing scheme_master_id {scheme.scheme_id}: {result}")
+                    logger.error(f"Failed processing scheme_master_id {scheme_master.scheme_id}: {result}")
 
-            # ✅ Commit only if everything runs successfully
+            # 6. Commit only if everything runs successfully
             await db.commit()
+            
 
         except Exception as e:
-            await db.rollback()
             logger.error(f"Background task error for {email}: {e}", exc_info=True)
+            await db.rollback()
+        finally:
+            logger.info("Updating NAV for all")
+            try:
+                await update_allvaluations_async(db)
+            except Exception as e:
+                logger.error(f"Error in updating valuation {e}", exc_info=False)  
+                await db.rollback()     
+            finally:
+                await db.close() 
 
     logger.info(f"Finished processing scheme data for {email}")
 

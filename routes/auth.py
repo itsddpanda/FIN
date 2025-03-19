@@ -5,11 +5,12 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from db import get_db
 from models import User
-from schemas import Token, UserOut, UserCreate, UserOut
+import logging
+from schemas import Token, UserOut, UserCreate
 from auth import verify_password, get_password_hash, create_access_token, generate_userid
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
-logger = logger.getChild("auth.py")
+logger = logging.getLogger("auth")
 
 @router.post("/register", response_model=UserOut)
 def register(user: UserCreate, db: Session = Depends(get_db)):
@@ -51,14 +52,13 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
             detail="Internal server error during registration",
         )
 
-
 @router.post("/login", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     try:
         user = db.query(User).filter(User.email == form_data.username).first()
         if not user or not verify_password(form_data.password, user.hashed_password):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect email or password")
-        elif user and not user.is_active:
+        elif not user.is_active:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User is not active")
         access_token = create_access_token(data={"sub": user.email})
         return {"access_token": access_token, "token_type": "bearer"}

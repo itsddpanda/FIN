@@ -18,3 +18,4 @@ requests==2.31.0
 httpx==0.25.2
 asyncpg==0.29.0
 sqlalchemy[asyncio]==2.0.30
+redis==5.0.1

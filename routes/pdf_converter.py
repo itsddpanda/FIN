@@ -42,6 +42,22 @@ progress_handler.setFormatter(formatter)
 logger.addHandler(progress_handler)
 logger.info("PDF Converter initialized with custom progress handler")
 
+def normalize(folio_number: str) -> str:
+    parts = folio_number.split(" / ")  # Split by " / "
+    return parts[0].strip()  # Take the first part and remove extra spaces
+
+def format_address_final(address_string):
+    if not address_string:
+        return ""
+
+    lines = address_string.splitlines()
+    cleaned_lines = []
+    for line in lines:
+        cleaned_line = ' '.join(line.split()).strip() #remove extra spaces, and strip leading and trailing spaces.
+        cleaned_lines.append(cleaned_line)
+
+    return cleaned_lines
+
 def clear_database_for_identifier(db: Session, identifier: str, identifier_type: str = "user_id"):
     """
     Clears all database records associated with a user, identified by either user_id or email,
@@ -172,7 +188,7 @@ def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
         investor_info = data.get("investor_info", {})
         name = investor_info.get("name")
         mobile = investor_info.get("mobile")
-        address = investor_info.get("address")
+        address = format_address_final(investor_info.get("address"))
 
         if not email:
             raise ValueError("Investor email is missing.")
@@ -195,7 +211,7 @@ def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
         # 5. Process folios
         folios_data: List[Dict[str, Any]] = data.get("folios",)  # type: ignore
         for folio_data in folios_data:
-            folio_number = folio_data.get("folio")
+            folio_number = normalize(folio_data.get("folio"))
             pan = folio_data.get("PAN")
             amc_name = folio_data.get("amc")
             # kyc_status = folio_data.get("KYC")
@@ -220,7 +236,7 @@ def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
             existing_folio = db.query(Folio).filter_by(
                 folio_number=folio_number, user_id=user.user_id
             ).first()
-
+            logger.info(f"Checking existing folio for {folio_number} found {existing_folio.folio_number} for {user.email}")
             # 8. Ensure statement period exists
             sp = db.query(StatementPeriod).filter_by(
                 from_date=new_sp_from, to_date=new_sp_to, user_id=user.user_id
@@ -231,6 +247,7 @@ def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
                 db.flush()  # Get sp.id
 
             if not existing_folio:
+                logger.info(f"Adding folio with {folio_number} with SPID: {sp.id} and AMC: {amc_obj.amc_id}")
                 folio_obj = Folio(
                     folio_number=folio_number,
                     pan=pan,
@@ -247,6 +264,7 @@ def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
                 if new_sp_from < sp.from_date or new_sp_to > sp.to_date:
                     sp.from_date = min(sp.from_date, new_sp_from)
                     sp.to_date = max(sp.to_date, new_sp_to)
+                    logger.info(f"Adding SP from: {sp.from_date} to: {sp.to_date}")
                     db.add(sp)
 
             # 9. Process schemes
@@ -281,6 +299,7 @@ def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
                             amc_id=amc_obj.amc_id,  # Use amc_id
                             scheme_type=scheme_type,
                         )
+                        logger.info(f"Adding Scheme_Master Name: {scheme_name} ISIN: {scheme_isin} and AMFI: {scheme_amfi}")
                         db.add(scheme_master)
                         db.flush()  # Get scheme_master.scheme_id
                 except SQLAlchemyError as e:
@@ -331,7 +350,8 @@ def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
                         existing_valuation = db.query(Valuation).filter_by(
                             scheme_id=scheme_obj.id
                         ).first()
-                        if existing_valuation:
+                        if existing_valuation and existing_valuation.valuation_date < valuation_date:
+                            logger.info(f"✅ Existing Valuation foud, date: {existing_valuation.valuation_date} with nav: {existing_valuation.valuation_nav}")
                             existing_valuation.valuation_date = valuation_date
                             existing_valuation.valuation_nav = (
                                 Decimal(str(valuation_nav)) if valuation_nav is not None else None
@@ -343,7 +363,7 @@ def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
                                 Decimal(str(valuation_cost)) if valuation_cost is not None else None
                             )
                             db.add(existing_valuation)
-                        else:
+                        elif not existing_valuation:
                             valuation_obj = Valuation(
                                 scheme_id=scheme_obj.id,
                                 valuation_date=valuation_date,
@@ -463,7 +483,7 @@ def convertpdf(pdf_file_path: str, password: str, email: str) -> bool:
         logger.debug(f"Converting {pdf_file_path}")
         json_str = casparser.read_cas_pdf(pdf_file_path, password, output="json")
         data = json.loads(json_str)
-
+        #remove with below in prod
         with open("output.json", "w") as f:
             json.dump(data, f, indent=4)
         logger.info("File Conversion FINISH")
@@ -495,10 +515,12 @@ def convertpdf(pdf_file_path: str, password: str, email: str) -> bool:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Failed to push data to DB."
             )
+        db.close_all()
         return True  # Indicate success
     except HTTPException as e:
         raise e # Re-raise HTTPException to be handled by caller
     except Exception as e:
+        db.close()
         logger.error(f"An unexpected error occurred during database operation: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

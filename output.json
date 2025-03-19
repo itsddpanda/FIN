@@ -1,11 +1,11 @@
 {
     "statement_period": {
-        "from": "01-Jan-1985",
-        "to": "15-Feb-2025"
+        "from": "19-Apr-1985",
+        "to": "10-Feb-2025"
     },
     "folios": [
         {
-            "folio": "1038436370 / 0",
+            "folio": "1038436370",
             "amc": "Aditya Birla Sun Life Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -24,10 +24,10 @@
                     "close": "3000.000",
                     "close_calculated": "3000.000",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "19.41",
+                        "date": "2025-02-07",
+                        "nav": "20.41",
                         "cost": "30000.00",
-                        "value": "58230.00"
+                        "value": "61230.00"
                     },
                     "transactions": [
                         {
@@ -43,7 +43,7 @@
                     ]
                 },
                 {
-                    "scheme": "ABSL Bal Bhavishya Yojna Savings Plan Direct IDCW# (Non-Demat",
+                    "scheme": "ABSL Bal Bhavishya Yojna Savings Plan Direct IDCW (Non-Demat) - Payout",
                     "advisor": "DIRECT",
                     "rta_code": "B42X",
                     "rta": "CAMS",
@@ -65,7 +65,7 @@
             ]
         },
         {
-            "folio": "91057795155 / 0",
+            "folio": "91057795155",
             "amc": "AXIS Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -86,8 +86,8 @@
                     "close": "0.000",
                     "close_calculated": "0.000",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "106.44",
+                        "date": "2025-02-07",
+                        "nav": "114.85",
                         "cost": "0.00",
                         "value": "0.00"
                     },
@@ -164,7 +164,7 @@
                         },
                         {
                             "date": "2020-09-25",
-                            "description": "Redemption less TDS, STT",
+                            "description": "Redemption",
                             "amount": "-45030.19",
                             "units": "-1287.061",
                             "nav": "34.99",
@@ -187,7 +187,7 @@
             ]
         },
         {
-            "folio": "1579147971 / 0",
+            "folio": "1579147971",
             "amc": "Canara Robeco Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -208,8 +208,8 @@
                     "close": "0.000",
                     "close_calculated": "0.000",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "225.72",
+                        "date": "2025-02-07",
+                        "nav": "241.44",
                         "cost": "0.00",
                         "value": "0.00"
                     },
@@ -235,8 +235,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2015-12-15",
-                            "description": "Systematic Investment (2/32)",
+                            "date": "2015-11-16",
+                            "description": "Systematic Investment (2/32) 15-Dec-2015",
                             "amount": "962.50",
                             "units": "15.799",
                             "nav": "60.92",
@@ -255,8 +255,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2016-01-15",
-                            "description": "Systematic Investment (3/32)",
+                            "date": "2015-12-15",
+                            "description": "Systematic Investment (3/32) 15-Jan-2016",
                             "amount": "962.50",
                             "units": "16.795",
                             "nav": "57.31",
@@ -275,8 +275,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2016-02-15",
-                            "description": "Systematic Investment (4/32)",
+                            "date": "2016-01-15",
+                            "description": "Systematic Investment (4/32) 15-Feb-2016",
                             "amount": "962.50",
                             "units": "17.974",
                             "nav": "53.55",
@@ -295,8 +295,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2016-03-15",
-                            "description": "Systematic Investment (5/32)",
+                            "date": "2016-02-15",
+                            "description": "Systematic Investment (5/32) 15-Mar-2016",
                             "amount": "1000.00",
                             "units": "18.484",
                             "nav": "54.10",
@@ -776,7 +776,7 @@
                         },
                         {
                             "date": "2018-08-03",
-                            "description": "Redemption less TDS, STT",
+                            "description": "Redemption",
                             "amount": "-9708.90",
                             "units": "-100.000",
                             "nav": "97.09",
@@ -795,8 +795,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2018-08-16",
-                            "description": "Systematic Investment (11/28)",
+                            "date": "2018-08-03",
+                            "description": "Systematic Investment (11/28) 16-Aug-2018",
                             "amount": "2000.00",
                             "units": "20.708",
                             "nav": "96.58",
@@ -876,7 +876,7 @@
                         },
                         {
                             "date": "2018-11-15",
-                            "description": "Systematic Investment (14/28)",
+                            "description": "Systematic Investment (14/28) 15-Nov-2018",
                             "amount": "1975.00",
                             "units": "22.701",
                             "nav": "87.00",
@@ -895,8 +895,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2018-12-17",
-                            "description": "Systematic Investment (15/28)",
+                            "date": "2018-11-15",
+                            "description": "Systematic Investment (15/28) 17-Dec-2018",
                             "amount": "1975.00",
                             "units": "22.238",
                             "nav": "88.81",
@@ -916,7 +916,7 @@
                         },
                         {
                             "date": "2018-12-17",
-                            "description": "Systematic Investment (15/28)",
+                            "description": "Systematic Investment (15/28) 17-Dec-2018",
                             "amount": "1975.00",
                             "units": "22.238",
                             "nav": "88.81",
@@ -935,8 +935,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2019-01-15",
-                            "description": "Systematic Investment (16/28)",
+                            "date": "2018-12-17",
+                            "description": "Systematic Investment (16/28) 15-Jan-2019",
                             "amount": "1975.00",
                             "units": "22.189",
                             "nav": "89.01",
@@ -956,7 +956,7 @@
                         },
                         {
                             "date": "2019-01-15",
-                            "description": "Systematic Investment (16/28)",
+                            "description": "Systematic Investment (16/28) 15-Jan-2019",
                             "amount": "1975.00",
                             "units": "22.189",
                             "nav": "89.01",
@@ -975,8 +975,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2019-02-15",
-                            "description": "Systematic Investment (17/28)",
+                            "date": "2019-01-15",
+                            "description": "Systematic Investment (17/28) 15-Feb-2019",
                             "amount": "1975.00",
                             "units": "22.941",
                             "nav": "86.09",
@@ -996,7 +996,7 @@
                         },
                         {
                             "date": "2019-02-15",
-                            "description": "Systematic Investment (17/28)",
+                            "description": "Systematic Investment (17/28) 15-Feb-2019",
                             "amount": "1975.00",
                             "units": "22.941",
                             "nav": "86.09",
@@ -1015,8 +1015,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2019-03-15",
-                            "description": "Systematic Investment (18/28)",
+                            "date": "2019-02-15",
+                            "description": "Systematic Investment (18/28) 15-Mar-2019",
                             "amount": "2000.00",
                             "units": "21.517",
                             "nav": "92.95",
@@ -1236,7 +1236,7 @@
                         },
                         {
                             "date": "2020-02-06",
-                            "description": "Redemption less TDS, STT",
+                            "description": "Redemption",
                             "amount": "-82567.17",
                             "units": "-800.000",
                             "nav": "103.21",
@@ -1255,8 +1255,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2021-09-20",
-                            "description": "Redemption less TDS, STT",
+                            "date": "2020-02-06",
+                            "description": "Redemption 20-Sep-2021",
                             "amount": "-120636.58",
                             "units": "-748.745",
                             "nav": "161.12",
@@ -1279,7 +1279,7 @@
             ]
         },
         {
-            "folio": "8087557 / 36",
+            "folio": "8087557/ 36",
             "amc": "DSP Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -1300,10 +1300,10 @@
                     "close": "418.512",
                     "close_calculated": "418.512",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "41.016",
+                        "date": "2025-02-07",
+                        "nav": "43.832",
                         "cost": "10000.00",
-                        "value": "17165.69"
+                        "value": "18344.22"
                     },
                     "transactions": [
                         {
@@ -1331,7 +1331,7 @@
             ]
         },
         {
-            "folio": "20444730 / 74",
+            "folio": "20444730/ 74",
             "amc": "HDFC Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -1352,10 +1352,10 @@
                     "close": "3999.800",
                     "close_calculated": "3999.800",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "17.479",
+                        "date": "2025-02-07",
+                        "nav": "19.033",
                         "cost": "40000.00",
-                        "value": "69912.50"
+                        "value": "76128.19"
                     },
                     "transactions": [
                         {
@@ -1395,10 +1395,10 @@
                     "close": "68.706",
                     "close_calculated": "68.706",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "232.998",
+                        "date": "2025-02-07",
+                        "nav": "240.263",
                         "cost": "10000.00",
-                        "value": "16008.36"
+                        "value": "16507.51"
                     },
                     "transactions": [
                         {
@@ -1438,10 +1438,10 @@
                     "close": "99.089",
                     "close_calculated": "99.089",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "135.163",
+                        "date": "2025-02-07",
+                        "nav": "145.426",
                         "cost": "10000.00",
-                        "value": "13393.17"
+                        "value": "14410.12"
                     },
                     "transactions": [
                         {
@@ -1469,7 +1469,7 @@
             ]
         },
         {
-            "folio": "20857769 / 35",
+            "folio": "20857769/ 35",
             "amc": "HSBC Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -1483,17 +1483,15 @@
                     "type": "EQUITY",
                     "isin": "INF917K01GE4",
                     "amfi": "151060",
-                    "nominees": [
-                        "PURNIMA SINGH"
-                    ],
+                    "nominees": [],
                     "open": "0.000",
                     "close": "412.923",
                     "close_calculated": "412.923",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "34.0152",
+                        "date": "2025-02-07",
+                        "nav": "35.1588",
                         "cost": "15000.00",
-                        "value": "14045.66"
+                        "value": "14517.88"
                     },
                     "transactions": [
                         {
@@ -1521,7 +1519,7 @@
             ]
         },
         {
-            "folio": "17950652 / 19",
+            "folio": "17950652/ 19",
             "amc": "ICICI Prudential Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -1540,10 +1538,10 @@
                     ],
                     "open": "0.000",
                     "close": "0.000",
-                    "close_calculated": "0.000",
+                    "close_calculated": "0.0000",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "38.84",
+                        "date": "2025-02-07",
+                        "nav": "41.17",
                         "cost": "0.00",
                         "value": "0.00"
                     },
@@ -1569,10 +1567,10 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2021-10-25",
-                            "description": "Redemption - ELECTRONIC PAYMENT - via Internet - N301211689276834 , less STT",
+                            "date": "2021-06-30",
+                            "description": "Redemption - ELECTRONIC PAYMENT - via Internet -\t\tN301211689276834 25-Oct-2021",
                             "amount": "-21957.09",
-                            "units": "-866.508",
+                            "units": "-866.5080",
                             "nav": "25.34",
                             "balance": "0.000",
                             "type": "REDEMPTION",
@@ -1605,10 +1603,10 @@
                     "close": "195.693",
                     "close_calculated": "195.693",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "180.95",
+                        "date": "2025-02-07",
+                        "nav": "191.47",
                         "cost": "25000.00",
-                        "value": "35410.65"
+                        "value": "37469.34"
                     },
                     "transactions": [
                         {
@@ -1632,8 +1630,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2023-03-23",
-                            "description": "Purchase Appln : MFC- via MFCentral - DIRECT",
+                            "date": "2022-10-31",
+                            "description": "Purchase Appln : MFC- via MFCentral - DIRECT 23-Mar-2023",
                             "amount": "4999.75",
                             "units": "46.350",
                             "nav": "107.87",
@@ -1652,8 +1650,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-06-06",
-                            "description": "Purchase Appln : MFC- via MFCentral - DIRECT",
+                            "date": "2023-03-23",
+                            "description": "Purchase Appln : MFC- via MFCentral - DIRECT 06-Jun-2024",
                             "amount": "9999.50",
                             "units": "52.043",
                             "nav": "192.14",
@@ -1686,10 +1684,10 @@
                     ],
                     "open": "0.000",
                     "close": "0.000",
-                    "close_calculated": "0.000",
+                    "close_calculated": "0.0000",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "28.09",
+                        "date": "2025-02-07",
+                        "nav": "29.42",
                         "cost": "0.00",
                         "value": "0.00"
                     },
@@ -1716,9 +1714,9 @@
                         },
                         {
                             "date": "2024-02-22",
-                            "description": "Redemption - ELECTRONIC PAYMENT- via MFCentral - N057242900431991 , less STT",
+                            "description": "Redemption - ELECTRONIC PAYMENT- via MFCentral -\t\tN057242900431991",
                             "amount": "-15354.14",
-                            "units": "-582.043",
+                            "units": "-582.0430",
                             "nav": "26.38",
                             "balance": "0.000",
                             "type": "REDEMPTION",
@@ -1744,17 +1742,15 @@
                     "type": "EQUITY",
                     "isin": "INF109K015M0",
                     "amfi": "120591",
-                    "nominees": [
-                        "PURNIMA SINGH"
-                    ],
+                    "nominees": [],
                     "open": "0.000",
                     "close": "167.300",
                     "close_calculated": "167.300",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "84.84",
+                        "date": "2025-02-07",
+                        "nav": "91.22",
                         "cost": "10000.00",
-                        "value": "14193.73"
+                        "value": "15261.11"
                     },
                     "transactions": [
                         {
@@ -1792,10 +1788,10 @@
                     ],
                     "open": "0.000",
                     "close": "0.000",
-                    "close_calculated": "0.000",
+                    "close_calculated": "0.0000",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "226.89",
+                        "date": "2025-02-07",
+                        "nav": "235.56",
                         "cost": "0.00",
                         "value": "0.00"
                     },
@@ -1841,10 +1837,10 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-02-22",
-                            "description": "Redemption - ELECTRONIC PAYMENT- via MFCentral - N057242900431990 , less STT",
+                            "date": "2023-03-24",
+                            "description": "Redemption - ELECTRONIC PAYMENT- via MFCentral -\t\tN057242900431990 22-Feb-2024",
                             "amount": "-21561.37",
-                            "units": "-108.154",
+                            "units": "-108.1540",
                             "nav": "199.36",
                             "balance": "0.000",
                             "type": "REDEMPTION",
@@ -1865,7 +1861,7 @@
             ]
         },
         {
-            "folio": "3106188532 / 0",
+            "folio": "3106188532",
             "amc": "Invesco Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -1886,8 +1882,8 @@
                     "close": "0.000",
                     "close_calculated": "0.000",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "140.41",
+                        "date": "2025-02-07",
+                        "nav": "148.72",
                         "cost": "0.00",
                         "value": "0.00"
                     },
@@ -1913,8 +1909,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2020-12-01",
-                            "description": "Systematic Investment (2/6)",
+                            "date": "2020-11-02",
+                            "description": "Systematic Investment (2/6) 01-Dec-2020",
                             "amount": "1999.90",
                             "units": "31.998",
                             "nav": "62.50",
@@ -1933,8 +1929,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2021-01-01",
-                            "description": "Systematic Investment (3/6)",
+                            "date": "2020-12-01",
+                            "description": "Systematic Investment (3/6) 01-Jan-2021",
                             "amount": "1999.90",
                             "units": "30.155",
                             "nav": "66.32",
@@ -1953,8 +1949,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2021-02-03",
-                            "description": "Systematic Investment (4/6)",
+                            "date": "2021-01-01",
+                            "description": "Systematic Investment (4/6) 03-Feb-2021",
                             "amount": "1999.90",
                             "units": "28.014",
                             "nav": "71.39",
@@ -1973,8 +1969,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2021-03-01",
-                            "description": "Systematic Investment (5/6)",
+                            "date": "2021-02-03",
+                            "description": "Systematic Investment (5/6) 01-Mar-2021",
                             "amount": "1999.90",
                             "units": "27.340",
                             "nav": "73.15",
@@ -1993,8 +1989,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2021-04-01",
-                            "description": "Systematic Investment (6/6)",
+                            "date": "2021-03-01",
+                            "description": "Systematic Investment (6/6) 01-Apr-2021",
                             "amount": "1999.90",
                             "units": "28.489",
                             "nav": "70.20",
@@ -2013,8 +2009,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2023-03-23",
-                            "description": "Additional Purchase",
+                            "date": "2021-04-01",
+                            "description": "Additional Purchase 23-Mar-2023",
                             "amount": "4999.75",
                             "units": "58.293",
                             "nav": "85.77",
@@ -2033,8 +2029,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-04-12",
-                            "description": "Redemption less TDS, STT",
+                            "date": "2023-03-23",
+                            "description": "Redemption 12-Apr-2024",
                             "amount": "-31291.91",
                             "units": "-240.395",
                             "nav": "130.17",
@@ -2069,10 +2065,10 @@
                     "close": "764.546",
                     "close_calculated": "764.546",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "26.77",
+                        "date": "2025-02-07",
+                        "nav": "28.27",
                         "cost": "20000.00",
-                        "value": "20466.90"
+                        "value": "21613.72"
                     },
                     "transactions": [
                         {
@@ -2096,8 +2092,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-11-25",
-                            "description": "Additional Purchase",
+                            "date": "2024-05-09",
+                            "description": "Additional Purchase 25-Nov-2024",
                             "amount": "4999.75",
                             "units": "165.774",
                             "nav": "30.16",
@@ -2132,10 +2128,10 @@
                     "close": "203.905",
                     "close_calculated": "203.905",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "64.33",
+                        "date": "2025-02-07",
+                        "nav": "69.86",
                         "cost": "15000.00",
-                        "value": "13117.21"
+                        "value": "14244.80"
                     },
                     "transactions": [
                         {
@@ -2163,7 +2159,7 @@
             ]
         },
         {
-            "folio": "12044129 / 16",
+            "folio": "12044129/ 16",
             "amc": "Kotak Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -2182,10 +2178,10 @@
                     ],
                     "open": "0.000",
                     "close": "0.000",
-                    "close_calculated": "0.000",
+                    "close_calculated": "0.0000",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "589.758",
+                        "date": "2025-02-07",
+                        "nav": "611.077",
                         "cost": "0.00",
                         "value": "0.00"
                     },
@@ -2211,10 +2207,10 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2022-11-09",
-                            "description": "Switch-Out - To Kotak Infra & Eco Fund Dir Growth , less STT",
+                            "date": "2021-06-25",
+                            "description": "Switch-Out - To Kotak Infra & Eco Fund Dir Growth 09-Nov-2022",
                             "amount": "-11448.77",
-                            "units": "-26.702",
+                            "units": "-26.7020",
                             "nav": "428.765",
                             "balance": "0.000",
                             "type": "SWITCH_OUT",
@@ -2247,10 +2243,10 @@
                     "close": "121.586",
                     "close_calculated": "121.586",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "131.254",
+                        "date": "2025-02-07",
+                        "nav": "142.063",
                         "cost": "10000.00",
-                        "value": "15958.65"
+                        "value": "17272.87"
                     },
                     "transactions": [
                         {
@@ -2290,10 +2286,10 @@
                     "close": "271.072",
                     "close_calculated": "271.072",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "65.988",
+                        "date": "2025-02-07",
+                        "nav": "71.605",
                         "cost": "11448.77",
-                        "value": "17887.50"
+                        "value": "19410.11"
                     },
                     "transactions": [
                         {
@@ -2331,10 +2327,10 @@
                     ],
                     "open": "0.000",
                     "close": "0.000",
-                    "close_calculated": "0.000",
+                    "close_calculated": "0.0000",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "268.151",
+                        "date": "2025-02-07",
+                        "nav": "295.027",
                         "cost": "0.00",
                         "value": "0.00"
                     },
@@ -2361,9 +2357,9 @@
                         },
                         {
                             "date": "2024-04-03",
-                            "description": "Redemption - via Internet - N09624297084674 , less STT",
+                            "description": "Redemption - via Internet - N09624297084674",
                             "amount": "-16735.96",
-                            "units": "-64.424",
+                            "units": "-64.4240",
                             "nav": "259.781",
                             "balance": "0.000",
                             "type": "REDEMPTION",
@@ -2384,7 +2380,7 @@
             ]
         },
         {
-            "folio": "91070834823 / 0",
+            "folio": "91070834823",
             "amc": "MOTILAL OSWAL MUTUAL FUND",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -2405,10 +2401,10 @@
                     "close": "840.221",
                     "close_calculated": "840.221",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "30.2717",
+                        "date": "2025-02-07",
+                        "nav": "32.6951",
                         "cost": "30000.00",
-                        "value": "25434.92"
+                        "value": "27471.11"
                     },
                     "transactions": [
                         {
@@ -2445,13 +2441,13 @@
                         "PURNIMA SINGH"
                     ],
                     "open": "0.000",
-                    "close": "507.823",
-                    "close_calculated": "507.823",
+                    "close": "412.230",
+                    "close_calculated": "412.230",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "104.6052",
-                        "cost": "60000.00",
-                        "value": "53120.93"
+                        "date": "2025-02-07",
+                        "nav": "111.1066",
+                        "cost": "50000.00",
+                        "value": "45801.47"
                     },
                     "transactions": [
                         {
@@ -2475,8 +2471,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-10-14",
-                            "description": "Systematic Investment (2/12)",
+                            "date": "2024-09-16",
+                            "description": "Systematic Investment (2/12) 14-Oct-2024",
                             "amount": "9999.50",
                             "units": "80.456",
                             "nav": "124.2855",
@@ -2495,8 +2491,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-11-14",
-                            "description": "Systematic Investment (3/12)",
+                            "date": "2024-10-14",
+                            "description": "Systematic Investment (3/12) 14-Nov-2024",
                             "amount": "9999.50",
                             "units": "85.889",
                             "nav": "116.4242",
@@ -2515,8 +2511,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-12-16",
-                            "description": "Systematic Investment (4/12)",
+                            "date": "2024-11-14",
+                            "description": "Systematic Investment (4/12) 16-Dec-2024",
                             "amount": "9999.50",
                             "units": "76.529",
                             "nav": "130.6636",
@@ -2535,8 +2531,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2025-01-14",
-                            "description": "Systematic Investment (5/12)",
+                            "date": "2024-12-16",
+                            "description": "Systematic Investment (5/12) 14-Jan-2025",
                             "amount": "9999.50",
                             "units": "86.427",
                             "nav": "115.6985",
@@ -2553,33 +2549,13 @@
                             "balance": null,
                             "type": "STAMP_DUTY_TAX",
                             "dividend_rate": null
-                        },
-                        {
-                            "date": "2025-02-14",
-                            "description": "Systematic Investment (6/12)",
-                            "amount": "9999.50",
-                            "units": "95.593",
-                            "nav": "104.6052",
-                            "balance": "507.823",
-                            "type": "PURCHASE_SIP",
-                            "dividend_rate": null
-                        },
-                        {
-                            "date": "2025-02-14",
-                            "description": "*** Stamp Duty ***",
-                            "amount": "0.50",
-                            "units": null,
-                            "nav": null,
-                            "balance": null,
-                            "type": "STAMP_DUTY_TAX",
-                            "dividend_rate": null
                         }
                     ]
                 }
             ]
         },
         {
-            "folio": "499280328614 / 0",
+            "folio": "499280328614",
             "amc": "Nippon India Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -2600,10 +2576,10 @@
                     "close": "1230.057",
                     "close_calculated": "1230.057",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "12.2435",
+                        "date": "2025-02-07",
+                        "nav": "12.4602",
                         "cost": "10000.00",
-                        "value": "15060.20"
+                        "value": "15326.76"
                     },
                     "transactions": [
                         {
@@ -2639,7 +2615,7 @@
             "schemes": [
                 {
                     "scheme": "Parag Parikh Flexi Cap Fund - Direct Plan (Non-Demat",
-                    "advisor": "CAT-1",
+                    "advisor": "DIRECT",
                     "rta_code": "PP001ZG",
                     "rta": "CAMS",
                     "type": "EQUITY",
@@ -2649,13 +2625,13 @@
                         "Purnima Singh"
                     ],
                     "open": "0.000",
-                    "close": "842.551",
-                    "close_calculated": "842.551",
+                    "close": "260.720",
+                    "close_calculated": "260.720",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "85.8110",
-                        "cost": "70000.00",
-                        "value": "72300.14"
+                        "date": "2025-02-07",
+                        "nav": "87.2360",
+                        "cost": "20000.00",
+                        "value": "22744.17"
                     },
                     "transactions": [
                         {
@@ -2677,33 +2653,13 @@
                             "balance": null,
                             "type": "STAMP_DUTY_TAX",
                             "dividend_rate": null
-                        },
-                        {
-                            "date": "2025-02-11",
-                            "description": "Purchase- via MFCentral",
-                            "amount": "49997.50",
-                            "units": "581.831",
-                            "nav": "85.9313",
-                            "balance": "842.551",
-                            "type": "PURCHASE",
-                            "dividend_rate": null
-                        },
-                        {
-                            "date": "2025-02-11",
-                            "description": "*** Stamp Duty ***",
-                            "amount": "2.50",
-                            "units": null,
-                            "nav": null,
-                            "balance": null,
-                            "type": "STAMP_DUTY_TAX",
-                            "dividend_rate": null
                         }
                     ]
                 }
             ]
         },
         {
-            "folio": "51018328915 / 0",
+            "folio": "51018328915",
             "amc": "Quant MF",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -2724,10 +2680,10 @@
                     "close": "3230.816",
                     "close_calculated": "3230.816",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "11.8820",
+                        "date": "2025-02-07",
+                        "nav": "12.7892",
                         "cost": "40000.00",
-                        "value": "38388.56"
+                        "value": "41319.55"
                     },
                     "transactions": [
                         {
@@ -2751,8 +2707,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-05-08",
-                            "description": "Additional Purchase",
+                            "date": "2024-04-24",
+                            "description": "Additional Purchase 08-May-2024",
                             "amount": "9999.50",
                             "units": "843.363",
                             "nav": "11.8567",
@@ -2771,8 +2727,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-05-31",
-                            "description": "Additional Purchase",
+                            "date": "2024-05-08",
+                            "description": "Additional Purchase 31-May-2024",
                             "amount": "9999.50",
                             "units": "796.354",
                             "nav": "12.5566",
@@ -2807,10 +2763,10 @@
                     "close": "64.629",
                     "close_calculated": "64.629",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "353.9716",
+                        "date": "2025-02-07",
+                        "nav": "371.9326",
                         "cost": "25000.00",
-                        "value": "22876.83"
+                        "value": "24037.63"
                     },
                     "transactions": [
                         {
@@ -2834,8 +2790,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-05-08",
-                            "description": "Additional Purchase",
+                            "date": "2024-03-21",
+                            "description": "Additional Purchase 08-May-2024",
                             "amount": "9999.50",
                             "units": "25.008",
                             "nav": "399.8567",
@@ -2870,10 +2826,10 @@
                     "close": "146.980",
                     "close_calculated": "146.980",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "96.0944",
+                        "date": "2025-02-07",
+                        "nav": "101.3910",
                         "cost": "10000.00",
-                        "value": "14123.95"
+                        "value": "14902.45"
                     },
                     "transactions": [
                         {
@@ -2913,10 +2869,10 @@
                     "close": "418.758",
                     "close_calculated": "418.758",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "85.5333",
+                        "date": "2025-02-07",
+                        "nav": "90.1837",
                         "cost": "40000.00",
-                        "value": "35817.75"
+                        "value": "37765.15"
                     },
                     "transactions": [
                         {
@@ -2940,8 +2896,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-11-25",
-                            "description": "Additional Purchase",
+                            "date": "2024-06-06",
+                            "description": "Additional Purchase 25-Nov-2024",
                             "amount": "24998.75",
                             "units": "263.584",
                             "nav": "94.8417",
@@ -2976,10 +2932,10 @@
                     "close": "328.024",
                     "close_calculated": "328.024",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "114.6744",
+                        "date": "2025-02-07",
+                        "nav": "120.2586",
                         "cost": "40000.00",
-                        "value": "37615.96"
+                        "value": "39447.71"
                     },
                     "transactions": [
                         {
@@ -3003,8 +2959,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-02-26",
-                            "description": "Additional Purchase",
+                            "date": "2024-02-22",
+                            "description": "Additional Purchase 26-Feb-2024",
                             "amount": "19999.00",
                             "units": "168.130",
                             "nav": "118.9494",
@@ -3023,8 +2979,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-06-06",
-                            "description": "Additional Purchase",
+                            "date": "2024-02-26",
+                            "description": "Additional Purchase 06-Jun-2024",
                             "amount": "9999.50",
                             "units": "75.533",
                             "nav": "132.3859",
@@ -3056,13 +3012,13 @@
                         "PURNIMA SINGH"
                     ],
                     "open": "0.000",
-                    "close": "143.109",
-                    "close_calculated": "143.109",
+                    "close": "106.350",
+                    "close_calculated": "106.350",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "135.5350",
-                        "cost": "20000.00",
-                        "value": "19396.28"
+                        "date": "2025-02-07",
+                        "nav": "139.5323",
+                        "cost": "15000.00",
+                        "value": "14839.26"
                     },
                     "transactions": [
                         {
@@ -3086,8 +3042,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2025-01-15",
-                            "description": "Systematic Investment (2/15)",
+                            "date": "2025-01-01",
+                            "description": "Systematic Investment (2/15) 15-Jan-2025",
                             "amount": "4999.75",
                             "units": "35.396",
                             "nav": "141.2534",
@@ -3106,8 +3062,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2025-01-29",
-                            "description": "Systematic Investment (3/15)",
+                            "date": "2025-01-15",
+                            "description": "Systematic Investment (3/15) 29-Jan-2025",
                             "amount": "4999.75",
                             "units": "36.485",
                             "nav": "137.0354",
@@ -3117,26 +3073,6 @@
                         },
                         {
                             "date": "2025-01-29",
-                            "description": "*** Stamp Duty ***",
-                            "amount": "0.25",
-                            "units": null,
-                            "nav": null,
-                            "balance": null,
-                            "type": "STAMP_DUTY_TAX",
-                            "dividend_rate": null
-                        },
-                        {
-                            "date": "2025-02-12",
-                            "description": "Systematic Investment (4/15)",
-                            "amount": "4999.75",
-                            "units": "36.759",
-                            "nav": "136.0160",
-                            "balance": "143.109",
-                            "type": "PURCHASE_SIP",
-                            "dividend_rate": null
-                        },
-                        {
-                            "date": "2025-02-12",
                             "description": "*** Stamp Duty ***",
                             "amount": "0.25",
                             "units": null,
@@ -3162,10 +3098,10 @@
                     "close": "1692.750",
                     "close_calculated": "1692.750",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "21.5544",
+                        "date": "2025-02-07",
+                        "nav": "22.6481",
                         "cost": "30000.00",
-                        "value": "36486.21"
+                        "value": "38337.57"
                     },
                     "transactions": [
                         {
@@ -3189,8 +3125,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-05-03",
-                            "description": "Additional Purchase",
+                            "date": "2022-11-09",
+                            "description": "Additional Purchase 03-May-2024",
                             "amount": "14999.25",
                             "units": "607.798",
                             "nav": "24.6780",
@@ -3213,7 +3149,7 @@
             ]
         },
         {
-            "folio": "21211247 / 0",
+            "folio": "21211247",
             "amc": "SBI Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -3234,10 +3170,10 @@
                     "close": "90.757",
                     "close_calculated": "90.757",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "383.4223",
+                        "date": "2025-02-07",
+                        "nav": "398.3297",
                         "cost": "22000.00",
-                        "value": "34798.26"
+                        "value": "36151.21"
                     },
                     "transactions": [
                         {
@@ -3281,8 +3217,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2022-11-24",
-                            "description": "Purchase - Systematic-Normal - Instalment 2/6",
+                            "date": "2022-11-17",
+                            "description": "Purchase - Systematic-Normal - Instalment 2/6 24-Nov-2022",
                             "amount": "1999.90",
                             "units": "8.157",
                             "nav": "245.1696",
@@ -3301,8 +3237,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2022-12-05",
-                            "description": "Purchase - Systematic-Normal - Instalment 3/6",
+                            "date": "2022-11-24",
+                            "description": "Purchase - Systematic-Normal - Instalment 3/6 05-Dec-2022",
                             "amount": "1999.90",
                             "units": "7.983",
                             "nav": "250.5279",
@@ -3321,8 +3257,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2022-12-12",
-                            "description": "Purchase - Systematic-Normal - Instalment 4/6",
+                            "date": "2022-12-05",
+                            "description": "Purchase - Systematic-Normal - Instalment 4/6 12-Dec-2022",
                             "amount": "1999.90",
                             "units": "8.034",
                             "nav": "248.9179",
@@ -3341,8 +3277,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2022-12-19",
-                            "description": "Purchase - Systematic-Normal - Instalment 5/6",
+                            "date": "2022-12-12",
+                            "description": "Purchase - Systematic-Normal - Instalment 5/6 19-Dec-2022",
                             "amount": "1999.90",
                             "units": "8.048",
                             "nav": "248.4914",
@@ -3361,8 +3297,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2022-12-23",
-                            "description": "Purchase - Systematic-Normal - Instalment 6/6",
+                            "date": "2022-12-19",
+                            "description": "Purchase - Systematic-Normal - Instalment 6/6 23-Dec-2022",
                             "amount": "1999.90",
                             "units": "8.441",
                             "nav": "236.9214",
@@ -3385,7 +3321,7 @@
             ]
         },
         {
-            "folio": "43142144 / 0",
+            "folio": "43142144",
             "amc": "SBI Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -3404,10 +3340,10 @@
                     "close": "12.532",
                     "close_calculated": "12.532",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "383.4223",
+                        "date": "2025-02-07",
+                        "nav": "398.3297",
                         "cost": "5000.00",
-                        "value": "4805.05"
+                        "value": "4991.87"
                     },
                     "transactions": [
                         {
@@ -3435,7 +3371,7 @@
             ]
         },
         {
-            "folio": "4351542 / 22",
+            "folio": "4351542/ 22",
             "amc": "Tata Mutual Fund",
             "PAN": "AVYPR0077R",
             "KYC": "OK",
@@ -3456,10 +3392,10 @@
                     "close": "2529.683",
                     "close_calculated": "2529.683",
                     "valuation": {
-                        "date": "2025-02-14",
-                        "nav": "57.4200",
+                        "date": "2025-02-07",
+                        "nav": "60.0709",
                         "cost": "145000.00",
-                        "value": "145254.40"
+                        "value": "151960.33"
                     },
                     "transactions": [
                         {
@@ -3624,7 +3560,7 @@
                         },
                         {
                             "date": "2020-10-06",
-                            "description": "Purchase - via Internet",
+                            "description": "Purchase - via Internet 06-Oct-2020",
                             "amount": "9999.50",
                             "units": "460.541",
                             "nav": "21.7125",
@@ -3663,8 +3599,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2021-10-25",
-                            "description": "Redemption - NEFT/RTGS PAYOUT - via Online - N301211689342855 , less STT",
+                            "date": "2021-06-28",
+                            "description": "Redemption - NEFT/RTGS PAYOUT - via Online - N301211689342855 25-Oct-2021",
                             "amount": "-147859.75",
                             "units": "-3590.198",
                             "nav": "41.1847",
@@ -3723,8 +3659,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2024-12-02",
-                            "description": "Purchase SIP - Instalment 1/6 - via Online - DIRECT",
+                            "date": "2024-11-14",
+                            "description": "Purchase SIP - Instalment 1/6 - via Online - DIRECT 02-Dec-2024",
                             "amount": "39998.00",
                             "units": "640.969",
                             "nav": "62.4024",
@@ -3743,8 +3679,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2025-01-01",
-                            "description": "Purchase SIP - Instalment 2/6 - via Online - DIRECT",
+                            "date": "2024-12-02",
+                            "description": "Purchase SIP - Instalment 2/6 - via Online - DIRECT 01-Jan-2025",
                             "amount": "39998.00",
                             "units": "639.500",
                             "nav": "62.5457",
@@ -3763,8 +3699,8 @@
                             "dividend_rate": null
                         },
                         {
-                            "date": "2025-02-03",
-                            "description": "Purchase SIP - Instalment 3/6 - via Online - DIRECT",
+                            "date": "2025-01-01",
+                            "description": "Purchase SIP - Instalment 3/6 - via Online - DIRECT 03-Feb-2025",
                             "amount": "39998.00",
                             "units": "676.022",
                             "nav": "59.1667",
@@ -3788,11 +3724,11 @@
         }
     ],
     "investor_info": {
-        "name": "ANKIT RANA",
+        "name": "GAURISHA RANA",
         "email": "ankit.kumar.rana@gmail.com",
-        "address": "C8 GROUND FLOOR C BLOCK SOUTHEND FLOORS NEAR SAPPHIRE\nMALL SOUTH CITY -II\nGURGAON - 122018\nHaryana\nIndia\nMobile: 9717108640",
-        "mobile": "9717108640"
+        "address": "C8 Ground Floor C Block Southend Floors Near Sapphire\nMall South City -Ii\nGurgaon - 122018\ninvestments as well.\nHaryana\nindia\nMobile     : +918076954082",
+        "mobile": "+918076954082"
     },
     "cas_type": "DETAILED",
-    "file_type": "CAMS"
+    "file_type": "KFINTECH"
 }
