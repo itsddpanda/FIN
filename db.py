@@ -1,9 +1,15 @@
+from csv import excel_tab
 import os
 import logging
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from logging_config import logger  # Ensure this is correctly initialized before import
+import redis
+
+#connect to redis
+redis_client = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True)
+# redis_client = redis.StrictRedis(host="redis", port=6379, db=0, decode_responses=True) #change in prod
 
 logger = logging.getLogger("env")
 
@@ -68,12 +74,22 @@ async def get_async_db():
 # ✅ Sync Database Initialization (Only for Local Development)
 def init_db():
     logger.info("Initializing Database...")
-    logger.info(Base.metadata.create_all(bind=sync_engine))
-    logger.info("Database Initialized") 
+    try:
+        Base.metadata.create_all(bind=sync_engine)
+        logger.info("✅ Database Initialized") 
     # logger.info(Base.metadata.drop_all(bind=sync_engine))
+    except Exception as e:
+        logger.error(f"❌ Failed to connect to Postgres DB")
 
 # ✅ Async Database Initialization (For Background Tasks & Development)
 async def async_init_db():
     async with async_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     logger.info("Async Database Initialized")
+
+def init_redis():
+    try:
+        redis_client.ping()  # Check if Redis is reachable
+        logger.info("✅ Redis is connected")
+    except redis.ConnectionError:
+        logger.warning("❌ Redis connection failed")

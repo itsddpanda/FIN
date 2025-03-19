@@ -11,11 +11,12 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 import logging
 import os
-from db import SessionLocal, get_db, AsyncSessionLocal  
+from db import SessionLocal, get_db, AsyncSessionLocal, redis_client
 from routes.pdf_converter import clear_database_for_identifier
-from models import User, Folio, Scheme, AMC, Valuation, SchemeMaster, Transaction, SchemeNavHistory
-from schemas import HistoricalDataOut, SchemeOut, PortfoliowithAMCOut, MetaData, AMCOut, SchemeDetailsOut,NavData,HistoricalDataResponse, TransactionOut, UserOut, ValuationOut, AMCWithSchemesOut, SchemeMasterOut, AMCWithValuationOut
+from models import User, Folio, Scheme, StatementPeriod, SchemeMaster, SchemeNavHistory
+from schemas import SchemeOut, PortfoliowithAMCOut, MetaData, AMCOut, SchemeDetailsOut,NavData,HistoricalDataResponse, TransactionOut, UserOut, ValuationOut, AMCWithSchemesOut, SchemeMasterOut, AMCWithValuationOut
 from auth import SECRET_KEY, ALGORITHM
+import time  # Import standard time module
 from routes.pdf_converter import convertpdf
 from .history import get_hist_data, update_allvaluations_async
 
@@ -98,27 +99,46 @@ def read_users_me(request: Request, current_user: User = Depends(get_current_use
     """
     return UserOut.model_validate(current_user)
 
-@router.post("/deleteme", response_model=UserOut)
-def del_users_me(request: Request, current_user = Depends(get_current_user), db: Session = Depends(get_db)):
-    if isinstance(current_user, UserOut):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Unauthorized. Please log in or ensure your account is active."
-        )
+@router.post("/logout")
+def logout(token: str = Depends(oauth2_scheme)):
     try:
-        if clear_database_for_identifier(db, current_user.user_id, "user_id"):
-            logger.info(f"User {current_user.full_name} deleted from database.")
-            current_user.is_active = False
-            # current_user.user_id = "hidden response"
-            return UserOut.model_validate(current_user)
-        else:
-            logger.error(f"Unable to delete user {current_user.user_id} from database.")
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to delete user.")
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        exp_time = payload.get("exp", int(time.time()))  # Default to now if missing
+        remaining_ttl = max(exp_time - int(time.time()), 0)  # Calculate TTL
+        # Store token in Redis blacklist
+        redis_client.setex(f"blacklist:{token}", remaining_ttl, "revoked")
+
+        return {"message": "Successfully logged out."}
+    except HTTPException as http_exc:
+        raise http_exc
+    except JWTError:
+        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token.")
+
+@router.delete("/deleteme", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user_data(token: str = Depends(oauth2_scheme),current_user: User=Depends(get_current_user), db: Session = Depends(get_db)):
+    """
+    Deletes all user-specific data and deactivates the user, using cascade deletion.
+    """
+    try:
+        user = db.query(User).filter(User.email == current_user.email).first()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+        # Delete StatementPeriod (cascades to Folio, Scheme, Valuation, Transaction)
+        db.query(StatementPeriod).filter(StatementPeriod.user_id == user.user_id).delete(synchronize_session=False)
+        # Deactivate the user
+        user.is_active = False
+        user.user_id = ""
+        user.hashed_password = ""
+        db.commit()
+        db.flush()
+        logout(token)
+        logger.info(f"User data deleted and user deactivated for: {current_user.email}")
     except HTTPException as http_exc:
         raise http_exc
     except Exception as e:
-        logger.error(f"Unable to delete user from database. Error: {e}")
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to delete user.")
+        logger.error(f"Error deleting user data: {e}", exc_info=True)
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Internal server error")
 
 # USER PROFILE ENDPOINT
 @router.post("/uploading", response_model=UserOut)
