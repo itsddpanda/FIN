@@ -200,6 +200,8 @@ async def upload_file(
         logger.info(f"Processing PDF file: {file_location}")
         try:
             convertpdf(file_location, password, email)  # Pass password directly
+        except HTTPException as http_exc:
+            raise http_exc
         except Exception as e:
             logger.error(f"Error processing PDF: {e}", exc_info=True)
             raise HTTPException(
@@ -338,63 +340,75 @@ def get_amc_schemes(
         A tuple containing the count of schemes and a list of SchemeOut objects.
     """
     # Build the base query
-    query = db.query(Scheme).join(Folio, Scheme.folio_id == Folio.folio_number).filter(
-        Folio.amc_id == amc_id, Folio.user_id == current_user.user_id
-    )
-    # Add the filter for close_units if exclude_zero_close_units is True
-    if exclude_zero_close_units:
-        query = query.filter(Scheme.close_units > 0)
-
-    # Count the schemes
-    count_query = db.query(func.count(Scheme.scheme_master_id.distinct())).join(
-        Folio, Scheme.folio_id == Folio.folio_number
-    ).filter(Folio.amc_id == amc_id, Folio.user_id == current_user.user_id)
-
-    if exclude_zero_close_units:
-        count_query = count_query.filter(Scheme.close_units > 0)
-
-    count = count_query.scalar()
-
-    # Retrieve the schemes
-    schemes = query.all()
-
-    # Convert Scheme objects to SchemeOut objects
-    scheme_out_list = list()
-    for scheme in schemes:
-        scheme_master_out = SchemeMasterOut(
-            id=scheme.scheme_master.scheme_id,
-            isin=scheme.scheme_master.scheme_isin,
-            amfi_code=scheme.scheme_master.scheme_amfi_code,
-            name=scheme.scheme_master.scheme_name,
-            amc_id=scheme.scheme_master.amc_id,
-            scheme_type=scheme.scheme_master.scheme_type,
+    try:
+        query = db.query(Scheme).join(Folio, Scheme.folio_id == Folio.folio_number).filter(
+            Folio.amc_id == amc_id, Folio.user_id == current_user.user_id
         )
+        # Add the filter for close_units if exclude_zero_close_units is True
+        if exclude_zero_close_units:
+            query = query.filter(Scheme.close_units > 0)
 
-        valuation_out = None
-        if scheme.valuation:
-            valuation_out = ValuationOut(
-                valuation_date=scheme.valuation.valuation_date,
-                valuation_nav=scheme.valuation.valuation_nav,
-                valuation_cost=scheme.valuation.valuation_cost,
-                valuation_value=scheme.valuation.valuation_value,
+        # Count the schemes
+        count_query = db.query(func.count(Scheme.scheme_master_id.distinct())).join(
+            Folio, Scheme.folio_id == Folio.folio_number
+        ).filter(Folio.amc_id == amc_id, Folio.user_id == current_user.user_id)
+
+        if exclude_zero_close_units:
+            count_query = count_query.filter(Scheme.close_units > 0)
+
+        count = count_query.scalar()
+
+        # Retrieve the schemes
+        schemes = query.all()
+
+        # Convert Scheme objects to SchemeOut objects
+        scheme_out_list = list()
+        for scheme in schemes:
+            scheme_master_out = SchemeMasterOut(
+                id=scheme.scheme_master.scheme_id,
+                isin=scheme.scheme_master.scheme_isin,
+                amfi_code=scheme.scheme_master.scheme_amfi_code,
+                name=scheme.scheme_master.scheme_name,
+                amc_id=scheme.scheme_master.amc_id,
+                scheme_type=scheme.scheme_master.scheme_type,
             )
 
-        scheme_out = SchemeOut(
-            id=scheme.id,
-            folio_id=scheme.folio_id,
-            scheme_master=scheme_master_out,
-            advisor=scheme.advisor,
-            rta_code=scheme.rta_code,
-            rta=scheme.rta,
-            nominees=scheme.nominees,
-            open_units=scheme.open_units,
-            close_units=scheme.close_units,
-            close_calculated_units=scheme.close_calculated_units,
-            valuation=valuation_out,
-        )
-        scheme_out_list.append(scheme_out)
+            valuation_out = None
+            if scheme.valuation:
+                valuation_out = ValuationOut(
+                    valuation_date=scheme.valuation.valuation_date,
+                    valuation_nav=scheme.valuation.valuation_nav,
+                    valuation_cost=scheme.valuation.valuation_cost,
+                    valuation_value=scheme.valuation.valuation_value,
+                )
 
-    return scheme_out_list
+            scheme_out = SchemeOut(
+                id=scheme.id,
+                folio_id=scheme.folio_id,
+                scheme_master=scheme_master_out,
+                advisor=scheme.advisor,
+                rta_code=scheme.rta_code,
+                rta=scheme.rta,
+                nominees=scheme.nominees,
+                open_units=scheme.open_units,
+                close_units=scheme.close_units,
+                close_calculated_units=scheme.close_calculated_units,
+                valuation=valuation_out,
+            )
+            scheme_out_list.append(scheme_out)
+        if scheme_out_list:
+            return scheme_out_list
+        else:
+            raise HTTPException(status_code=404, detail="AMC not found")
+    except HTTPException as http_exc:
+            raise http_exc
+    except Exception as e:
+        logger.error(f"Error in fetching user record: {e}", exc_info=False)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Could not retrieve AMC"
+        )
+
 
 @router.get("/schemes/{scheme_id}", response_model=SchemeDetailsOut)
 def get_scheme_details(

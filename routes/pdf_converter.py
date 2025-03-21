@@ -14,6 +14,7 @@ from decimal import Decimal
 from models import User, Folio, StatementPeriod, Scheme, Valuation, Transaction, AMC, SchemeMaster, SchemeNavHistory
 from schemas import TransactionType
 from db import SessionLocal, get_db
+from casparser.exceptions import IncorrectPasswordError
 
 # from logging_config import logger 
 logger = logging.getLogger("PDF")
@@ -236,7 +237,7 @@ def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
             existing_folio = db.query(Folio).filter_by(
                 folio_number=folio_number, user_id=user.user_id
             ).first()
-            logger.info(f"Checking existing folio for {folio_number} found {existing_folio.folio_number} for {user.email}")
+            
             # 8. Ensure statement period exists
             sp = db.query(StatementPeriod).filter_by(
                 from_date=new_sp_from, to_date=new_sp_to, user_id=user.user_id
@@ -247,7 +248,7 @@ def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
                 db.flush()  # Get sp.id
 
             if not existing_folio:
-                logger.info(f"Adding folio with {folio_number} with SPID: {sp.id} and AMC: {amc_obj.amc_id}")
+                logger.debug(f"Adding folio with {folio_number} with SPID: {sp.id} and AMC: {amc_obj.amc_id}")
                 folio_obj = Folio(
                     folio_number=folio_number,
                     pan=pan,
@@ -259,6 +260,7 @@ def publish_json_to_db(data: Dict[str, Any], email: str, db: Session) -> bool:
                 )
                 db.add(folio_obj)
             else:
+                logger.debug(f"Checking existing folio for {folio_number} found {existing_folio.folio_number} for {user.email}")
                 folio_obj = existing_folio
                 # Update statement period range if necessary
                 if new_sp_from < sp.from_date or new_sp_to > sp.to_date:
@@ -484,14 +486,16 @@ def convertpdf(pdf_file_path: str, password: str, email: str) -> bool:
         json_str = casparser.read_cas_pdf(pdf_file_path, password, output="json")
         data = json.loads(json_str)
         #remove with below in prod
-        with open("output.json", "w") as f:
-            json.dump(data, f, indent=4)
+        # with open("output.json", "w") as f:
+        #     json.dump(data, f, indent=4)
         logger.info("File Conversion FINISH")
-    except casparser.exceptions.CASParserError as e:  # Catching specific exception
-        logger.error(f"Conversion PDF PARSER Module FAILED. {e}", exc_info=False)
+    except HTTPException as http_exc:
+        raise http_exc
+    except IncorrectPasswordError  as e:
+        logger.info(f"Error found {e}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,  # Use appropriate status code
-            detail=f"PDF Conversion Module FAILED. {e}"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error in reading PDF. {e}"
         )
     except json.JSONDecodeError as e:
         logger.error(f"Invalid JSON format: {e}", exc_info=False)
@@ -503,7 +507,7 @@ def convertpdf(pdf_file_path: str, password: str, email: str) -> bool:
         logger.error(f"An unexpected error occurred: {e}", exc_info=True)  # Catching other exceptions
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="An unexpected error occurred."
+            detail=f"An unexpected error occurred. {e}"
         )
 
     logger.info("Adding data to DB")

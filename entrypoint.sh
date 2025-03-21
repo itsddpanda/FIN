@@ -32,6 +32,9 @@ if [ -f "$LOG_FILE" ]; then
 else
     echo "app.log not found, skipping..."
 fi
+# Start cron service (if needed)
+echo "Starting cron service..."
+service cron start
 
 # Disable server header and start FastAPI
 echo "Starting FastAPI application..."

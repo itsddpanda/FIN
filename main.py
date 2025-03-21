@@ -20,7 +20,7 @@ from db import redis_client, init_redis, init_db
 # from routes import auth, users
 from logging_config import logger  # Import the configured logger
 
-app = FastAPI(title="Full Stack FastAPI App", redoc_url=None) # for dev
+app = FastAPI(title="Full Stack FastAPI App") # for dev
 # app = FastAPI(docs_url=None, redoc_url=None)  # Disable docs in production
 
 init_db()
@@ -130,11 +130,11 @@ app.add_middleware(RateLimitMiddleware)
 app.add_middleware(ExtendTokenMiddleware)
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["yourdomain.com", "sub.yourdomain.com", "localhost", "127.0.0.1", "172.16.16.41"],
+    allowed_hosts=["yourdomain.com", "sub.yourdomain.com", "localhost", "127.0.0.1", "172.16.16.41", "172.16.16.1"],
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://yourfrontend.com", "https://localhost:3000", "172.16.16.1"],  # Adjust for your frontend
+    allow_origins=["http://localhost:3000", "https://yourfrontend.com", "https://localhost:3000", "172.16.16.41", "172.16.16.1"],  # Adjust for your frontend
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers

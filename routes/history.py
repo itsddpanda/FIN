@@ -52,7 +52,7 @@ async def save_scheme_nav_history(scheme_id: int, historical_data, db: AsyncSess
         if nav_entries:
             db.add_all(nav_entries)  # Alternative: Use `db.execute(insert(SchemeNavHistory), nav_entries)`
             await db.commit()
-            logger.info(f"Inserted {len(nav_entries)} records for scheme_master: {scheme_master_id}.")
+            logger.debug(f"Inserted {len(nav_entries)} records for scheme_master: {scheme_master_id}.")
         else:
             logger.info(f"DUPES not added for scheme_master: {scheme_master_id}")
 

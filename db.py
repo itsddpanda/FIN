@@ -8,7 +8,7 @@ from logging_config import logger  # Ensure this is correctly initialized before
 import redis
 
 #connect to redis
-redis_client = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True)
+redis_client = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True) 
 # redis_client = redis.StrictRedis(host="redis", port=6379, db=0, decode_responses=True) #change in prod
 
 logger = logging.getLogger("env")
@@ -77,7 +77,7 @@ def init_db():
     try:
         Base.metadata.create_all(bind=sync_engine)
         logger.info("✅ Database Initialized") 
-    # logger.info(Base.metadata.drop_all(bind=sync_engine))
+        # logger.info(Base.metadata.drop_all(bind=sync_engine))
     except Exception as e:
         logger.error(f"❌ Failed to connect to Postgres DB")
 
