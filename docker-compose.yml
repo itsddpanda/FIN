@@ -7,8 +7,8 @@ services:
       POSTGRES_PASSWORD: ${PG_PASS} # **Replace with a real password!**
       POSTGRES_DB: finapp_data
       TZ: "Asia/Kolkata" # Set timezone to IST
-    ports:
-      - "5432:5432" # Map host port 5432 to container port 5432
+    # ports:
+    #   - "5432:5432" # Map host port 5432 to container port 5432
     networks:
       - MFA
     volumes:
@@ -22,8 +22,8 @@ services:
     image: redis:alpine
     container_name: redis
     restart: unless-stopped
-    ports:
-      - "6379:6379"
+    # ports:
+    #   - "6379:6379"
     networks:
       - MFA
     command: ["redis-server", "--appendonly", "yes"]
@@ -54,9 +54,6 @@ services:
 
 volumes:
   postgres_data:
-   external: true
   redis_data:
-    external: true
 networks:
   MFA:
-    external: true

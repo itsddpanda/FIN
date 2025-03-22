@@ -130,15 +130,15 @@ app.add_middleware(RateLimitMiddleware)
 app.add_middleware(ExtendTokenMiddleware)
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["yourdomain.com", "sub.yourdomain.com", "localhost", "127.0.0.1", "172.16.16.41", "172.16.16.1"],
+    allowed_hosts=["yourdomain.com", "sub.yourdomain.com", "localhost", "127.0.0.1", "*"],
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://yourfrontend.com", "https://localhost:3000", "172.16.16.41", "172.16.16.1"],  # Adjust for your frontend
+    allow_origins=["http://localhost:3000", "https://yourfrontend.com", "https://localhost", "https://localhost:3000"],  # Adjust for your frontend
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers
 )
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8100, server_header=False) #true for dev env
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, server_header=False) #true for dev env
