@@ -4,7 +4,7 @@ services:
     container_name: db
     environment:
       POSTGRES_USER: postgres # Use 'postgres' as user (or choose your username)
-      POSTGRES_PASSWORD: ${PG_PASS} # **Replace with a real password!**
+      POSTGRES_PASSWORD: 5hu6h4mr4n4 # **Replace with a real password!**
       POSTGRES_DB: finapp_data
       TZ: "Asia/Kolkata" # Set timezone to IST
     # ports:

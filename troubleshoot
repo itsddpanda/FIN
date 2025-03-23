@@ -1,0 +1,1 @@
+docker exec -it db psql -U postgres -c "ALTER USER postgres WITH PASSWORD '5hu6h4mr4n4';"
