@@ -1,4 +1,5 @@
 import logging
+import os
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -20,8 +21,12 @@ from db import redis_client, init_redis, init_db
 # from routes import auth, users
 from logging_config import logger  # Import the configured logger
 
-app = FastAPI(title="Full Stack FastAPI App") # for dev
-# app = FastAPI(docs_url=None, redoc_url=None)  # Disable docs in production
+ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
+
+if ENVIRONMENT == "production":
+    app = FastAPI(docs_url=None, redoc_url=None, title="Full Stack FastAPI App")
+else:
+    app = FastAPI(title="Full Stack FastAPI App")
 
 init_db()
 init_redis()
@@ -128,13 +133,16 @@ class ExtendTokenMiddleware(BaseHTTPMiddleware):
 app.add_middleware(AuthLoggingMiddleware)  
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(ExtendTokenMiddleware)
+allowed_hosts = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["yourdomain.com", "sub.yourdomain.com", "localhost", "127.0.0.1", "172.16.16.41", "172.16.16.1"],
+    allowed_hosts=allowed_hosts,
 )
+
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "https://yourfrontend.com", "https://localhost:3000", "172.16.16.41", "172.16.16.1"],  # Adjust for your frontend
+    allow_origins=cors_origins,  # Adjust for your frontend
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers

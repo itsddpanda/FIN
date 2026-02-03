@@ -5,7 +5,6 @@ WORKDIR /app
 
 # Copy application files
 COPY . /app/
-COPY .env /app/.env
 
 # Install dependencies
 RUN pip install --upgrade pip
@@ -18,4 +17,4 @@ RUN rm -rf /var/lib/apt/lists/*
 EXPOSE 8000
 
 # Set entrypoint script
-CMD ["python", "main.py"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
