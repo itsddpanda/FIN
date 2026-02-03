@@ -8,8 +8,9 @@ from logging_config import logger  # Ensure this is correctly initialized before
 import redis
 
 #connect to redis
-redis_client = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True) 
-# redis_client = redis.StrictRedis(host="redis", port=6379, db=0, decode_responses=True) #change in prod
+REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
+redis_client = redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0, decode_responses=True)
 
 logger = logging.getLogger("env")
 
@@ -23,8 +24,8 @@ if not DATABASE_URL:
 # ✅ Convert for Async if using PostgreSQL
 ASYNC_DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://") if DATABASE_URL.startswith("postgresql://") else DATABASE_URL
 
-logger.debug(f"Sync Database URL: {DATABASE_URL}")
-logger.debug(f"Async Database URL: {ASYNC_DATABASE_URL}")
+# logger.debug(f"Sync Database URL: {DATABASE_URL}")
+# logger.debug(f"Async Database URL: {ASYNC_DATABASE_URL}")
 
 # ✅ Sync Engine (For APIs)
 sync_engine = create_engine(
