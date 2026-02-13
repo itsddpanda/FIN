@@ -33,7 +33,7 @@ services:
       - db
 volumes:
   financial-decision_postgres_data:
-    external: true
+    
 networks:
   financial-decision_default:
-    external: true
+    
