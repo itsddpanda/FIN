@@ -1,4 +1,4 @@
-venv
+*venv
 __py*
 *.pyc
 *.log
